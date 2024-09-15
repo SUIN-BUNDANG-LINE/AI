@@ -2,7 +2,7 @@ from app.core.util.ai_manager import AIManager
 from app.core.util.document_manager import DocumentManager
 from app.core.prompt.survey_generate_prompt import *
 
-class GenerateService:
+class SurveyGenerateService:
     def __init__(self):
         self.ai_manager =  AIManager()
         self.document_manger = DocumentManager()
