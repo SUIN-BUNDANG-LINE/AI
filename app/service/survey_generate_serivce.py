@@ -5,6 +5,7 @@ from app.model.survey import Survey
 from langchain.output_parsers import PydanticOutputParser
 from app.core.prompt.survey_guide_prompt import survey_guide_prompt
 
+
 class SurveyGenerateService:
     def __init__(self):
         self.ai_manager =  AIManager()

@@ -1,4 +1,4 @@
-from langchain.document_loaders import PyMuPDFLoader
+from langchain_community.document_loaders import PyMuPDFLoader
 from app.core.config.text_spliiter import text_splitter
 
 class DocumentManager:

@@ -1,5 +1,4 @@
-from langchain.chat_models import ChatOpenAI
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 chat = ChatOpenAI(
     model="gpt-4o-mini",
