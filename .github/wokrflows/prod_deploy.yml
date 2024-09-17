@@ -1,0 +1,43 @@
+name: Frontend 프로덕션 서버 EC2 배포
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # 수동 실행 이벤트 추가
+
+jobs:
+  deploy:
+    name: 배포 작업
+    runs-on: ubuntu-latest
+
+    env:
+      # AWS 관련
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ap-northeast-2
+      EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
+      # LangChain 관련
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    
+    steps:
+    - name: Install AWS CLI
+      run: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
+
+    - name: AWS 로그인
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: SSM으로 EC2에 배포
+      run: |
+        aws --no-cli-pager  ssm send-command \
+        --document-name "AWS-RunShellScript" \
+        --targets "Key=instanceIds, Values=${{ env.EC2_INSTANCE_ID}}" \
+        --parameters '{"workingDirectory": ["/home/ubuntu/AI"],
+        "commands" : ["ENV_CONTENT='${{ env.ENV_CONTENT }}' bash ./.github/workflows/prod_deploy.sh"]}'

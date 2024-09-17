@@ -1,6 +1,6 @@
-from config.ai import embeddings
+from app.core.config.ai import embeddings
 from langchain.vectorstores import Chroma
 
-database = Chroma(
+chroma = Chroma(
     embedding_function=embeddings
 )

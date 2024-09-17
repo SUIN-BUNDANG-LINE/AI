@@ -1,36 +1,38 @@
 from langchain.prompts import PromptTemplate
 
-reference_prompt = PromptTemplate(
+summation_prompt = PromptTemplate(
     template="""
-    당신은 설문 제작 AI에게 프롬프트를 만들어주는 설문 제작 도우미이다.
-    이 문서를 적절한 프롬프트로 바꾸어줘
-    
-    문장:
+    Please summarize the reference materials according to the summary requirements.
+
+    ### Reference Materials
     {document}
+
+    ### Summary Requirements
+    - **Format**: Enumerated list
+    - **Content**
+    1. seems to require verification from the document
+    2. Suggest relevant survey questions based on reference materials
     """,
     input_variables=["document"]
 )
 
 instruct_prompt = PromptTemplate(
-    template="""당신은 {who}이다. 
-    1. 아래 참조사항을 바탕으로 설문조사를 만들어줘
-    2. {who}의 말투로 설문조사를 작성해줘.
-    3. 말투는 예의를 지켜야한다.
-    4. 응답은 예시를 참고하여 제시된 구조를 따라라
-    5. 설문조사의 내용을 바탕으로 인사말과 끝내는 말을 작성하라
-    6. 인사말에는 단체 이름을 포함시켜라
-    7. 설문조사는 질문들을 하나씩 나열하라
-    
-    단체이름:
+    template="""
+    You are a survey creation expert who creates surveys for {who}. Please create a survey following the instructions below.
+    1. Create the survey based on the document summary.
+    2. In the opening greeting, clearly state the affiliated organization and the purpose of the document summary.
+    3. Please respond in Korean.
+    4. Ensure the survey contains at least 12 questions.
+    5. Adhere to the Survey Creation Guide provided.
+
+    ### Survey Creation Guide:
+    {guide}
+
+    ### Affiliated Organization: 
     {group}
 
-    참조사항:
-    {reference}
-
-    제시된 구조:
-    인사말:
-    설문조사:
-    끝내는말:
+    ### Document Summary:
+    {summation}
     """,
-    input_variables=["who", "group", "reference"]
+    input_variables=["who", "group", "guide", "summation"]
 )
