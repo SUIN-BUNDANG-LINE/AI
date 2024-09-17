@@ -3,9 +3,6 @@ from app.model.section import Section
 from pydantic import BaseModel, Field
 
 class Survey(BaseModel):
-    id: Literal[None] = Field(
-        default=None
-    )
     title: str = Field(
         description="Title of the survey"
     )

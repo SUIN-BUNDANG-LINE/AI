@@ -5,9 +5,6 @@ from app.model.question import Question
 from pydantic import BaseModel, Field
 
 class Section(BaseModel):
-    id: Literal[None] = Field(
-        default=None
-    )
     title: str = Field(
         description="Title of the section"
     )
@@ -16,7 +13,4 @@ class Section(BaseModel):
     )
     questions: list[Question] = Field(
         description="Questions included in the section"
-    )
-    routeDetails: Literal[None] = Field(
-        default=None
     )

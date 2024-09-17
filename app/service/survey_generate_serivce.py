@@ -12,13 +12,13 @@ class SurveyGenerateService:
         self.summation_prompt = summation_prompt
         self.instruct_prompt = instruct_prompt
     
-    def generate_survey(self, who: str, group:str, file_url: str):
+    def generate_survey(self, job: str, group:str, file_url: str):
         text_documents = self.document_manger.text_from_pdf_file_url(file_url)
 
         formmatted_summation_prompt = self.summation_prompt.format(document=text_documents)
         summation = self.ai_manager.chat(formmatted_summation_prompt)
 
-        formatted_instruct_prompt = self.instruct_prompt.format(who=who, guide=survey_guide_prompt, group=group, summation=summation)
+        formatted_instruct_prompt = self.instruct_prompt.format(who=job, guide=survey_guide_prompt, group=group, summation=summation)
         parser = PydanticOutputParser(pydantic_object=Survey)
 
         generated_reuslt = self.ai_manager.chat_with_parser(formatted_instruct_prompt, parser)

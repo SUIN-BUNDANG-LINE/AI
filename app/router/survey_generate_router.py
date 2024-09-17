@@ -9,4 +9,4 @@ def get_survey_generate_serivce():
 
 @router.post("/generate/survey")
 def generate_survey(request: SurveyGenerateRequest, generate_service = Depends(get_survey_generate_serivce)):
-    return generate_service.generate_survey(request.who.to_string(), request.group_name, request.file_url)
+    return generate_service.generate_survey(request.job, request.group_name, request.file_url)
