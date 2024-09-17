@@ -18,7 +18,7 @@ jobs:
       AWS_REGION: ap-northeast-2
       EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
       # LangChain 관련
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      ENV_CONTENT: ${{ secrets.ENV_CONTENT }}
     
     steps:
     - name: Install AWS CLI
