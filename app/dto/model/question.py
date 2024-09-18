@@ -16,6 +16,6 @@ class Question(BaseModel):
     choices: List[str] = Field(
         description="Options for multiple-choice questions"
     )
-    isAllowedOther: bool = Field(       
+    isAllowOther: bool = Field(       
         description="Indicates whether to allow an 'Other' response for multiple-choice questions"
     )
