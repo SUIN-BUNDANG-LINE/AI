@@ -1,8 +1,17 @@
-from pydantic import BaseModel
+from typing import Literal
+from app.dto.model.section import Section
+from pydantic import BaseModel, Field
 
-# Response DTO 정의
 class SurveyGenerateResponse(BaseModel):
-    survey_id: int
-    title: str
-    description: str
-    created_at: str 
+    title: str = Field(
+        description="Title of the survey"
+    )
+    description: str = Field(
+        description="Greeting message at the start of the survey"
+    )
+    finishMessage: str = Field(
+        description="Message displayed upon completion of the survey"
+    )
+    sections: list[Section] = Field(
+        description="Sections of the survey"
+    )

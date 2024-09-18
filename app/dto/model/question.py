@@ -1,7 +1,7 @@
 from typing import Literal
 from typing import List
 from pydantic import BaseModel, Field
-from app.model.question_type import QuestionType
+from app.dto.model.question_type import QuestionType
 
 class Question(BaseModel):
     questionType: QuestionType = Field(

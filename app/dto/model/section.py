@@ -1,7 +1,7 @@
 
 from typing import Literal
 from uuid import UUID
-from app.model.question import Question
+from app.dto.model.question import Question
 from pydantic import BaseModel, Field
 
 class Section(BaseModel):

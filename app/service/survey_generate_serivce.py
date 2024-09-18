@@ -1,7 +1,7 @@
 from app.core.util.ai_manager import AIManager
 from app.core.util.document_manager import DocumentManager
 from app.core.prompt.survey_generate_prompt import *
-from app.model.survey import Survey
+from app.dto.response.survey_generate_response import * 
 from langchain.output_parsers import PydanticOutputParser
 from app.core.prompt.survey_guide_prompt import survey_guide_prompt
 
@@ -20,7 +20,7 @@ class SurveyGenerateService:
         summation = self.ai_manager.chat(formmatted_summation_prompt)
 
         formatted_instruct_prompt = self.instruct_prompt.format(who=job, guide=survey_guide_prompt, group=group, summation=summation)
-        parser = PydanticOutputParser(pydantic_object=Survey)
+        parser = PydanticOutputParser(pydantic_object=SurveyGenerateResponse)
 
         generated_reuslt = self.ai_manager.chat_with_parser(formatted_instruct_prompt, parser)
         parsed_result = parser.parse(generated_reuslt)
