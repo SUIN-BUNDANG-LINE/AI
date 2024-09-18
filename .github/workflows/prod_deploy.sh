@@ -4,7 +4,9 @@
 git checkout main
 git pull
 echo "$ENV_CONTENT" > .env
-docker build -t suinbundnagline/sulmoon2yong-ai:lastest .
-docker run -d --name suinbundnagline/sulmoon2yong-ai:latest -p 8000:8000 sulmoon2yong-ai-server
+docker stop sulmoon2yong-ai-server
+docker rm sulmoon2yong-ai-server
+docker build -t suinbundangline/sulmoon2yong-ai:lastest .
+docker run -d --name sulmoon2yong-ai-server -p 8000:8000 suinbundangline/sulmoon2yong-ai:lastest 
 docker image prune -f
 # EOF
