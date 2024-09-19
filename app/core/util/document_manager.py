@@ -7,8 +7,12 @@ class DocumentManager:
         self.pdf_loader = PyMuPDFLoader
     
     def documents_to_text(self, documents):
+        DOCUMENTS_TEXT_LIMIT = 10000
+
         documents_text = ""
         for document in documents:
+            if(len(documents_text) > DOCUMENTS_TEXT_LIMIT):
+                raise Exception("Document text is too long")
             documents_text += f"""
         ----------------------------
         {document.page_content}
