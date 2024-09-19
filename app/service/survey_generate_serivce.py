@@ -22,10 +22,9 @@ class SurveyGenerateService:
         path = parsed_url.path
         filename, file_extension = os.path.splitext(path)
         return file_extension
-
-    def generate_survey(self, job: str, group:str, file_url: str):
+    
+    def get_text_document_with_validation(self, file_url: str):
         extension = self.get_file_extension_from_url(file_url)
-
         text_document = ""
         match extension:
             case ".pdf":
@@ -34,6 +33,10 @@ class SurveyGenerateService:
                 text_document = self.document_manger.text_from_txt_file_url(file_url)
             case _:
                 raise business_exception(ErrorCode.FILE_EXTENSION_NOT_SUPPORTED)
+        return text_document
+
+    def generate_survey(self, job: str, group:str, file_url: str):
+        text_document = self.get_text_document_with_validation(file_url)
 
         formmatted_summation_prompt = self.summation_prompt.format(document=text_document)
         summation = self.ai_manager.chat(formmatted_summation_prompt)
