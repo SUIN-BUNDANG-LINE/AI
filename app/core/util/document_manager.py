@@ -4,6 +4,8 @@ from langchain_community.document_loaders import PyMuPDFLoader
 from app.error.error_code import ErrorCode
 from app.error.business_exception import business_exception
 
+DOCUMENTS_TEXT_LIMIT = 120000
+
 class DocumentManager:
     def __init__(self):
         self.pdf_loader = PyMuPDFLoader
@@ -16,7 +18,6 @@ class DocumentManager:
         {document.page_content}
         """
         
-        DOCUMENTS_TEXT_LIMIT = 120000
         if(len(documents_text) > DOCUMENTS_TEXT_LIMIT):
             raise business_exception(ErrorCode.TEXT_TOO_LONG)
         
