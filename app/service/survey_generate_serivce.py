@@ -1,3 +1,5 @@
+import os
+from urllib.parse import urlparse
 from app.core.util.ai_manager import AIManager
 from app.core.util.document_manager import DocumentManager
 from app.core.prompt.survey_generate_prompt import *
@@ -13,8 +15,25 @@ class SurveyGenerateService:
         self.summation_prompt = summation_prompt
         self.instruct_prompt = instruct_prompt
     
+
+    def get_file_extension_from_url(self, file_url):
+        parsed_url = urlparse(file_url)
+        path = parsed_url.path
+        filename, file_extension = os.path.splitext(path)
+        return file_extension
+
     def generate_survey(self, job: str, group:str, file_url: str):
-        text_documents = self.document_manger.text_from_pdf_file_url(file_url)
+        extension = self.get_file_extension_from_url(file_url)
+
+        text_documents = ""
+            
+        if(extension == ".pdf"):
+            text_documents = self.document_manger.text_from_pdf_file_url(file_url)
+        else:
+            if(extension == ".txt"):
+                text_documents = self.document_manger.text_from_txt_file_url(file_url)
+            else:
+                raise ValueError("File extension is not supported")
 
         formmatted_summation_prompt = self.summation_prompt.format(document=text_documents)
         summation = self.ai_manager.chat(formmatted_summation_prompt)
