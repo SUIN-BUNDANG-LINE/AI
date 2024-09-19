@@ -26,14 +26,14 @@ class SurveyGenerateService:
         extension = self.get_file_extension_from_url(file_url)
 
         text_documents = ""
-            
-        if(extension == ".pdf"):
-            text_documents = self.document_manger.text_from_pdf_file_url(file_url)
-        else:
-            if(extension == ".txt"):
+        
+        match extension:
+            case ".pdf":
+                text_documents = self.document_manger.text_from_pdf_file_url(file_url)
+            case ".txt":
                 text_documents = self.document_manger.text_from_txt_file_url(file_url)
-            else:
-                raise ValueError("File extension is not supported")
+            case _:
+                raise ValueError("File extension not supported")
 
         formmatted_summation_prompt = self.summation_prompt.format(document=text_documents)
         summation = self.ai_manager.chat(formmatted_summation_prompt)

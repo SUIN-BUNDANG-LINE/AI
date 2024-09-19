@@ -10,7 +10,7 @@ survey_guide_prompt = """
     Respect respondents’ time by limiting the number of questions. Shorter surveys typically have higher completion rates and more thoughtful answers.
 
     4. **Use Mostly Closed-Ended Questions**
-    Prefer multiple-choice or checkbox questions for easier responses and easier data analysis. Include only 1–2 open-ended questions at the end for additional insights.
+    Prefer multiple-choice or checkbox questions for easier responses and easier data analysis. Include only 1-2 open-ended questions at the end for additional insights.
 
     5. **Avoid Leading Questions**
     Ensure questions are neutral and do not bias responses. For example, ask “How helpful were our customer service representatives?” instead of “How helpful were our friendly customer service representatives?”

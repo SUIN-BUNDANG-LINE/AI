@@ -1,23 +1,25 @@
 import requests
 from langchain.docstore.document import Document
 from langchain_community.document_loaders import PyMuPDFLoader
+from app.error.error_code import ErrorCode
+from app.error.business_exception import business_exception
 
 class DocumentManager:
     def __init__(self):
         self.pdf_loader = PyMuPDFLoader
     
-    def documents_to_text(self, documents):
-        DOCUMENTS_TEXT_LIMIT = 10000
-
+    def documents_to_text(self, documents):        
         documents_text = ""
         for document in documents:
-            if(len(documents_text) > DOCUMENTS_TEXT_LIMIT):
-                raise Exception("Document text is too long")
             documents_text += f"""
         ----------------------------
         {document.page_content}
         """
-            
+        
+        DOCUMENTS_TEXT_LIMIT = 120000
+        if(len(documents_text) > DOCUMENTS_TEXT_LIMIT):
+            raise business_exception(ErrorCode.TEXT_TOO_LONG)
+        
         return documents_text
     
     def text_from_pdf_file_url(self, file_url: str):

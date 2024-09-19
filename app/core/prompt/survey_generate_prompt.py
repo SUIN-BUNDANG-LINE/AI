@@ -21,10 +21,10 @@ instruct_prompt = PromptTemplate(
     You are a survey creation expert who creates surveys for {who}. Please create a survey following the instructions below.
     1. Create the survey based on the document summary.
     2. In the opening greeting, clearly state the affiliated organization and the purpose of the document summary.
-    3. Please respond in Korean.
+    3. Respond in Korean.
     4. Ensure the survey contains at least 12 questions.
     5. Adhere to the Survey Creation Guide provided.
-
+    
     ### Survey Creation Guide:
     {guide}
 
