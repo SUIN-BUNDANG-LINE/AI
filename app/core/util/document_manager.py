@@ -4,7 +4,7 @@ from langchain_community.document_loaders import PyMuPDFLoader
 from app.error.error_code import ErrorCode
 from app.error.business_exception import business_exception
 
-DOCUMENTS_TEXT_LIMIT = 120000
+DOCUMENTS_TEXT_LIMIT = 12000
 
 class DocumentManager:
     def __init__(self):
