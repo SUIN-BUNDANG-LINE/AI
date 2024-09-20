@@ -9,6 +9,10 @@ DOCUMENTS_TEXT_LIMIT = 12000
 class DocumentManager:
     def __init__(self):
         self.pdf_loader = PyMuPDFLoader
+
+    def validate_text_length(self, text):
+        if(len(text) > DOCUMENTS_TEXT_LIMIT):
+            raise business_exception(ErrorCode.TEXT_TOO_LONG)
     
     def documents_to_text(self, documents):        
         documents_text = ""
@@ -17,9 +21,8 @@ class DocumentManager:
         ----------------------------
         {document.page_content}
         """
-        
-        if(len(documents_text) > DOCUMENTS_TEXT_LIMIT):
-            raise business_exception(ErrorCode.TEXT_TOO_LONG)
+            
+        self.validate_text_length(documents_text)
         
         return documents_text
     
