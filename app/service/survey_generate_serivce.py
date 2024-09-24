@@ -16,23 +16,23 @@ class SurveyGenerateService:
         self.summation_prompt = summation_prompt
         self.instruct_prompt = instruct_prompt
 
-    def generate_survey_with_file_url(self, job: str, group:str, file_url: str, user_prompt: str):
+    def generate_survey_with_file_url(self, job: str, group:str, file_url: str):
         text_document = self.__get_text_document_with_validation_file_url(file_url)
 
-        return self.__generate_survey(job, group, text_document, user_prompt)
+        return self.__generate_survey(job, group, text_document)
     
-    def generate_survey_with_text_document(self, job: str, group:str, text_document: str, user_prompt: str):
+    def generate_survey_with_text_document(self, job: str, group:str, text_document: str):
         self.document_manger.validate_text_length(text_document)
 
-        return self.__generate_survey(job, group, text_document, user_prompt)
+        return self.__generate_survey(job, group, text_document)
 
     # private methods
-    def __generate_survey(self, job: str, group:str, text_document: str, user_prompt: str):
+    def __generate_survey(self, job: str, group:str, text_document: str,):
         self.document_manger.validate_text_length(text_document)
 
         formmatted_summation_prompt = self.summation_prompt.format(document=text_document)
         summation = self.ai_manager.chat(formmatted_summation_prompt)
-        formatted_instruct_prompt = self.instruct_prompt.format(who=job, guide=survey_guide_prompt, group=group, summation=summation, user_prompt=user_prompt)
+        formatted_instruct_prompt = self.instruct_prompt.format(who=job, guide=survey_guide_prompt, group=group, summation=summation)
 
         parser = PydanticOutputParser(pydantic_object=SurveyGenerateResponse)
         generated_reuslt = self.ai_manager.chat_with_parser(formatted_instruct_prompt, parser)
