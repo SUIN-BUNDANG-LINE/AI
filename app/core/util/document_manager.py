@@ -29,6 +29,8 @@ class DocumentManager:
     
     def text_from_txt_file_url(self, file_url: str):
         response = requests.get(file_url)
+        if(response.status_code != 200):
+            raise business_exception(ErrorCode.FILE_NOT_FOUND)
         response.encoding = 'utf-8'
         text_content = response.text
     
