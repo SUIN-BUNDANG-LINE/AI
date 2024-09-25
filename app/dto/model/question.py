@@ -5,7 +5,7 @@ from app.dto.model.question_type import QuestionType
 
 class Question(BaseModel):
     questionType: QuestionType = Field(
-        description="Type of the question: SINGLE_CHOICE for single choice, MULTIPLE_CHOICE for multiple choices, TEXT_RESPONSE for text response"
+        description="Type of the question: SINGLE_CHOICE, MULTIPLE_CHOICE, TEXT_RESPONSE"
     )
     title: str = Field(
         description="Content of the question"
