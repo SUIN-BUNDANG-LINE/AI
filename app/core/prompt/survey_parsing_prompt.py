@@ -1,6 +1,6 @@
 from langchain.prompts import PromptTemplate
 
-survey_generation_prompt = PromptTemplate(
+survey_parsing_prompt = PromptTemplate(
     template="""
     You are a Survey Formmater. Please formatting a survey following the instructions below.
     ### Instructions

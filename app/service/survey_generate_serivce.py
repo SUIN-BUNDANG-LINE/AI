@@ -6,8 +6,8 @@ from langchain.output_parsers import PydanticOutputParser
 from app.core.util.ai_manager import AIManager
 from app.core.util.document_manager import DocumentManager
 from app.core.prompt.survey_creation_guide_prompt import survey_creation_guide_prompt
-from app.core.prompt.survey_generation_prompt import survey_generation_prompt
-from app.core.prompt.question_suggestion_prompt import question_suggestion_prompt
+from app.core.prompt.survey_parsing_prompt import survey_parsing_prompt
+from app.core.prompt.survey_creation_prompt import survey_creation_prompt
 from app.dto.response.survey_generate_response import *
 from app.error.error_code import ErrorCode
 from app.error.business_exception import business_exception
@@ -16,8 +16,8 @@ class SurveyGenerateService:
     def __init__(self):
         self.ai_manager =  AIManager()
         self.document_manger = DocumentManager()
-        self.question_suggestion_prompt = question_suggestion_prompt
-        self.survey_generation_prompt = survey_generation_prompt
+        self.survey_creation_prompt = survey_creation_prompt
+        self.survey_parsing_prompt = survey_parsing_prompt
 
     def generate_survey_with_file_url(self, job: str, group:str, file_url: str, user_prompt: str):
         text_document = self.__get_text_document_with_validation_file_url(file_url)
@@ -42,7 +42,7 @@ class SurveyGenerateService:
 
         # 제 1번 호출
         start_time = time.time() 
-        suggested_question = self.ai_manager.chat(self.question_suggestion_prompt.format(user_prompt=user_prompt, document=text_document, guide=survey_creation_guide_prompt))
+        suggested_question = self.ai_manager.chat(self.survey_creation_prompt.format(user_prompt=user_prompt, document=text_document, guide=survey_creation_guide_prompt))
         print(suggested_question)
         end_time = time.time()
         print(f"제 1번 호출 : {end_time - start_time:.4f} seconds")
@@ -50,7 +50,7 @@ class SurveyGenerateService:
         # 제 2번 호출
         start_time = time.time() 
         parser = PydanticOutputParser(pydantic_object=SurveyGenerateResponse)
-        generated_reuslt = self.ai_manager.chat_with_parser(survey_generation_prompt.format(job=job, suggested_question=suggested_question), parser)
+        generated_reuslt = self.ai_manager.chat_with_parser(survey_parsing_prompt.format(job=job, suggested_question=suggested_question), parser)
         end_time = time.time()
         print(f"제 2번 호출 : {end_time - start_time :.4f} seconds")
 
