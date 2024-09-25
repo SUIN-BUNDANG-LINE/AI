@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Optional
 from typing import List
 from pydantic import BaseModel, Field
 from app.dto.model.question_type import QuestionType
@@ -13,8 +13,9 @@ class Question(BaseModel):
     isRequired: bool = Field(
         description="Indicates whether answering the question is mandatory"
     )
-    choices: List[str] = Field(
-        description="Options for multiple-choice questions"
+    choices: Optional[List[str]] = Field(
+        default=None,
+        description="Options for multiple-choice questions (can be null)"
     )
     isAllowOther: bool = Field(       
         description="Indicates whether to allow an 'Other' response for multiple-choice questions"
