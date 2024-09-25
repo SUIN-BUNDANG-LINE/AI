@@ -29,7 +29,7 @@ question_suggestion_prompt = PromptTemplate(
     2. Suggest choices if the question is multiple choice.
     3. Suggest whether the question is required or not.
     3. Suggest the section of the survey to which the question belongs the section. The sections are classified into approximately three categories.
-    ex) (설문 참여 섹션) (복수 선택 가능: 리워드, 흥미로운 주제, 간편한 참여 방식, 기타) (필수 질문) 설문조사 참여를 유도하기 위한 방법으로 어떤 것을 가장 선호하십니까? 
+    ex) (설문 참여 섹션) (복수 선택 가능: 리워드, 흥미로운 주제, 간편한 참여 방식, 기타) (필수 질문)
     - **Content**
     1. Survey questions as much detail as possible for verifying the information from the document that you think.
     2. Your suggested survey questions based on reference materials.

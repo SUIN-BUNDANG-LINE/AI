@@ -33,21 +33,26 @@ class SurveyGenerateService:
     def __generate_survey(self, job: str, group:str, text_document: str, user_prompt: str):
         self.document_manger.validate_text_length(text_document)
 
+        if(group != ""):
+            user_prompt += f" 인사말에는 {group}에 대한 내용을 포함해주세요."
+
+        PROMPT_TEXT_LIMIT = 1000
+        if(len(user_prompt) > PROMPT_TEXT_LIMIT):
+            raise business_exception(ErrorCode.TEXT_TOO_LONG)
+
         # 제 1번 호출
         start_time = time.time() 
         suggested_question = self.ai_manager.chat(self.question_suggestion_prompt.format(user_prompt=user_prompt, document=text_document, guide=survey_creation_guide_prompt))
         print(suggested_question)
         end_time = time.time()
-        execution_time = end_time - start_time  # 실행 시간 계산
-        print(f"제 1번 호출 : {execution_time:.4f} seconds")
+        print(f"제 1번 호출 : {end_time - start_time:.4f} seconds")
 
         # 제 2번 호출
         start_time = time.time() 
         parser = PydanticOutputParser(pydantic_object=SurveyGenerateResponse)
         generated_reuslt = self.ai_manager.chat_with_parser(survey_generation_prompt.format(job=job, suggested_question=suggested_question), parser)
         end_time = time.time()
-        execution_time = end_time - start_time  # 실행 시간 계산
-        print(f"제 2번 호출 : {execution_time:.4f} seconds")
+        print(f"제 2번 호출 : {end_time - start_time :.4f} seconds")
 
         parsed_result = parser.parse(generated_reuslt)
         return parsed_result
