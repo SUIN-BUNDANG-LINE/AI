@@ -6,6 +6,7 @@ survey_generation_prompt = PromptTemplate(
     ### Instructions
     1. Format a survey to each suggested question.
     2. Do not modify Suggested Questions text.
+    3. Response must be in Korean.
 
     ### Suggested Questions:
     {suggested_question}
