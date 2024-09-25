@@ -50,7 +50,7 @@ class SurveyGenerateService:
         # 제 2번 호출
         start_time = time.time() 
         parser = PydanticOutputParser(pydantic_object=SurveyGenerateResponse)
-        generated_reuslt = self.ai_manager.chat_with_parser(survey_parsing_prompt.format(job=job, suggested_question=suggested_question), parser)
+        generated_reuslt = self.ai_manager.chat_with_parser(survey_parsing_prompt.format(suggested_question=suggested_question), parser)
         end_time = time.time()
         print(f"제 2번 호출 : {end_time - start_time :.4f} seconds")
 

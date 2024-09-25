@@ -11,5 +11,5 @@ survey_parsing_prompt = PromptTemplate(
     ### Suggested Questions:
     {suggested_question}
     """,
-    input_variables=["job", "suggested_question"]
+    input_variables=["suggested_question"]
 )
