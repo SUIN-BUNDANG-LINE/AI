@@ -30,7 +30,9 @@ survey_creation_prompt = PromptTemplate(
     3. Suggest whether the question is required or not.
     3. Suggest the section of the survey to which the question belongs the section. The sections are classified into approximately three categories.
     ex) section: 설문 참여 섹션
-        question: your suggested question
+        questionType: SINGLE_CHOICE(allow only one choice) / MULTIPLE_CHOICE(allow multiple choices) / TEXT_RESPONSE(text response)
+        question: Suggested question's title
+        choices: Suggested question's choice
         isAllowOtherChoice: True / False
         isRequired: True / False
     - **Content**
