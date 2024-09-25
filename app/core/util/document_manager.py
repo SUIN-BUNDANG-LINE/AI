@@ -1,4 +1,6 @@
+from email.policy import HTTP
 import requests
+from http import HTTPStatus
 from langchain.docstore.document import Document
 from langchain_community.document_loaders import PyMuPDFLoader
 from app.error.error_code import ErrorCode
@@ -32,6 +34,8 @@ class DocumentManager:
     
     def text_from_txt_file_url(self, file_url: str):
         response = requests.get(file_url)
+        if(response.status_code != HTTPStatus.OK):
+            raise business_exception(ErrorCode.FILE_NOT_FOUND)
         response.encoding = 'utf-8'
         text_content = response.text
     
