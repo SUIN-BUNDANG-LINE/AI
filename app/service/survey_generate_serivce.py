@@ -36,8 +36,8 @@ class SurveyGenerateService:
         if(group != ""):
             user_prompt += f" 인사말에는 {group}에 대한 내용을 포함해주세요."
 
-        PROMPT_TEXT_LIMIT = 1000
-        if(len(user_prompt) > PROMPT_TEXT_LIMIT):
+        USER_PROMPT_TEXT_LIMIT = 1000
+        if(len(user_prompt) > USER_PROMPT_TEXT_LIMIT):
             raise business_exception(ErrorCode.TEXT_TOO_LONG)
 
         # 제 1번 호출
