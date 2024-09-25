@@ -8,7 +8,7 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 chat = ChatOpenAI(
     api_key=openai_api_key,
     model="gpt-4o-mini",
-    temperature=0.5,
+    temperature=0,
 )
 
 embeddings = OpenAIEmbeddings(

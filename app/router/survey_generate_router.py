@@ -9,8 +9,8 @@ def get_survey_generate_serivce():
 
 @router.post("/generate/survey/file-url")
 def generate_survey(request: SurveyGenerateRequestWithFileUrl, generate_service = Depends(get_survey_generate_serivce)):
-    return generate_service.generate_survey_with_file_url(request.job, request.group_name, request.file_url)
+    return generate_service.generate_survey_with_file_url(request.job, request.group_name, request.file_url, request.user_prompt)
 
 @router.post("/generate/survey/text-document")
 def generate_survey(request: SurveyGenerateRequestWithTextDocument, generate_service = Depends(get_survey_generate_serivce)):
-    return generate_service.generate_survey_with_text_document(request.job, request.group_name, request.text_document)
+    return generate_service.generate_survey_with_text_document(request.job, request.group_name, request.text_document, request.user_prompt)
