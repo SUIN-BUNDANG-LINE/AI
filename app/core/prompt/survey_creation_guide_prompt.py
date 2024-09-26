@@ -1,5 +1,5 @@
 
-survey_guide_prompt = """
+survey_creation_guide_prompt = """
     1. **Set Clear and Specific Goals**
     Define precise objectives for your survey. For example, instead of aiming to “understand customer satisfaction,” specify “identify key factors causing customer churn.” Clear goals help prioritize essential questions.
 
