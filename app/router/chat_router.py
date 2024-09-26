@@ -9,4 +9,4 @@ def get_edit_with_chat_service():
 
 @router.post("chat/edit/survey")
 def generate_survey(request: EditWithChatRequest, edit_with_chat_service = Depends(get_edit_with_chat_service())):
-    return edit_with_chat_service.edit_survey(request.survey_data, request.diff, request.user_prompt)
+    return edit_with_chat_service.edit_survey(request.survey_data, request.survey_data_type, request.user_prompt)

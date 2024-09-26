@@ -2,7 +2,6 @@ import time
 import os
 from urllib.parse import urlparse
 from langchain.output_parsers import PydanticOutputParser
-
 from app.core.util.ai_manager import AIManager
 from app.core.util.document_manager import DocumentManager
 from app.core.prompt.survey_creation_guide_prompt import survey_creation_guide_prompt
@@ -56,7 +55,7 @@ class SurveyGenerateService:
 
         parsed_result = parser.parse(generated_reuslt)
         return parsed_result
-    
+        
     def __get_text_document_with_validation_file_url(self, file_url: str):
         extension = self.__get_file_extension_from_url(file_url)
         text_document = ""
@@ -69,15 +68,8 @@ class SurveyGenerateService:
                 raise business_exception(ErrorCode.FILE_EXTENSION_NOT_SUPPORTED)
         return text_document
 
-    def generate_survey(self, job: str, group:str, file_url: str):
-        text_document = self.get_text_document_with_validation(file_url)
-
-        formmatted_summation_prompt = self.summation_prompt.format(document=text_document)
-        summation = self.ai_manager.chat(formmatted_summation_prompt)
-        print(summation)
-        formatted_instruct_prompt = self.instruct_prompt.format(who=job, guide=survey_guide_prompt, group=group, summation=summation)
-
-        parser = PydanticOutputParser(pydantic_object=SurveyGenerateResponse)
-        generated_reuslt = self.ai_manager.chat_with_parser(formatted_instruct_prompt, parser)
-        parsed_result = parser.parse(generated_reuslt)
-        return parsed_result
+    def __get_file_extension_from_url(self, file_url):
+        parsed_url = urlparse(file_url)
+        path = parsed_url.path
+        filename, file_extension = os.path.splitext(path)
+        return file_extension
