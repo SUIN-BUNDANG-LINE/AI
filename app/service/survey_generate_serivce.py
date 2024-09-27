@@ -4,9 +4,9 @@ from urllib.parse import urlparse
 from langchain.output_parsers import PydanticOutputParser
 from app.core.util.ai_manager import AIManager
 from app.core.util.document_manager import DocumentManager
-from app.core.prompt.survey_creation_guide_prompt import survey_creation_guide_prompt
-from app.core.prompt.survey_parsing_prompt import survey_parsing_prompt
-from app.core.prompt.survey_creation_prompt import survey_creation_prompt
+from app.core.prompt.generate.survey_creation_guide_prompt import survey_creation_guide_prompt
+from app.core.prompt.generate.survey_parsing_prompt import survey_parsing_prompt
+from app.core.prompt.generate.survey_creation_prompt import survey_creation_prompt
 from app.dto.response.survey_generate_response import *
 from app.error.error_code import ErrorCode
 from app.error.business_exception import business_exception
@@ -55,7 +55,7 @@ class SurveyGenerateService:
 
         parsed_result = parser.parse(generated_reuslt)
         return parsed_result
-        
+
     def __get_text_document_with_validation_file_url(self, file_url: str):
         extension = self.__get_file_extension_from_url(file_url)
         text_document = ""

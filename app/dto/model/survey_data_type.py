@@ -1,6 +1,6 @@
 from enum import Enum
 
-class QuestionType(Enum):
-    SURVEY = "SURVEY"
+class SurveyDataType(Enum):
+    TOTAL_SURVEY = "TOTAL_SURVEY"
     SECTION = "SECTION"
     QUESTION = "QUESTION"
