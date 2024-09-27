@@ -1,5 +1,6 @@
 import time
 import os
+import uuid
 from urllib.parse import urlparse
 from langchain.output_parsers import PydanticOutputParser
 from app.core.util.ai_manager import AIManager
@@ -40,9 +41,11 @@ class SurveyGenerateService:
             raise business_exception(ErrorCode.TEXT_TOO_LONG)
 
         # 제 1번 호출
-        start_time = time.time() 
-        suggested_question = self.ai_manager.chat(self.survey_creation_prompt.format(user_prompt=user_prompt, document=text_document, guide=survey_creation_guide_prompt))
-        print(suggested_question)
+        start_time = time.time()
+        suggested_question = self.ai_manager.chat_with_memory(
+            self.survey_creation_prompt.format(user_prompt=user_prompt, document=text_document, guide=survey_creation_guide_prompt),
+            session_id="abc123"
+        )
         end_time = time.time()
         print(f"제 1번 호출 : {end_time - start_time:.4f} seconds")
 
