@@ -7,6 +7,6 @@ router = APIRouter()
 def get_edit_with_chat_service():
     return EditWithChatService()
 
-@router.post("chat/edit/survey")
-def generate_survey(editWitChatRequest: EditWithChatRequest, edit_with_chat_service = Depends(get_edit_with_chat_service())):
-    return edit_with_chat_service.edit_survey(editWitChatRequest)
+@router.post("/chat/edit/survey")
+def generate_survey(editWithChatRequest: EditWithChatRequest, edit_with_chat_service = Depends(get_edit_with_chat_service)):
+    return edit_with_chat_service.edit_survey(editWithChatRequest)

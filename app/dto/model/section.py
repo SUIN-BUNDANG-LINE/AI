@@ -1,6 +1,3 @@
-
-from typing import Literal
-from uuid import UUID
 from app.dto.model.question import Question
 from pydantic import BaseModel, Field
 
