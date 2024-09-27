@@ -33,7 +33,7 @@ class SurveyGenerateService:
         self.document_manger.validate_text_length(text_document)
 
         if(group != ""):
-            user_prompt += f" 인사말에는 {group}에 대한 내용을 포함해주세요."
+            user_prompt += f" 인사말에는 {group}을 밝히며 인사하는 말을 포함하세요."
 
         USER_PROMPT_TEXT_LIMIT = 1000
         if(len(user_prompt) > USER_PROMPT_TEXT_LIMIT):
