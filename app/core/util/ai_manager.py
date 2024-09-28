@@ -1,9 +1,9 @@
+import json
 from app.core.config.ai_model import chat_model
 from langchain.schema import HumanMessage
 from app.core.config.chat_memorization import get_message_histroy
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.runnables import RunnableParallel
-from langchain_core.output_parsers import PydanticOutputParser
 
 class AIManager:
     def chat(self, prompt):
@@ -31,5 +31,6 @@ class AIManager:
             [HumanMessage(content=prompt)],
             config = {"configurable": {"session_id": session_id}}
         )
+        response["content"].content
 
-        return response
+        return response["content"].content
