@@ -46,6 +46,7 @@ class SurveyGenerateService:
             self.survey_creation_prompt.format(user_prompt=user_prompt, document=text_document, guide=survey_creation_guide_prompt),
             session_id="abc123"
         )
+        print(suggested_question)
         end_time = time.time()
         print(f"제 1번 호출 : {end_time - start_time:.4f} seconds")
 
