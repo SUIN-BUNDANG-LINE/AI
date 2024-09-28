@@ -1,6 +1,7 @@
 import time
 import os
 from urllib.parse import urlparse
+import uuid
 from langchain.output_parsers import PydanticOutputParser
 from app.core.util.ai_manager import AIManager
 from app.core.util.document_manager import DocumentManager
@@ -39,11 +40,12 @@ class SurveyGenerateService:
         if(len(user_prompt) > USER_PROMPT_TEXT_LIMIT):
             raise business_exception(ErrorCode.TEXT_TOO_LONG)
 
+        session_id = str(uuid.uuid4())
         # 제 1번 호출
         start_time = time.time()
         suggested_question = self.ai_manager.chat_with_memory(
             self.survey_creation_prompt.format(user_prompt=user_prompt, document=text_document, guide=survey_creation_guide_prompt),
-            session_id="abc123"
+            session_id=session_id 
         )
         print(suggested_question)
         end_time = time.time()

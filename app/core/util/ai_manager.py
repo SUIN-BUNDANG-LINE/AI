@@ -1,4 +1,3 @@
-import json
 from app.core.config.ai_model import chat_model
 from langchain.schema import HumanMessage
 from app.core.config.chat_memorization import get_message_histroy
@@ -19,7 +18,7 @@ class AIManager:
         ])
         return response.content
 
-    def chat_with_memory(self, prompt, session_id):
+    def chat_with_memory(self, prompt, session_id, parser):
         chain = RunnableParallel({"content":chat_model})
         
         chain_with_history = RunnableWithMessageHistory(
@@ -28,9 +27,9 @@ class AIManager:
         )
 
         response = chain_with_history.invoke(
-            [HumanMessage(content=prompt)],
+            [HumanMessage(content=prompt),         
+            HumanMessage(content=parser.get_format_instructions())],
             config = {"configurable": {"session_id": session_id}}
         )
-        response["content"].content
 
         return response["content"].content
