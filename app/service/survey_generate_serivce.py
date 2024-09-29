@@ -45,7 +45,8 @@ class SurveyGenerateService:
         start_time = time.time()
         suggested_question = self.ai_manager.chat_with_history(
             self.survey_creation_prompt.format(user_prompt=user_prompt, document=text_document, guide=survey_creation_guide_prompt),
-            session_id=session_id
+            session_id=session_id,
+            is_save=True
         )
         print(suggested_question)
         end_time = time.time()

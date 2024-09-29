@@ -29,16 +29,17 @@ survey_creation_prompt = PromptTemplate(
     1. {user_prompt}
     2. Suggest choices if the question is multiple choice.
     3. Suggest whether the question is required or not.
-    3. Suggest the section of the survey to which the question belongs the section. The sections are classified into approximately three categories.
-    ex) section: 설문 참여 섹션
+    - **Content**
+    1. Suggest sections based on the reference materials it becomes a key theme in structuring the questions of the survey.
+    2. Survey questions as much detail as possible for verifying the information from the document that you think.
+    3. Your suggested survey questions based on reference materials.
+    - **Suggested Questions Format**
+        section: Section to which the question belongs
         questionType: SINGLE_CHOICE(allow only one choice) / MULTIPLE_CHOICE(allow multiple choices) / TEXT_RESPONSE(text response)
         question: Suggested question's title
         choices: Suggested question's choice
         isAllowOtherChoice: True / False
         isRequired: True / False
-    - **Content**
-    1. Survey questions as much detail as possible for verifying the information from the document that you think.
-    2. Your suggested survey questions based on reference materials.
 
     - output
     ### Suggested Survey Title
@@ -46,6 +47,8 @@ survey_creation_prompt = PromptTemplate(
     ### Suggested Survey Description
 
     ### Suggested Finish Message
+
+    ### Suggested Sections
 
     ### Suggested Questions
 

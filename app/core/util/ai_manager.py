@@ -1,8 +1,6 @@
 from app.core.config.ai_model import chat_model
 from langchain.schema import HumanMessage
-from app.core.config.chat_memorization import get_message_histroy
-from langchain_core.runnables.history import RunnableWithMessageHistory
-from langchain_core.runnables import RunnableParallel
+from app.core.config.chat_memorization import get_message_storage
 
 class AIManager:
     def chat(self, prompt):
@@ -12,39 +10,20 @@ class AIManager:
         return response.content
 
     def chat_with_parser(self, prompt, parser):
-        response =chat_model.invoke([
+        response = chat_model.invoke([
             HumanMessage(content=prompt),
             HumanMessage(content=parser.get_format_instructions())
         ])
         return response.content
-    
-    def chat_with_history(self, prompt, session_id):
-        chain = RunnableParallel({"content":chat_model})
-        
-        chain_with_history = RunnableWithMessageHistory(
-            chain,
-            get_message_histroy,
-        )
 
-        response = chain_with_history.invoke(
-            [HumanMessage(content=prompt)],
-            config = {"configurable": {"session_id": session_id}}
-        )
+    def chat_with_history(self, prompt, session_id, is_save):
+        message_storage = get_message_storage(session_id)
 
-        return response["content"].content
+        message_history = message_storage.messages
 
-    def chat_with_history_and_parser(self, prompt, session_id, parser):
-        chain = RunnableParallel({"content":chat_model})
-        
-        chain_with_history = RunnableWithMessageHistory(
-            chain,
-            get_message_histroy,
-        )
+        response = chat_model.invoke(message_history + [HumanMessage(content=prompt)])
 
-        response = chain_with_history.invoke(
-            [HumanMessage(content=prompt),
-            HumanMessage(content=parser.get_format_instructions())],
-            config = {"configurable": {"session_id": session_id}}
-        )
+        if is_save:
+            message_storage.add_message(response)
 
-        return response["content"].content
+        return response.content
