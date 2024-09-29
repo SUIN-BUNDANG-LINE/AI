@@ -43,7 +43,7 @@ class SurveyGenerateService:
         session_id = str(uuid.uuid4())
         # 제 1번 호출
         start_time = time.time()
-        suggested_question = self.ai_manager.chat_with_memory(
+        suggested_question = self.ai_manager.chat_with_memory_and_parser(
             self.survey_creation_prompt.format(user_prompt=user_prompt, document=text_document, guide=survey_creation_guide_prompt),
             session_id=session_id 
         )

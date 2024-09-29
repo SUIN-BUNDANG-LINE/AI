@@ -18,7 +18,7 @@ class AIManager:
         ])
         return response.content
 
-    def chat_with_memory(self, prompt, session_id, parser):
+    def chat_with_memory_and_parser(self, prompt, session_id, parser):
         chain = RunnableParallel({"content":chat_model})
         
         chain_with_history = RunnableWithMessageHistory(
@@ -27,7 +27,7 @@ class AIManager:
         )
 
         response = chain_with_history.invoke(
-            [HumanMessage(content=prompt),         
+            [HumanMessage(content=prompt),
             HumanMessage(content=parser.get_format_instructions())],
             config = {"configurable": {"session_id": session_id}}
         )
