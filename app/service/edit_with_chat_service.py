@@ -19,12 +19,14 @@ class EditWithChatService:
         self.edit_question_prompt = edit_question_prompt
 
     def edit_survey(self, edit_with_chat_request:EditWithChatRequest):
-        survey_data_tpye = edit_with_chat_request.survey_data_type
-        edit_propmt = self.__get_edit_prompt(survey_data_tpye)
-        parser = PydanticOutputParser(pydantic_object=Section)
-        editted_result = self.ai_manager.chat_with_memory(edit_propmt.format(user_prompt=edit_with_chat_request.user_prompt, user_survey_data=edit_with_chat_request.survey_data), edit_with_chat_request.thread_id, parser)
-        parsed_result = parser.parse(editted_result)
-        return parsed_result
+        # survey_data_tpye = edit_with_chat_request.survey_data_type
+        # edit_propmt = self.__get_edit_prompt(survey_data_tpye)
+        # parser = PydanticOutputParser(pydantic_object=Section)
+        # editted_result = self.ai_manager.chat_with_history(edit_propmt.format(user_prompt=edit_with_chat_request.user_prompt, user_survey_data=edit_with_chat_request.survey_data), edit_with_chat_request.thread_id, parser)
+        # parsed_result = parser.parse(editted_result)
+        # return parsed_result
+
+        return self.ai_manager.chat_with_history(edit_with_chat_request.user_prompt, edit_with_chat_request.thread_id)
 
     def __get_edit_prompt(self, survey_data_tpye: SurveyDataType):
         match survey_data_tpye:

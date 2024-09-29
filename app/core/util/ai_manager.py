@@ -17,8 +17,23 @@ class AIManager:
             HumanMessage(content=parser.get_format_instructions())
         ])
         return response.content
+    
+    def chat_with_history(self, prompt, session_id):
+        chain = RunnableParallel({"content":chat_model})
+        
+        chain_with_history = RunnableWithMessageHistory(
+            chain,
+            get_message_histroy,
+        )
 
-    def chat_with_memory_and_parser(self, prompt, session_id, parser):
+        response = chain_with_history.invoke(
+            [HumanMessage(content=prompt)],
+            config = {"configurable": {"session_id": session_id}}
+        )
+
+        return response["content"].content
+
+    def chat_with_history_and_parser(self, prompt, session_id, parser):
         chain = RunnableParallel({"content":chat_model})
         
         chain_with_history = RunnableWithMessageHistory(
