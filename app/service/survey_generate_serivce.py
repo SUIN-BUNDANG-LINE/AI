@@ -54,13 +54,13 @@ class SurveyGenerateService:
 
         # 제 2번 호출
         start_time = time.time() 
-        parser = PydanticOutputParser(pydantic_object=SurveyGenerateResponse)
+        parser = PydanticOutputParser(pydantic_object=Survey)
         generated_reuslt = self.ai_manager.chat_with_parser(survey_parsing_prompt.format(suggested_question=suggested_question), parser)
         end_time = time.time()
         print(f"제 2번 호출 : {end_time - start_time :.4f} seconds")
 
         parsed_result = parser.parse(generated_reuslt)
-        return parsed_result
+        return SurveyGenerateResponse(chat_session_id=session_id, generated_survey=parsed_result)
 
     def __get_text_document_with_validation_file_url(self, file_url: str):
         extension = self.__get_file_extension_from_url(file_url)
