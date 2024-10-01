@@ -1,16 +1,16 @@
 import time
-import os
-from urllib.parse import urlparse
-import uuid
 from langchain.output_parsers import PydanticOutputParser
 from app.core.util.ai_manager import AIManager
 from app.core.util.document_manager import DocumentManager
+from app.core.util.file_manager import FileManager
 from app.core.prompt.generate.survey_creation_guide_prompt import survey_creation_guide_prompt
 from app.core.prompt.generate.survey_parsing_prompt import survey_parsing_prompt
 from app.core.prompt.generate.survey_creation_prompt import survey_creation_prompt
 from app.dto.response.survey_generate_response import *
 from app.error.error_code import ErrorCode
 from app.error.business_exception import business_exception
+from app.dto.request.survey_generate_with_file_url_request import SurveyGeneratetWithFileUrlRequest
+from app.dto.request.survey_generate_with_text_document_request import SurveyGenerateWithTextDocumentRequest
 
 class SurveyGenerateService:
     def __init__(self):
@@ -19,63 +19,79 @@ class SurveyGenerateService:
         self.survey_creation_prompt = survey_creation_prompt
         self.survey_parsing_prompt = survey_parsing_prompt
 
-    def generate_survey_with_file_url(self, job: str, group:str, file_url: str, user_prompt: str):
-        text_document = self.__get_text_document_with_validation_file_url(file_url)
+    def generate_survey_with_file_url(self, request: SurveyGeneratetWithFileUrlRequest):
+        text_document = self.__get_text_document_from_file_url(request.file_url)
 
-        return self.__generate_survey(job, group, text_document, user_prompt)
+        survey_generate_content = self._SurveyGenerateContent(
+            job=request.job,
+            group=request.group_name,
+            text_document=text_document,
+            user_prompt=request.user_prompt
+        )
+        return self.__generate_survey(survey_generate_content)
     
-    def generate_survey_with_text_document(self, job: str, group:str, text_document: str, user_prompt: str):
-        self.document_manger.validate_text_length(text_document)
-
-        return self.__generate_survey(job, group, text_document, user_prompt)
+    def generate_survey_with_text_document(self, request: SurveyGenerateWithTextDocumentRequest):
+        survey_generate_content = self._SurveyGenerateContent(
+            job=request.job,
+            group=request.group_name,
+            text_document=request.text_document,
+            user_prompt=request.user_prompt
+        )
+        return self.__generate_survey(survey_generate_content)
 
     # private methods
-    def __generate_survey(self, job: str, group:str, text_document: str, user_prompt: str):
-        self.document_manger.validate_text_length(text_document)
+    class _SurveyGenerateContent:
+        def __init__(self, job: str, group: str, text_document: str, user_prompt: str):
+            self.job = job
+            self.group = group
+            self.text_document = text_document
+            self.user_prompt = user_prompt
+
+    def __run_function_with_measuring_time(self, business_function, *args, **kwargs):
+        start_time = time.time()
+        result = business_function(*args, **kwargs)
+        end_time = time.time()
+        print(f"{business_function.__name__} 호출 : {end_time - start_time:.4f} seconds")
+        return result
+
+    def __generate_survey(self, survey_generate_content: _SurveyGenerateContent):
+        job = survey_generate_content.job
+        group = survey_generate_content.group
+        text_document = survey_generate_content.text_document
+        user_prompt = survey_generate_content.user_prompt
+
+        user_prompt_with_basic_prompt = user_prompt
+        if(job != ""):
+            user_prompt_with_basic_prompt += f" {job}을 위한 설문조사를 생성해주세요."
 
         if(group != ""):
-            user_prompt += f" 인사말에는 {group} 소속임을 밝히는 말을 포함해주세요."
+            user_prompt_with_basic_prompt += f" 인사말에는 {group} 소속임을 밝히는 말을 포함해주세요."
 
-        USER_PROMPT_TEXT_LIMIT = 1000
-        if(len(user_prompt) > USER_PROMPT_TEXT_LIMIT):
-            raise business_exception(ErrorCode.TEXT_TOO_LONG)
-
-        session_id = str(uuid.uuid4())
         # 제 1번 호출
-        start_time = time.time()
-        suggested_question = self.ai_manager.chat_with_history(
-            self.survey_creation_prompt.format(user_prompt=user_prompt, document=text_document, guide=survey_creation_guide_prompt),
-            session_id=session_id,
-            is_save=True
+        suggested_question = self.__run_function_with_measuring_time(
+            self.ai_manager.chat_with_history,
+            self.survey_creation_prompt.format(user_prompt=user_prompt_with_basic_prompt, document=text_document, guide=survey_creation_guide_prompt),
+            is_this_chat_save=True
         )
         print(suggested_question)
-        end_time = time.time()
-        print(f"제 1번 호출 : {end_time - start_time:.4f} seconds")
 
         # 제 2번 호출
-        start_time = time.time() 
         parser = PydanticOutputParser(pydantic_object=Survey)
-        generated_reuslt = self.ai_manager.chat_with_parser(survey_parsing_prompt.format(suggested_question=suggested_question), parser)
-        end_time = time.time()
-        print(f"제 2번 호출 : {end_time - start_time :.4f} seconds")
+        generated_result = self.__run_function_with_measuring_time(
+            self.ai_manager.chat_with_parser,
+            survey_parsing_prompt.format(suggested_question=suggested_question),
+            parser
+        )
 
-        parsed_result = parser.parse(generated_reuslt)
-        return SurveyGenerateResponse(chat_session_id=session_id, generated_survey=parsed_result)
+        parsed_result = parser.parse(generated_result)
+        return SurveyGenerateResponse(chat_session_id=self.ai_manager.session_id, generated_survey=parsed_result)
 
-    def __get_text_document_with_validation_file_url(self, file_url: str):
-        extension = self.__get_file_extension_from_url(file_url)
-        text_document = ""
+    def __get_text_document_from_file_url(self, file_url: str):
+        extension = FileManager.get_file_extension_from_url(file_url)
         match extension:
             case ".pdf":
-                text_document = self.document_manger.text_from_pdf_file_url(file_url)
+                return self.document_manger.text_from_pdf_file_url(file_url)
             case ".txt":
-                text_document = self.document_manger.text_from_txt_file_url(file_url)
+                return self.document_manger.text_from_txt_file_url(file_url)
             case _:
                 raise business_exception(ErrorCode.FILE_EXTENSION_NOT_SUPPORTED)
-        return text_document
-
-    def __get_file_extension_from_url(self, file_url):
-        parsed_url = urlparse(file_url)
-        path = parsed_url.path
-        filename, file_extension = os.path.splitext(path)
-        return file_extension
