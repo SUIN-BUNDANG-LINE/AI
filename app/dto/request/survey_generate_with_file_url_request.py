@@ -17,6 +17,7 @@ class SurveyGeneratetWithFileUrlRequest(BaseModel):
         extension = FileManager.get_file_extension_from_url(value)
         if extension not in supported_extensions:
             raise business_exception(ErrorCode.FILE_EXTENSION_NOT_SUPPORTED)
+        return value
 
     @validator('user_prompt')
     def validate_user_prompt(cls, value):

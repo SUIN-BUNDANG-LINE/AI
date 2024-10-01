@@ -2,7 +2,6 @@ from langchain.prompts import PromptTemplate
 
 edit_section_prompt = PromptTemplate(
     template="""
-
     ### Instructions
     1. Edit user survey data following prompt: {user_prompt}
     2. Your modified the survey data must harmonize with prototype survey data
