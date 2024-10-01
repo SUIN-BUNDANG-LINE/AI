@@ -71,19 +71,20 @@ class SurveyGenerateService:
         suggested_question = self.__run_function_with_measuring_time(
             self.ai_manager.chat_with_history,
             self.survey_creation_prompt.format(user_prompt=user_prompt_with_basic_prompt, document=text_document, guide=survey_creation_guide_prompt),
+            self.ai_manager.session_id,
             is_this_chat_save=True
         )
         print(suggested_question)
 
         # 제 2번 호출
-        parser = PydanticOutputParser(pydantic_object=Survey)
+        parser_to_survey = PydanticOutputParser(pydantic_object=Survey)
         generated_result = self.__run_function_with_measuring_time(
             self.ai_manager.chat_with_parser,
             survey_parsing_prompt.format(suggested_question=suggested_question),
-            parser
+            parser_to_survey
         )
 
-        parsed_result = parser.parse(generated_result)
+        parsed_result = parser_to_survey.parse(generated_result)
         return SurveyGenerateResponse(chat_session_id=self.ai_manager.session_id, generated_survey=parsed_result)
 
     def __get_text_document_from_file_url(self, file_url: str):
