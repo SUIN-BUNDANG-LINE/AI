@@ -67,7 +67,7 @@ class SurveyGenerateService:
             self.ai_manager.chat_with_history,
             self.survey_creation_prompt.format(user_prompt=user_prompt_with_basic_prompt, document=text_document, guide=survey_creation_guide_prompt),
             self.ai_manager.session_id,
-            is_this_chat_save=True
+            is_new_chat_save=True
         )
         print(suggested_question)
 

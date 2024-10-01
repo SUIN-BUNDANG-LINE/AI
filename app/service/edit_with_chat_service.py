@@ -28,10 +28,9 @@ class EditWithChatService:
         parser = edit_content.parser
 
         editted_result = self.ai_manager.chat_with_history_and_parser(
-            prompt=edit_content.edit_prompt.format(user_prompt=request.user_prompt, 
-            user_survey_data=request.survey_data), 
+            prompt=edit_content.edit_prompt.format(user_prompt=request.user_prompt, user_survey_data=request.survey_data), 
             session_id=request.session_id,
-            is_save=False,
+            is_new_chat_save=False,
             parser=parser
         )
         parsed_result = parser.parse(editted_result)
