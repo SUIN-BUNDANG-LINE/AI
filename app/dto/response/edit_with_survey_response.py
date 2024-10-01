@@ -3,4 +3,4 @@ from pydantic import BaseModel
 
 
 class EditWithSurveyResponse(BaseModel):
-    editted_survey_data: Dict[str, Any]
+    edittedSurveyData: Dict[str, Any]

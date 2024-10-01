@@ -13,7 +13,7 @@ survey_creation_prompt = PromptTemplate(
     3. Suggest Survey Description based on the reference materials.
     4. Suggest Finish Message based on the reference materials.
     5. Suggest questions of reference materials according to the suggestion requirements.
-    6. Summarize the document approximately 800 words in the document summation that contains cotent can be used for create questions.
+    6. Summarize the document as detail as possible in the document summation that contains cotent can be used for create questions.
     7. Response must be in Korean.
     
     ### Reference Materials
@@ -31,8 +31,8 @@ survey_creation_prompt = PromptTemplate(
     3. Suggest whether the question is required or not.
     - **Content**
     1. Sections based on the reference materials it becomes a key theme in structuring the questions of the survey.
-    2. Survey questions as much detail as possible for verifying the information from the document that you think.
-    3. Your suggested survey questions based on reference materials.
+    2. Questions as much detail as possible for verifying the information from the document that you think.
+    3. Questions not general but specific to the reference materials.
     - **Suggested Questions Format**
         section: Section to which the question belongs
         questionType: SINGLE_CHOICE(allow only one choice) / MULTIPLE_CHOICE(allow multiple choices) / TEXT_RESPONSE(text response)

@@ -86,9 +86,7 @@ class SurveyGenerateService:
                 suggested_question=suggested_question), parser_to_survey)
 
         parsed_result = parser_to_survey.parse(generated_result)
-        return SurveyGenerateResponse(
-            chat_session_id=self.ai_manager.session_id,
-            generated_survey=parsed_result)
+        return SurveyGenerateResponse(chatSessionId=self.ai_manager.session_id, surveyGeneratedByAI=parsed_result)
 
     def __get_text_document_from_file_url(self, file_url: str):
         extension = FileManager.get_file_extension_from_url(file_url)
@@ -97,6 +95,6 @@ class SurveyGenerateService:
                 return self.document_manger.text_from_pdf_file_url(file_url)
             case ".txt":
                 return self.document_manger.text_from_txt_file_url(file_url)
-            case _:
+            case _: 
                 raise business_exception(
                     ErrorCode.FILE_EXTENSION_NOT_SUPPORTED)
