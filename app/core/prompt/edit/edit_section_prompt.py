@@ -1,5 +1,4 @@
 from langchain.prompts import PromptTemplate
-from app.core.prompt.prompt_injection_block_prompt import prompt_injection_block_prompt
 
 edit_section_prompt = PromptTemplate(
     template="""

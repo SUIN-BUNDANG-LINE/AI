@@ -1,4 +1,3 @@
-import time
 from langchain.output_parsers import PydanticOutputParser
 from app.core.util.ai_manager import AIManager
 from app.core.util.document_manager import DocumentManager
@@ -6,11 +5,13 @@ from app.core.util.file_manager import FileManager
 from app.core.prompt.generate.survey_creation_guide_prompt import survey_creation_guide_prompt
 from app.core.prompt.generate.survey_parsing_prompt import survey_parsing_prompt
 from app.core.prompt.generate.survey_creation_prompt import survey_creation_prompt
-from app.dto.response.survey_generate_response import *
+from app.dto.response.survey_generate_response import SurveyGenerateResponse
 from app.error.error_code import ErrorCode
 from app.error.business_exception import business_exception
 from app.dto.request.survey_generate_with_file_url_request import SurveyGeneratetWithFileUrlRequest
 from app.dto.request.survey_generate_with_text_document_request import SurveyGenerateWithTextDocumentRequest
+from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
+from app.dto.model.survey import Survey
 
 class SurveyGenerateService:
     def __init__(self):
@@ -39,7 +40,7 @@ class SurveyGenerateService:
         )
         return self.__generate_survey(survey_generate_content)
 
-    # private methods
+    # private
     class _SurveyGenerateContent:
         def __init__(self, job: str, group: str, text_document: str, user_prompt: str):
             self.job = job
@@ -47,12 +48,6 @@ class SurveyGenerateService:
             self.text_document = text_document
             self.user_prompt = user_prompt
 
-    def __run_function_with_measuring_time(self, business_function, *args, **kwargs):
-        start_time = time.time()
-        result = business_function(*args, **kwargs)
-        end_time = time.time()
-        print(f"{business_function.__name__} 호출 : {end_time - start_time:.4f} seconds")
-        return result
 
     def __generate_survey(self, survey_generate_content: _SurveyGenerateContent):
         job = survey_generate_content.job
@@ -68,7 +63,7 @@ class SurveyGenerateService:
             user_prompt_with_basic_prompt += f" 인사말에는 {group} 소속임을 밝히는 말을 포함해주세요."
 
         # 제 1번 호출
-        suggested_question = self.__run_function_with_measuring_time(
+        suggested_question = FunctionExecutionTimeMeasurer.run_function(
             self.ai_manager.chat_with_history,
             self.survey_creation_prompt.format(user_prompt=user_prompt_with_basic_prompt, document=text_document, guide=survey_creation_guide_prompt),
             self.ai_manager.session_id,
@@ -78,7 +73,7 @@ class SurveyGenerateService:
 
         # 제 2번 호출
         parser_to_survey = PydanticOutputParser(pydantic_object=Survey)
-        generated_result = self.__run_function_with_measuring_time(
+        generated_result = FunctionExecutionTimeMeasurer.run_function(
             self.ai_manager.chat_with_parser,
             survey_parsing_prompt.format(suggested_question=suggested_question),
             parser_to_survey
