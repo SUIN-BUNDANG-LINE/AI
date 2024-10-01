@@ -54,5 +54,4 @@ survey_creation_prompt = PromptTemplate(
 
     ### Document Summation
     """,
-    input_variables=["user_prompt", "document", "guide"]
-)
+    input_variables=["user_prompt", "document", "guide"])

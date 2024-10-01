@@ -11,5 +11,4 @@ edit_section_prompt = PromptTemplate(
     1. {user_survey_data}
     
     """,
-    input_variables=["user_prompt", "user_survey_data"]
-)
+    input_variables=["user_prompt", "user_survey_data"])

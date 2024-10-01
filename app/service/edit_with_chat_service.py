@@ -14,41 +14,52 @@ from app.error.error_code import ErrorCode
 from app.error.business_exception import business_exception
 from langchain.prompts import PromptTemplate
 
+
 class EditWithChatService:
+
     def __init__(self):
-        self.ai_manager =  AIManager()
+        self.ai_manager = AIManager()
         self.document_manger = DocumentManager()
         self.edit_total_survey_prompt = edit_total_survey_prompt
         self.edit_section_prompt = edit_section_prompt
         self.edit_question_prompt = edit_question_prompt
 
-    def edit_survey(self, request:EditWithChatRequest):
+    def edit_survey(self, request: EditWithChatRequest):
         edit_content = self.__get_edit_prompt(request.survey_data_type)
-        
+
         parser = edit_content.parser
 
         editted_result = self.ai_manager.chat_with_history_and_parser(
-            prompt=edit_content.edit_prompt.format(user_prompt=request.user_prompt, user_survey_data=request.survey_data), 
+            prompt=edit_content.edit_prompt.format(
+                user_prompt=request.user_prompt,
+                user_survey_data=request.survey_data),
             session_id=request.session_id,
             is_new_chat_save=False,
-            parser=parser
-        )
+            parser=parser)
         parsed_result = parser.parse(editted_result)
         return parsed_result
 
     # private
     class _EditContent:
-        def __init__(self, edit_prompt: PromptTemplate, parser: PydanticOutputParser):
+
+        def __init__(self, edit_prompt: PromptTemplate,
+                     parser: PydanticOutputParser):
             self.edit_prompt = edit_prompt
             self.parser = parser
-    
+
     def __get_edit_prompt(self, survey_data_type: SurveyDataType):
         match survey_data_type:
             case SurveyDataType.TOTAL_SURVEY:
-                return self._EditContent(self.edit_total_survey_prompt, PydanticOutputParser(pydantic_object=Survey))
+                return self._EditContent(
+                    self.edit_total_survey_prompt,
+                    PydanticOutputParser(pydantic_object=Survey))
             case SurveyDataType.SECTION:
-                return self._EditContent(self.edit_total_survey_prompt, PydanticOutputParser(pydantic_object=Section))
+                return self._EditContent(
+                    self.edit_total_survey_prompt,
+                    PydanticOutputParser(pydantic_object=Section))
             case SurveyDataType.QUESTION:
-                return self._EditContent(self.edit_total_survey_prompt, PydanticOutputParser(pydantic_object=Question))
+                return self._EditContent(
+                    self.edit_total_survey_prompt,
+                    PydanticOutputParser(pydantic_object=Question))
             case _:
                 raise business_exception(ErrorCode.INVALID_SURVEY_DATA_TYPE)

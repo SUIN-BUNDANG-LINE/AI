@@ -13,74 +13,82 @@ from app.dto.request.survey_generate_with_text_document_request import SurveyGen
 from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
 from app.dto.model.survey import Survey
 
+
 class SurveyGenerateService:
+
     def __init__(self):
-        self.ai_manager =  AIManager()
+        self.ai_manager = AIManager()
         self.document_manger = DocumentManager()
         self.survey_creation_prompt = survey_creation_prompt
         self.survey_parsing_prompt = survey_parsing_prompt
 
-    def generate_survey_with_file_url(self, request: SurveyGeneratetWithFileUrlRequest):
-        text_document = self.__get_text_document_from_file_url(request.file_url)
+    def generate_survey_with_file_url(
+            self, request: SurveyGeneratetWithFileUrlRequest):
+        text_document = self.__get_text_document_from_file_url(
+            request.file_url)
 
         survey_generate_content = self._SurveyGenerateContent(
             job=request.job,
             group=request.group_name,
             text_document=text_document,
-            user_prompt=request.user_prompt
-        )
+            user_prompt=request.user_prompt)
         return self.__generate_survey(survey_generate_content)
-    
-    def generate_survey_with_text_document(self, request: SurveyGenerateWithTextDocumentRequest):
+
+    def generate_survey_with_text_document(
+            self, request: SurveyGenerateWithTextDocumentRequest):
         survey_generate_content = self._SurveyGenerateContent(
             job=request.job,
             group=request.group_name,
             text_document=request.text_document,
-            user_prompt=request.user_prompt
-        )
+            user_prompt=request.user_prompt)
         return self.__generate_survey(survey_generate_content)
 
     # private
     class _SurveyGenerateContent:
-        def __init__(self, job: str, group: str, text_document: str, user_prompt: str):
+
+        def __init__(self, job: str, group: str, text_document: str,
+                     user_prompt: str):
             self.job = job
             self.group = group
             self.text_document = text_document
             self.user_prompt = user_prompt
 
-
-    def __generate_survey(self, survey_generate_content: _SurveyGenerateContent):
+    def __generate_survey(self,
+                          survey_generate_content: _SurveyGenerateContent):
         job = survey_generate_content.job
         group = survey_generate_content.group
         text_document = survey_generate_content.text_document
         user_prompt = survey_generate_content.user_prompt
 
         user_prompt_with_basic_prompt = user_prompt
-        if(job != ""):
+        if (job != ""):
             user_prompt_with_basic_prompt += f" {job}을 위한 설문조사를 생성해주세요."
 
-        if(group != ""):
+        if (group != ""):
             user_prompt_with_basic_prompt += f" 인사말에는 {group} 소속임을 밝히는 말을 포함해주세요."
 
         # 제 1번 호출
         suggested_question = FunctionExecutionTimeMeasurer.run_function(
             self.ai_manager.chat_with_history,
-            self.survey_creation_prompt.format(user_prompt=user_prompt_with_basic_prompt, document=text_document, guide=survey_creation_guide_prompt),
+            self.survey_creation_prompt.format(
+                user_prompt=user_prompt_with_basic_prompt,
+                document=text_document,
+                guide=survey_creation_guide_prompt),
             self.ai_manager.session_id,
-            is_new_chat_save=True
-        )
+            is_new_chat_save=True)
         print(suggested_question)
 
         # 제 2번 호출
         parser_to_survey = PydanticOutputParser(pydantic_object=Survey)
         generated_result = FunctionExecutionTimeMeasurer.run_function(
             self.ai_manager.chat_with_parser,
-            survey_parsing_prompt.format(suggested_question=suggested_question),
-            parser_to_survey
-        )
+            survey_parsing_prompt.format(
+                suggested_question=suggested_question), parser_to_survey)
 
         parsed_result = parser_to_survey.parse(generated_result)
-        return SurveyGenerateResponse(chat_session_id=self.ai_manager.session_id, generated_survey=parsed_result)
+        return SurveyGenerateResponse(
+            chat_session_id=self.ai_manager.session_id,
+            generated_survey=parsed_result)
 
     def __get_text_document_from_file_url(self, file_url: str):
         extension = FileManager.get_file_extension_from_url(file_url)
@@ -90,4 +98,5 @@ class SurveyGenerateService:
             case ".txt":
                 return self.document_manger.text_from_txt_file_url(file_url)
             case _:
-                raise business_exception(ErrorCode.FILE_EXTENSION_NOT_SUPPORTED)
+                raise business_exception(
+                    ErrorCode.FILE_EXTENSION_NOT_SUPPORTED)

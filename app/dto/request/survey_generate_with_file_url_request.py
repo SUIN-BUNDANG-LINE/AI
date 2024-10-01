@@ -6,6 +6,7 @@ from app.core.util.file_manager import FileManager
 supported_extensions = [".pdf", ".txt"]
 USER_PROMPT_TEXT_LIMIT = 1000
 
+
 class SurveyGeneratetWithFileUrlRequest(BaseModel):
     job: str
     group_name: str
@@ -22,6 +23,5 @@ class SurveyGeneratetWithFileUrlRequest(BaseModel):
     @validator('user_prompt')
     def validate_user_prompt(cls, value):
         if len(value) > USER_PROMPT_TEXT_LIMIT:
-            raise business_exception(ErrorCode.TEXT_TOO_LONG) 
+            raise business_exception(ErrorCode.TEXT_TOO_LONG)
         return value
-

@@ -11,7 +11,5 @@ chat_model = ChatOpenAI(
     temperature=0,
 )
 
-embedding_model = OpenAIEmbeddings(
-    api_key=openai_api_key,
-    model="text-embedding-3-large"
-)
+embedding_model = OpenAIEmbeddings(api_key=openai_api_key,
+                                   model="text-embedding-3-large")
