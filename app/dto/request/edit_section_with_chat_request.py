@@ -4,5 +4,5 @@ from pydantic import BaseModel
 
 class EditSectionWithChatRequest(BaseModel):
     session_id: str
-    survey_data: Section
+    section: Section
     user_prompt: str
