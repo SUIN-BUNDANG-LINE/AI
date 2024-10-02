@@ -68,7 +68,7 @@ class SurveyGenerateService:
             user_prompt_with_basic_prompt += f" 인사말에는 {group} 소속임을 밝히는 말을 포함해주세요."
 
         # 제 1번 호출
-        suggested_question = FunctionExecutionTimeMeasurer.run_function(
+        prototype_survey = FunctionExecutionTimeMeasurer.run_function(
             self.ai_manager.chat_with_history,
             self.survey_creation_prompt.format(
                 user_prompt=user_prompt_with_basic_prompt,
@@ -76,18 +76,18 @@ class SurveyGenerateService:
                 guide=survey_creation_guide_prompt),
             self.ai_manager.session_id,
             is_new_chat_save=True)
-        print(suggested_question)
+        print(prototype_survey)
 
         # 제 2번 호출
         parser_to_survey = PydanticOutputParser(pydantic_object=Survey)
-        generated_result = FunctionExecutionTimeMeasurer.run_function(
+        generated_survey_has_parsing_format = FunctionExecutionTimeMeasurer.run_function(
             self.ai_manager.chat_with_parser,
             survey_parsing_prompt.format(
-                suggested_question=suggested_question), parser_to_survey)
+                prototype_survey=prototype_survey), parser_to_survey)
 
-        parsed_result = parser_to_survey.parse(generated_result)
+        parsed_survey = parser_to_survey.parse(generated_survey_has_parsing_format)
         return SurveyGenerateResponse(chatSessionId=self.ai_manager.session_id,
-                                      surveyGeneratedByAI=parsed_result)
+                                      surveyGeneratedByAI=parsed_survey)
 
     def __get_text_document_from_file_url(self, file_url: str):
         extension = FileManager.get_file_extension_from_url(file_url)

@@ -38,18 +38,3 @@ class AIManager:
             message_storage.add_message(response)
 
         return response.content
-
-    def chat_with_history_and_parser(self, prompt, session_id,
-                                     is_new_chat_save, parser):
-        message_storage = get_message_storage(session_id)
-
-        message_history = message_storage.messages
-
-        response = chat_model.invoke(
-            message_history + [HumanMessage(content=prompt)] +
-            [HumanMessage(content=parser.get_format_instructions())])
-
-        if is_new_chat_save:
-            message_storage.add_message(response)
-
-        return response.content
