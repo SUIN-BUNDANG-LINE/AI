@@ -40,3 +40,26 @@ class AIManager:
             message_storage.add_message(response)
 
         return response.content
+
+    async def async_chat_with_history(self, prompt, session_id, is_new_chat_save):
+        message_storage = get_message_storage(session_id)
+
+        message_history = message_storage.messages
+
+        response = await chat_model.ainvoke(
+            message_history + [HumanMessage(content=prompt)]
+        )
+
+        if is_new_chat_save:
+            message_storage.add_message(response)
+
+        return response.content
+
+    async def async_chat_with_parser(self, prompt, parser):
+        response = await chat_model.ainvoke(
+            [
+                HumanMessage(content=prompt),
+                HumanMessage(content=parser.get_format_instructions()),
+            ]
+        )
+        return response.content

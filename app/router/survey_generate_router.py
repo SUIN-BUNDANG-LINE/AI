@@ -15,16 +15,16 @@ def get_survey_generate_service():
 
 
 @router.post("/generate/survey/file-url")
-def generate_survey(
+async def generate_survey(
     request: SurveyGenerateWithFileUrlRequest,
     generate_service=Depends(get_survey_generate_service),
 ):
-    return generate_service.generate_survey_with_file_url(request)
+    return await generate_service.generate_survey_with_file_url(request)
 
 
 @router.post("/generate/survey/text-document")
-def generate_survey(
+async def generate_survey(
     request: SurveyGenerateWithTextDocumentRequest,
     generate_service=Depends(get_survey_generate_service),
 ):
-    return generate_service.generate_survey_with_text_document(request)
+    return await generate_service.generate_survey_with_text_document(request)
