@@ -70,7 +70,7 @@ class SurveyGenerateService:
         if group != "":
             user_prompt_with_basic_prompt += f" 인사말에는 {group} 소속임을 밝히는 말을 포함해주세요."
 
-        # 제 1번 호출
+        # 제 1-1번 호출
         prototype_survey = FunctionExecutionTimeMeasurer.run_function(
             self.ai_manager.chat_with_history,
             self.survey_creation_prompt.format(
@@ -82,6 +82,8 @@ class SurveyGenerateService:
             is_new_chat_save=True,
         )
         print(prototype_survey)
+
+        # 제 1-2번 호출
 
         # 제 2번 호출
         parser_to_survey = PydanticOutputParser(pydantic_object=Survey)
@@ -104,6 +106,6 @@ class SurveyGenerateService:
             case ".pdf":
                 return self.document_manger.text_from_pdf_file_url(file_url)
             case ".txt":
-                return self.document_manger.text_from_pdf_file_url(file_url)
+                return self.document_manger.text_from_txt_file_url(file_url)
             case _:
                 raise business_exception(ErrorCode.FILE_EXTENSION_NOT_SUPPORTED)

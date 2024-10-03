@@ -4,55 +4,48 @@ from app.core.prompt.prompt_injection_block_prompt import prompt_injection_block
 survey_creation_prompt = PromptTemplate(
     template="""
     You are a survey creator that creates surveys based on user prompts:{user_prompt}
+    Follow the instructions below to create a survey
     
-    Please create survey questions based on the reference materials below.
     ### Instructions
-    1. Must adhere to the Survey Creation Guide provided when you suggest questions.
-    2. Suggest Survey Title based on the reference materials ended with "~에 대한 조사"
-    ex) 설문 제작 및 참여에 대한 경험 조사
-    3. Suggest Survey Description based on the reference materials.
-    4. Suggest Finish Message based on the reference materials.
-    5. Suggest questions of reference materials according to the suggestion requirements.
-    6. Summarize the document as detail as possible in the document summation that contains content can be used for create questions.
-    7. Response must be in Korean.
+    1. Create Survey based on the reference materials below.
+    2. Ensure adherence to the Creation Requirements provided when you create the survey.
+    3. Response must be in Korean.
     
     ### Reference Materials
     {document}
 
-    ### Survey Creation Guide:
-    {guide}
-
-    ### Suggestion Requirements
-    - **Language**: Korean
-    - **Format**: Enumerated list
+    ### Creation Requirements
     - **Rules**
-    1. {user_prompt}
+    1. {user_prompt} (e.g., Include questions on a specific topic.)
     2. Suggest choices if the question is multiple choice.
     3. Suggest whether the question is required or not.
+    4. {guide}
     - **Content**
-    1. Sections based on the reference materials it becomes a key theme in structuring the questions of the survey.
-    2. Questions as much detail as possible for verifying the information from the document that you think.
-    3. Questions not general but specific to the reference materials.
-    - **Suggested Questions Format**
-        section: Section to which the question belongs
-        questionType: SINGLE_CHOICE(allow only one choice) / MULTIPLE_CHOICE(allow multiple choices) / TEXT_RESPONSE(text response)
-        question: Suggested question's title
-        choices: Suggested question's choice
-        isAllowOtherChoice: True / False
-        isRequired: True / False
+    1. Survey Title: Create a survey title based on the reference materials ended with "~에 대한 조사" (e.g., 설문 제작 및 참여에 대한 경험 조사)
+    2. Survey Description: Write a survey description based on the reference materials.
+    3. Finish Message: Write a completion message based on the reference materials.
+    4. Sections: Create sections based on the reference materials that become key themes in structuring the survey questions.
+    5. Questions:
+        1) Write questions in as much detail as possible for verifying the information from the document.
+        2) Make sure the questions are not general but specific to the reference materials.
+        
+    ### output
+    #### Survey Title
 
-    - output
-    ### Suggested Survey Title
+    #### Survey Description
 
-    ### Suggested Survey Description
+    ##### Finish Message
 
-    ### Suggested Finish Message
+    #### Sections
 
-    ### Suggested Sections
-
-    ### Suggested Questions
-
-    ### Document Summation
+    #### Questions
+    - **Format**
+    section: The section to which the question belongs
+    questionType: SINGLE_CHOICE(allow only one choice) / MULTIPLE_CHOICE(allow multiple choices) / TEXT_RESPONSE(text response)
+    question: Suggested question's title
+    choices: Suggested question's choice
+    isAllowOtherChoice: True / False
+    isRequired: True / False
     """,
     input_variables=["user_prompt", "document", "guide"],
 )
