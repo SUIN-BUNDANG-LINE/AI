@@ -13,10 +13,10 @@ class DocumentManager:
 
     def text_from_pdf_file_url(self, file_url: str):
         documents = self.pdf_loader(f"{file_url}").load()
-        return self.__documents_to_text(documents)
+        return DocumentManager.__documents_to_text(documents)
 
     @staticmethod
-    def text_from_txt_file_url(self, file_url: str):
+    def text_from_txt_file_url(file_url: str):
         response = requests.get(file_url)
         if response.status_code != HTTPStatus.OK:
             raise business_exception(ErrorCode.FILE_NOT_FOUND)
@@ -24,9 +24,9 @@ class DocumentManager:
         text_content = response.text
 
         documents = [Document(page_content=text_content)]
-        return self.__documents_to_text(documents)
+        return DocumentManager.__documents_to_text(documents)
 
-    def __documents_to_text(self, documents):
+    def __documents_to_text(documents: list[Document]):
         documents_text = ""
         for document in documents:
             documents_text += f"""
