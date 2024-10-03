@@ -12,13 +12,13 @@ class SurveyGenerateWithTextDocumentRequest(BaseModel):
     text_document: str
     user_prompt: str
 
-    @validator('text_document')
+    @validator("text_document")
     def validate_text_document(cls, value):
         if len(value) > DOCUMENTS_TEXT_LIMIT:
             raise business_exception(ErrorCode.TEXT_TOO_LONG)
         return value
 
-    @validator('user_prompt')
+    @validator("user_prompt")
     def validate_user_prompt(cls, value):
         if len(value) > USER_PROMPT_TEXT_LIMIT:
             raise business_exception(ErrorCode.TEXT_TOO_LONG)

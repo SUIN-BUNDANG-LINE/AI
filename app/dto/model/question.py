@@ -6,15 +6,15 @@ from app.dto.model.question_type import QuestionType
 
 class Question(BaseModel):
     questionType: QuestionType = Field(
-        description=
-        "Type of the question: SINGLE_CHOICE, MULTIPLE_CHOICE, TEXT_RESPONSE")
+        description="Type of the question: SINGLE_CHOICE, MULTIPLE_CHOICE, TEXT_RESPONSE"
+    )
     title: str = Field(description="Content of the question")
     isRequired: bool = Field(
-        description="Indicates whether answering the question is mandatory")
+        description="Indicates whether answering the question is mandatory"
+    )
     choices: Optional[List[str]] = Field(
-        default=None,
-        description="Options for multiple-choice questions (can be null)")
+        default=None, description="Options for multiple-choice questions (can be null)"
+    )
     isAllowOther: bool = Field(
-        description=
-        "Indicates whether to allow an 'Other' response for multiple-choice questions"
+        description="Indicates whether to allow an 'Other' response for multiple-choice questions"
     )

@@ -1,6 +1,7 @@
 from langchain.prompts import PromptTemplate
 
-survey_parsing_prompt = PromptTemplate(template="""
+survey_parsing_prompt = PromptTemplate(
+    template="""
     You are a Survey Formmater. Please formatting the prototype survey following the instructions below.
     ### Instructions
     1. Do not appear quesition choice if it is Other choice.
@@ -10,4 +11,5 @@ survey_parsing_prompt = PromptTemplate(template="""
     ### Prototype Survey
     {prototype_survey}
     """,
-                                       input_variables=["prototype_survey"])
+    input_variables=["prototype_survey"],
+)

@@ -8,7 +8,6 @@ from app.error.business_exception import business_exception
 
 
 class DocumentManager:
-
     def __init__(self):
         self.pdf_loader = PyMuPDFLoader
 
@@ -28,9 +27,9 @@ class DocumentManager:
 
     def text_from_txt_file_url(self, file_url: str):
         response = requests.get(file_url)
-        if (response.status_code != HTTPStatus.OK):
+        if response.status_code != HTTPStatus.OK:
             raise business_exception(ErrorCode.FILE_NOT_FOUND)
-        response.encoding = 'utf-8'
+        response.encoding = "utf-8"
         text_content = response.text
 
         documents = [Document(page_content=text_content)]
