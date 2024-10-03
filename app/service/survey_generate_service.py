@@ -11,7 +11,7 @@ from app.dto.response.survey_generate_response import SurveyGenerateResponse
 from app.error.error_code import ErrorCode
 from app.error.business_exception import business_exception
 from app.dto.request.survey_generate_with_file_url_request import (
-    SurveyGeneratetWithFileUrlRequest,
+    SurveyGenerateWithFileUrlRequest,
 )
 from app.dto.request.survey_generate_with_text_document_request import (
     SurveyGenerateWithTextDocumentRequest,
@@ -27,7 +27,7 @@ class SurveyGenerateService:
         self.survey_creation_prompt = survey_creation_prompt
         self.survey_parsing_prompt = survey_parsing_prompt
 
-    def generate_survey_with_file_url(self, request: SurveyGeneratetWithFileUrlRequest):
+    def generate_survey_with_file_url(self, request: SurveyGenerateWithFileUrlRequest):
         text_document = self.__get_text_document_from_file_url(request.file_url)
 
         survey_generate_content = self._SurveyGenerateContent(
@@ -104,6 +104,6 @@ class SurveyGenerateService:
             case ".pdf":
                 return self.document_manger.text_from_pdf_file_url(file_url)
             case ".txt":
-                return self.document_manger.text_from_txt_file_url(file_url)
+                return self.document_manger.text_from_pdf_file_url(file_url)
             case _:
                 raise business_exception(ErrorCode.FILE_EXTENSION_NOT_SUPPORTED)

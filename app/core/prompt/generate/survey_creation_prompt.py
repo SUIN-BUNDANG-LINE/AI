@@ -13,7 +13,7 @@ survey_creation_prompt = PromptTemplate(
     3. Suggest Survey Description based on the reference materials.
     4. Suggest Finish Message based on the reference materials.
     5. Suggest questions of reference materials according to the suggestion requirements.
-    6. Summarize the document as detail as possible in the document summation that contains cotent can be used for create questions.
+    6. Summarize the document as detail as possible in the document summation that contains content can be used for create questions.
     7. Response must be in Korean.
     
     ### Reference Materials

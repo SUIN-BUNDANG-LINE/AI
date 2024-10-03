@@ -19,7 +19,7 @@ def edit_survey(
     return edit_with_chat_service.edit_total_survey(editWithChatRequest)
 
 
-@router.post("/chat/edit/seciton")
+@router.post("/chat/edit/section")
 def edit_section(
     editWithChatRequest: EditSectionWithChatRequest,
     edit_with_chat_service=Depends(get_edit_with_chat_service),
