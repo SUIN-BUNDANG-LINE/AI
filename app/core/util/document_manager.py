@@ -7,25 +7,15 @@ from app.error.error_code import ErrorCode
 from app.error.business_exception import business_exception
 
 
-def documents_to_text(documents):
-    documents_text = ""
-    for document in documents:
-        documents_text += f"""
-    ----------------------------
-    {document.page_content}
-    """
-
-    return documents_text
-
-
 class DocumentManager:
     def __init__(self):
         self.pdf_loader = PyMuPDFLoader
 
     def text_from_pdf_file_url(self, file_url: str):
         documents = self.pdf_loader(f"{file_url}").load()
-        return documents_to_text(documents)
+        return self.__documents_to_text(documents)
 
+    @staticmethod
     def text_from_txt_file_url(self, file_url: str):
         response = requests.get(file_url)
         if response.status_code != HTTPStatus.OK:
@@ -34,4 +24,14 @@ class DocumentManager:
         text_content = response.text
 
         documents = [Document(page_content=text_content)]
-        return documents_to_text(documents)
+        return self.__documents_to_text(documents)
+
+    def __documents_to_text(self, documents):
+        documents_text = ""
+        for document in documents:
+            documents_text += f"""
+            ----------------------------
+            {document.page_content}
+            """
+
+        return documents_text
