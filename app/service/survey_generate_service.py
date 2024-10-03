@@ -101,7 +101,6 @@ class SurveyGenerateService:
         (document_summation, parsed_generated_survey) = await asyncio.gather(
             document_summation_task, survey_generation_task
         )
-        print(document_summation)
 
         return SurveyGenerateResponse(
             chatSessionId=self.ai_manager.session_id,
@@ -126,14 +125,12 @@ class SurveyGenerateService:
         # 제 1번 호출
         prototype_survey = await FunctionExecutionTimeMeasurer.run_async_function(
             "설문 프로토타입 생성 태스크",
-            self.ai_manager.async_chat_with_history,
+            self.ai_manager.async_chat,
             self.survey_creation_prompt.format(
                 user_prompt=user_prompt_with_basic_prompt,
                 document=text_document,
                 guide=survey_creation_guide_prompt,
             ),
-            self.ai_manager.session_id,
-            is_new_chat_save=True,
         )
 
         # 제 2번 호출

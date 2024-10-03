@@ -41,6 +41,14 @@ class AIManager:
 
         return response.content
 
+    async def async_chat(self, prompt):
+        response = await chat_model.ainvoke(
+            [
+                HumanMessage(content=prompt),
+            ]
+        )
+        return response.content
+
     async def async_chat_with_history(self, prompt, session_id, is_new_chat_save):
         message_storage = get_message_storage(session_id)
 
