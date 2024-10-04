@@ -7,9 +7,6 @@ REDIS_URL = os.getenv("REDIS_URL")
 
 
 def get_message_storage(session_id: str):
-    message_storage = RedisChatMessageHistory(
-        session_id,
-        url=REDIS_URL,
-        ttl=60 * 60)
+    message_storage = RedisChatMessageHistory(session_id, url=REDIS_URL, ttl=60 * 60)
 
     return message_storage

@@ -12,18 +12,24 @@ def get_edit_with_chat_service():
 
 
 @router.post("/chat/edit/survey")
-def edit_survey(editWithChatRequest: EditSurveyWithChatRequest,
-                edit_with_chat_service=Depends(get_edit_with_chat_service)):
+def edit_survey(
+    editWithChatRequest: EditSurveyWithChatRequest,
+    edit_with_chat_service=Depends(get_edit_with_chat_service),
+):
     return edit_with_chat_service.edit_total_survey(editWithChatRequest)
 
 
-@router.post("/chat/edit/seciton")
-def edit_section(editWithChatRequest: EditSectionWithChatRequest,
-                 edit_with_chat_service=Depends(get_edit_with_chat_service)):
+@router.post("/chat/edit/section")
+def edit_section(
+    editWithChatRequest: EditSectionWithChatRequest,
+    edit_with_chat_service=Depends(get_edit_with_chat_service),
+):
     return edit_with_chat_service.edit_section(editWithChatRequest)
 
 
 @router.post("/chat/edit/question")
-def edit_question(editWithChatRequest: EditQuestionWithChatRequest,
-                  edit_with_chat_service=Depends(get_edit_with_chat_service)):
+def edit_question(
+    editWithChatRequest: EditQuestionWithChatRequest,
+    edit_with_chat_service=Depends(get_edit_with_chat_service),
+):
     return edit_with_chat_service.edit_question(editWithChatRequest)

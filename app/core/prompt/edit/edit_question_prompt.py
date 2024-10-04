@@ -10,4 +10,5 @@ edit_question_prompt = PromptTemplate(
     {user_question}
 
     """,
-    input_variables=["user_prompt", "user_question"])
+    input_variables=["user_prompt", "user_question"],
+)
