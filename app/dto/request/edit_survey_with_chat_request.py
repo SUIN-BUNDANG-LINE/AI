@@ -1,8 +1,9 @@
+from uuid import UUID
 from app.dto.model.survey import Survey
 from pydantic import BaseModel
 
 
 class EditSurveyWithChatRequest(BaseModel):
-    session_id: str
+    chat_session_id: UUID
     survey: Survey
     user_prompt: str

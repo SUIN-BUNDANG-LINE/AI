@@ -1,8 +1,9 @@
 from app.dto.request.edit_survey_with_chat_request import EditSurveyWithChatRequest
 from app.dto.request.edit_section_with_chat_request import EditSectionWithChatRequest
 from app.dto.request.edit_question_with_chat_request import EditQuestionWithChatRequest
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Cookie, Depends
 from app.service.edit_with_chat_service import EditWithChatService
+from typing import Dict, Any
 
 router = APIRouter()
 
@@ -14,6 +15,7 @@ def get_edit_with_chat_service():
 @router.post("/chat/edit/survey")
 def edit_survey(
     editWithChatRequest: EditSurveyWithChatRequest,
+    chat_session_id: str = Cookie(None),
     edit_with_chat_service=Depends(get_edit_with_chat_service),
 ):
     return edit_with_chat_service.edit_total_survey(editWithChatRequest)

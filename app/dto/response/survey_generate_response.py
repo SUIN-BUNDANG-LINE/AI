@@ -4,5 +4,5 @@ from app.dto.model.survey import Survey
 
 
 class SurveyGenerateResponse(BaseModel):
-    chatSessionId: UUID
-    surveyGeneratedByAI: Survey
+    chat_session_id: UUID
+    python_survey_format: Survey

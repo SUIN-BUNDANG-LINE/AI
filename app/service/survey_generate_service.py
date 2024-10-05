@@ -104,7 +104,7 @@ class SurveyGenerateService:
 
         return SurveyGenerateResponse(
             chatSessionId=self.ai_manager.session_id,
-            surveyGeneratedByAI=parsed_generated_survey,
+            pythonServerSurveyFormat=parsed_generated_survey,
         )
 
     async def __summarize_document(self, text_document):

@@ -33,7 +33,7 @@ class EditWithChatService:
         )
 
         edited_survey = self.__chat_ai_for_edit_survey_data(
-            prompt=formatted_edit_prompt, session_id=request.session_id
+            prompt=formatted_edit_prompt, session_id=request.chat_session_id
         )
 
         parser_to_survey = PydanticOutputParser(
@@ -54,7 +54,7 @@ class EditWithChatService:
         )
 
         edited_section = self.__chat_ai_for_edit_survey_data(
-            prompt=formatted_edit_prompt, session_id=request.session_id
+            prompt=formatted_edit_prompt, session_id=request.chat_session_id
         )
 
         parser_to_section = PydanticOutputParser(
@@ -73,11 +73,11 @@ class EditWithChatService:
 
     def edit_question(self, request: EditQuestionWithChatRequest):
         formatted_edit_prompt = edit_survey_prompt.format(
-            user_prompt=request.user_prompt, user_question=request.question.json()
+            user_prompt=request.userPrompt, user_question=request.question.json()
         )
 
         edited_question = self.__chat_ai_for_edit_survey_data(
-            prompt=formatted_edit_prompt, session_id=request.session_id
+            prompt=formatted_edit_prompt, session_id=request.chat_session_id
         )
 
         parser_to_question = PydanticOutputParser(

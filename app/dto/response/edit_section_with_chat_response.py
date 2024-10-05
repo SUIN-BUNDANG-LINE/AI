@@ -4,7 +4,5 @@ from app.dto.model.section import Section
 from pydantic import BaseModel
 
 
-class EditSectionWithChatResponse(BaseModel):
-    title: str
-    description: str
-    questions: list[Question]
+class EditSectionWithChatResponse(Section):
+    pass
