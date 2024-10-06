@@ -71,7 +71,6 @@ class EditWithChatService:
         parsed_edited_section = parser_to_section.parse(
             edited_section_has_parsing_format
         )
-        print(parsed_edited_section)
         return parsed_edited_section
 
     def edit_question(self, request: EditQuestionWithChatRequest):
@@ -96,7 +95,6 @@ class EditWithChatService:
         parsed_edited_question = parser_to_question.parse(
             edited_question_has_parsing_format
         )
-        print(parsed_edited_question)
         return parsed_edited_question
 
     def __chat_ai_for_edit_survey_data(self, prompt, session_id):
