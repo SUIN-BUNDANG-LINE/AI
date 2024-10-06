@@ -15,7 +15,6 @@ def get_edit_with_chat_service():
 @router.post("/chat/edit/survey")
 def edit_survey(
     editWithChatRequest: EditSurveyWithChatRequest,
-    chat_session_id: str = Cookie(None),
     edit_with_chat_service=Depends(get_edit_with_chat_service),
 ):
     return edit_with_chat_service.edit_total_survey(editWithChatRequest)

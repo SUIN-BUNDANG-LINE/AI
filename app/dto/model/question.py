@@ -15,6 +15,6 @@ class Question(BaseModel):
     choices: Optional[List[str]] = Field(
         default=None, description="Options for multiple-choice questions (can be null)"
     )
-    is_allowOther: bool = Field(
+    is_allow_other: bool = Field(
         description="Indicates whether to allow an 'Other' response for multiple-choice questions"
     )

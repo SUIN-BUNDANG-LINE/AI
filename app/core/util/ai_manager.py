@@ -30,7 +30,7 @@ class AIManager:
         return response.content
 
     def chat_with_history(self, prompt, session_id, is_new_chat_save):
-        message_storage = get_message_storage(session_id)
+        message_storage = get_message_storage(str(session_id))
 
         message_history = message_storage.messages
 

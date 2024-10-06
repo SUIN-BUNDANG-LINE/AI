@@ -6,4 +6,4 @@ from pydantic import BaseModel
 class EditQuestionWithChatRequest(BaseModel):
     chat_session_id: UUID
     question: Question
-    userPrompt: str
+    user_prompt: str

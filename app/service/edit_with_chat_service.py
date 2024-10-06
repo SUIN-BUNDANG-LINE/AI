@@ -28,8 +28,9 @@ class EditWithChatService:
         self.survey_parsing_prompt = survey_parsing_prompt
 
     def edit_total_survey(self, request: EditSurveyWithChatRequest):
-        formatted_edit_prompt = edit_survey_prompt.format(
-            user_prompt=request.user_prompt, user_survey=request.survey.json()
+        formatted_edit_prompt = self.edit_survey_prompt.format(
+            user_prompt=request.user_prompt,
+            user_survey=request.survey.model_dump_json(),
         )
 
         edited_survey = self.__chat_ai_for_edit_survey_data(
@@ -49,8 +50,9 @@ class EditWithChatService:
         return parsed_edited_survey
 
     def edit_section(self, request: EditSectionWithChatRequest):
-        formatted_edit_prompt = edit_survey_prompt.format(
-            user_prompt=request.user_prompt, user_section=request.section.json()
+        formatted_edit_prompt = self.edit_section_prompt.format(
+            user_prompt=request.user_prompt,
+            user_section=request.model_dump_json(),
         )
 
         edited_section = self.__chat_ai_for_edit_survey_data(
@@ -69,11 +71,13 @@ class EditWithChatService:
         parsed_edited_section = parser_to_section.parse(
             edited_section_has_parsing_format
         )
+        print(parsed_edited_section)
         return parsed_edited_section
 
     def edit_question(self, request: EditQuestionWithChatRequest):
-        formatted_edit_prompt = edit_survey_prompt.format(
-            user_prompt=request.userPrompt, user_question=request.question.json()
+        formatted_edit_prompt = self.edit_question_prompt.format(
+            user_prompt=request.user_prompt,
+            user_question=request.question.model_dump_json(),
         )
 
         edited_question = self.__chat_ai_for_edit_survey_data(
@@ -92,6 +96,7 @@ class EditWithChatService:
         parsed_edited_question = parser_to_question.parse(
             edited_question_has_parsing_format
         )
+        print(parsed_edited_question)
         return parsed_edited_question
 
     def __chat_ai_for_edit_survey_data(self, prompt, session_id):
