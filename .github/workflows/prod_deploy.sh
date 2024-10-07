@@ -8,5 +8,5 @@ docker stop sulmoon2yong-ai-server
 docker rm sulmoon2yong-ai-server
 docker build -t suinbundangline/sulmoon2yong-ai:lastest .
 docker run -d --name sulmoon2yong-ai-server -p 8000:8000 suinbundangline/sulmoon2yong-ai:lastest 
-docker image prune -f
+docker image prune -af
 EOF

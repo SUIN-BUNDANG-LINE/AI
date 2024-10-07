@@ -1,4 +1,3 @@
-
 survey_creation_guide_prompt = """
     1. **Set Clear and Specific Goals**
     Define precise objectives for your survey. For example, instead of aiming to “understand customer satisfaction,” specify “identify key factors causing customer churn.” Clear goals help prioritize essential questions.
@@ -6,8 +5,8 @@ survey_creation_guide_prompt = """
     2. **Place Personal Questions at the End**
     Structure the survey like a conversation. Start with simple, general questions and gradually move to more personal or demographic ones to keep respondents engaged.
 
-    3. **Keep the Survey Short**
-    Respect respondents’ time by limiting the number of questions. Shorter surveys typically have higher completion rates and more thoughtful answers.
+    3. **Keep the Survey Engaging and Comprehensive**
+    Structure the survey to respect respondents’ time by maintaining an appropriate number of questions while still allowing for sufficient feedback. Include a reasonable number of questions to give participants the opportunity to reflect and provide thoughtful responses.
 
     4. **Use Mostly Closed-Ended Questions**
     Prefer multiple-choice or checkbox questions for easier responses and easier data analysis. Include only 1-2 open-ended questions at the end for additional insights.
