@@ -1,7 +1,7 @@
 import uuid
 from app.core.config.ai_model import chat_model
 from langchain.schema import HumanMessage
-from app.core.config.chat_memorization import get_message_storage
+from app.core.config.message_storage import get_message_storage
 
 
 class AIManager:
