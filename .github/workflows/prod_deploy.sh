@@ -3,7 +3,7 @@
 sudo -u ubuntu sh <<EOF
 git checkout main
 git pull
-echo "$ENV_CONTENT" > .env
+echo "$ENV_CONTENT" | base64 -d > .env
 docker stop sulmoon2yong-ai-server
 docker rm sulmoon2yong-ai-server
 docker build -t suinbundangline/sulmoon2yong-ai:lastest .
