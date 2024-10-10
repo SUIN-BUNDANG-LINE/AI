@@ -47,6 +47,7 @@ class EditWithChatService:
         )
 
         parsed_edited_survey = parser_to_survey.parse(edited_survey_has_parsing_format)
+
         return parsed_edited_survey
 
     def edit_section(self, request: EditSectionWithChatRequest):
