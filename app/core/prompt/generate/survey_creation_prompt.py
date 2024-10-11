@@ -31,21 +31,20 @@ survey_creation_prompt = PromptTemplate(
         
     ### output
     #### Survey Title
-
     #### Survey Description
-
     ##### Finish Message
 
     #### Sections
+    ##### Section Title
+    ##### Section Description
 
     #### Questions
-    - **Format**
-    section: The section to which the question belongs
-    questionType: SINGLE_CHOICE(allow only one choice) / MULTIPLE_CHOICE(allow multiple choices) / TEXT_RESPONSE(text response)
-    question: Suggested question's title
-    choices: Suggested question's choice
-    isAllowOtherChoice: True / False
-    isRequired: True / False
+    ##### Belonging Section: The section to which the question belongs
+    ##### Question Type: SINGLE_CHOICE(allow only one choice) / MULTIPLE_CHOICE(allow multiple choices) / TEXT_RESPONSE(text response)
+    ##### Title : Question's title
+    ##### Choices: Question's choice
+    ##### isAllowOtherChoice: True / False
+    ##### isRequired: True / False
     """,
     input_variables=["user_prompt", "document", "guide"],
 )
