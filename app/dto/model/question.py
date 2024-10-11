@@ -1,12 +1,13 @@
 from typing import Optional
 from typing import List
-from pydantic import BaseModel, Field, UUID4
+from uuid import UUID
+from pydantic import BaseModel, Field
 
 from app.dto.model.question_type import QuestionType
 
 
 class Question(BaseModel):
-    id: Optional[UUID4] = Field(default=None, description="Unique identifier or null")
+    id: Optional[UUID] = Field(default=None, description="Unique identifier or null")
     question_type: QuestionType = Field(
         description="Type of the question: SINGLE_CHOICE, MULTIPLE_CHOICE, TEXT_RESPONSE"
     )

@@ -1,16 +1,16 @@
-import uuid
+from uuid import UUID
 from app.core.config.ai_model import chat_model
 from langchain.schema import HumanMessage
 from app.core.config.message_storage import get_message_storage
 
 
 class AIManager:
-    def __init__(self):
-        self._session_id = str(uuid.uuid4())
+    def __init__(self, chat_session_id: UUID):
+        self._chat_session_id = str(chat_session_id)
 
     @property
     def session_id(self):
-        return self._session_id
+        return self._chat_session_id
 
     def chat(self, prompt):
         response = chat_model.invoke(
@@ -29,8 +29,8 @@ class AIManager:
         )
         return response.content
 
-    def chat_with_history(self, prompt, session_id, is_new_chat_save):
-        message_storage = get_message_storage(str(session_id))
+    def chat_with_history(self, prompt, is_new_chat_save):
+        message_storage = get_message_storage(self._chat_session_id)
 
         message_history = message_storage.messages
 
@@ -49,8 +49,8 @@ class AIManager:
         )
         return response.content
 
-    async def async_chat_with_history(self, prompt, session_id, is_new_chat_save):
-        message_storage = get_message_storage(session_id)
+    async def async_chat_with_history(self, prompt, is_new_chat_save):
+        message_storage = get_message_storage(self._chat_session_id)
 
         message_history = message_storage.messages
 

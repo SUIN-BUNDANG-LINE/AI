@@ -2,15 +2,34 @@ from langchain.prompts import PromptTemplate
 
 edit_question_prompt = PromptTemplate(
     template="""
-    ### Instructions
-    1. Edit user survey data following prompt: {user_prompt}
-    2. Reference existing survey data
-    3. questionType should be SINGLE_CHOICE(allow only one choice) / MULTIPLE_CHOICE(allow multiple choices) / TEXT_RESPONSE(text response)
-    4. id: keep it or null
-
-    ### User Question
+    You are a survey editor that edit user question, which is part of the section, based on user prompts:{user_prompt}
+    Follow the instructions below to edit a question
+    
+    ### User question
     {user_question}
-
+    
+    ### Instructions
+    1. Reference the document summation below to edit the question
+    2. Ensure adherence to the Creation Requirements provided when you edit the question.
+    
+     ### Creation Requirements
+    - **Rules**
+    1. {user_prompt} (e.g., Include questions on a specific topic.)
+    2. Suggest choices if the question is multiple choice.
+    3. Suggest whether the question is required or not.
+    4. Keep id or set id null
+    - **Content**
+    1. Questions
+        
+    ### output
+    #### Questions
+    ##### Question Id
+    ##### Belonging Section: The section to which the question belongs
+    ##### Question Type: SINGLE_CHOICE(allow only one choice) / MULTIPLE_CHOICE(allow multiple choices) / TEXT_RESPONSE(text response)
+    ##### Title : Question's title
+    ##### Choices: Question's choice
+    ##### isAllowOtherChoice: True / False
+    ##### isRequired: True / False
     """,
     input_variables=["user_prompt", "user_question"],
 )
