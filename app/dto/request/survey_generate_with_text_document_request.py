@@ -1,3 +1,4 @@
+from uuid import UUID
 from app.error.business_exception import business_exception
 from app.error.error_code import ErrorCode
 from pydantic import BaseModel, field_validator
@@ -7,6 +8,7 @@ USER_PROMPT_TEXT_LIMIT = 1000
 
 
 class SurveyGenerateWithTextDocumentRequest(BaseModel):
+    chat_session_id: UUID
     job: str
     group_name: str
     text_document: str

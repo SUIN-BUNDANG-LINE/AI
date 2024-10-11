@@ -1,7 +1,5 @@
 import asyncio
-
 from langchain.output_parsers import PydanticOutputParser
-
 from app.core.prompt.summation.document_summation_prompt import (
     document_summation_prompt,
 )
@@ -28,7 +26,7 @@ from app.dto.model.survey import Survey
 
 class SurveyGenerateService:
     def __init__(self):
-        self.ai_manager = AIManager()
+        self.ai_manager = None
         self.document_manger = DocumentManager()
         self.survey_creation_prompt = survey_creation_prompt
         self.survey_parsing_prompt = survey_parsing_prompt
@@ -37,6 +35,7 @@ class SurveyGenerateService:
     async def generate_survey_with_file_url(
         self, request: SurveyGenerateWithFileUrlRequest
     ):
+        self.ai_manager = AIManager(request.chat_session_id)
         text_document = self.__get_text_document_from_file_url(request.file_url)
 
         survey_generate_content = self._SurveyGenerateContent(
@@ -53,6 +52,7 @@ class SurveyGenerateService:
     async def generate_survey_with_text_document(
         self, request: SurveyGenerateWithTextDocumentRequest
     ):
+        self.ai_manager = AIManager(request.chat_session_id)
         survey_generate_content = self._SurveyGenerateContent(
             job=request.job,
             group=request.group_name,
@@ -66,7 +66,13 @@ class SurveyGenerateService:
 
     # private
     class _SurveyGenerateContent:
-        def __init__(self, job: str, group: str, text_document: str, user_prompt: str):
+        def __init__(
+            self,
+            job: str,
+            group: str,
+            text_document: str,
+            user_prompt: str,
+        ):
             self.job = job
             self.group = group
             self.text_document = text_document
@@ -82,7 +88,7 @@ class SurveyGenerateService:
 
         user_prompt_with_basic_prompt = user_prompt
         if job != "":
-            user_prompt_with_basic_prompt += f" {job}을 위한 설문조사를 생성해주세요."
+            user_prompt_with_basic_prompt += f" {job}을 대상으로 하는 설문조사를 생성해주세요."
 
         if group != "":
             user_prompt_with_basic_prompt += f" 인사말에는 {group} 소속임을 밝히는 말을 포함해주세요."
@@ -102,17 +108,13 @@ class SurveyGenerateService:
             document_summation_task, survey_generation_task
         )
 
-        return SurveyGenerateResponse(
-            chat_session_id=self.ai_manager.session_id,
-            survey=parsed_generated_survey,
-        )
+        return SurveyGenerateResponse(survey=parsed_generated_survey)
 
     async def __summarize_document(self, text_document):
         document_summation = await FunctionExecutionTimeMeasurer.run_async_function(
             "문서 요약 태스크",
             self.ai_manager.async_chat_with_history,
             document_summation_prompt.format(user_document=text_document),
-            self.ai_manager.session_id,
             is_new_chat_save=True,
         )
         return document_summation
