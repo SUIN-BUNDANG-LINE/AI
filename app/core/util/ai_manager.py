@@ -1,14 +1,11 @@
-import uuid
-
-from pydantic.v1 import UUID4
-
+from uuid import UUID
 from app.core.config.ai_model import chat_model
 from langchain.schema import HumanMessage
 from app.core.config.message_storage import get_message_storage
 
 
 class AIManager:
-    def __init__(self, chat_session_id: UUID4):
+    def __init__(self, chat_session_id: UUID):
         self._chat_session_id = str(chat_session_id)
 
     @property
