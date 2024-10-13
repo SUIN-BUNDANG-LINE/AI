@@ -1,8 +1,10 @@
 from langchain.prompts import PromptTemplate
 from app.core.prompt.prompt_injection_block_prompt import prompt_injection_block_prompt
 
+
 survey_creation_prompt = PromptTemplate(
-    template="""
+    template=prompt_injection_block_prompt
+    + """
     You are a survey creator that creates surveys based on user prompts:{user_prompt}
     Follow the instructions below to create a survey
     
