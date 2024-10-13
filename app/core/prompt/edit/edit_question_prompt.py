@@ -6,7 +6,7 @@ edit_question_prompt = PromptTemplate(
     Follow the instructions below to edit a question
     
     ### User question
-    {user_question}
+    {user_survey_data}
     
     ### Instructions
     1. Reference the document summation below to edit the question
@@ -31,5 +31,5 @@ edit_question_prompt = PromptTemplate(
     ##### isAllowOtherChoice: True / False
     ##### isRequired: True / False
     """,
-    input_variables=["user_prompt", "user_question"],
+    input_variables=["user_prompt", "user_survey_data"],
 )

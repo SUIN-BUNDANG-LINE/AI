@@ -8,10 +8,6 @@ class AIManager:
     def __init__(self, chat_session_id: UUID):
         self._chat_session_id = str(chat_session_id)
 
-    @property
-    def session_id(self):
-        return self._chat_session_id
-
     def chat(self, prompt):
         response = chat_model.invoke(
             [

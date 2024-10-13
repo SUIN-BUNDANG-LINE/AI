@@ -31,40 +31,8 @@ class SurveyGenerateService:
         self.survey_creation_prompt = survey_creation_prompt
         self.survey_parsing_prompt = survey_parsing_prompt
         self.document_summation_prompt = document_summation_prompt
+        self.survey_generate_content = None
 
-    async def generate_survey_with_file_url(
-        self, request: SurveyGenerateWithFileUrlRequest
-    ):
-        self.ai_manager = AIManager(request.chat_session_id)
-        text_document = self.__get_text_document_from_file_url(request.file_url)
-
-        survey_generate_content = self._SurveyGenerateContent(
-            job=request.job,
-            group=request.group_name,
-            text_document=text_document,
-            user_prompt=request.user_prompt,
-        )
-
-        return await self.__generate_survey_with_document_summation(
-            survey_generate_content
-        )
-
-    async def generate_survey_with_text_document(
-        self, request: SurveyGenerateWithTextDocumentRequest
-    ):
-        self.ai_manager = AIManager(request.chat_session_id)
-        survey_generate_content = self._SurveyGenerateContent(
-            job=request.job,
-            group=request.group_name,
-            text_document=request.text_document,
-            user_prompt=request.user_prompt,
-        )
-
-        return await self.__generate_survey_with_document_summation(
-            survey_generate_content
-        )
-
-    # private
     class _SurveyGenerateContent:
         def __init__(
             self,
@@ -78,20 +46,52 @@ class SurveyGenerateService:
             self.text_document = text_document
             self.user_prompt = user_prompt
 
-    async def __generate_survey_with_document_summation(
-        self, survey_generate_content: _SurveyGenerateContent
+    async def generate_survey_with_file_url(
+        self, request: SurveyGenerateWithFileUrlRequest
     ):
-        job = survey_generate_content.job
-        group = survey_generate_content.group
-        text_document = survey_generate_content.text_document
-        user_prompt = survey_generate_content.user_prompt
+        self.ai_manager = AIManager(request.chat_session_id)
+        text_document = self.__get_text_document_from_file_url(request.file_url)
+
+        self.survey_generate_content = self._SurveyGenerateContent(
+            job=request.job,
+            group=request.group_name,
+            text_document=text_document,
+            user_prompt=request.user_prompt,
+        )
+
+        return await self.__generate_survey_with_document_summation()
+
+    async def generate_survey_with_text_document(
+        self, request: SurveyGenerateWithTextDocumentRequest
+    ):
+        self.ai_manager = AIManager(request.chat_session_id)
+
+        self.survey_generate_content = self._SurveyGenerateContent(
+            job=request.job,
+            group=request.group_name,
+            text_document=request.text_document,
+            user_prompt=request.user_prompt,
+        )
+
+        return await self.__generate_survey_with_document_summation()
+
+    async def __generate_survey_with_document_summation(self):
+        job = self.survey_generate_content.job
+        group = self.survey_generate_content.group
+        text_document = self.survey_generate_content.text_document
+        user_prompt = self.survey_generate_content.user_prompt
 
         user_prompt_with_basic_prompt = user_prompt
+
         if job != "":
-            user_prompt_with_basic_prompt += f" {job}을 대상으로 하는 설문조사를 생성해주세요."
+            user_prompt_with_basic_prompt = (
+                f" {job}을 대상으로 하는 설문조사를 생성해주세요." + user_prompt
+            )
 
         if group != "":
-            user_prompt_with_basic_prompt += f" 인사말에는 {group} 소속임을 밝히는 말을 포함해주세요."
+            user_prompt_with_basic_prompt = (
+                f" 인사말에는 {group} 소속임을 밝히는 말을 포함해주세요." + user_prompt
+            )
 
         document_summation_task = asyncio.create_task(
             self.__summarize_document(text_document)

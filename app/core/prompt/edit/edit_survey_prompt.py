@@ -6,7 +6,7 @@ edit_survey_prompt = PromptTemplate(
     Follow the instructions below to edit a survey
 
     ### User Survey
-    {user_survey}
+    {user_survey_data}
     
     ### Instructions
     1. Reference the document summation below to edit the survey.
@@ -45,5 +45,5 @@ edit_survey_prompt = PromptTemplate(
     ##### isAllowOtherChoice: True / False
     ##### isRequired: True / False
     """,
-    input_variables=["user_prompt", "user_survey"],
+    input_variables=["user_prompt", "user_survey_data"],
 )

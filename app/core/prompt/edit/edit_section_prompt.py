@@ -6,7 +6,7 @@ edit_section_prompt = PromptTemplate(
     Follow the instructions below to edit a section
 
     ### User Survey
-    {user_section}
+    {user_survey_data}
 
     ### Instructions
     1. Reference the document summation below to edit the section
@@ -36,5 +36,5 @@ edit_section_prompt = PromptTemplate(
     ##### isAllowOtherChoice: True / False
     ##### isRequired: True / False
     """,
-    input_variables=["user_prompt", "user_section"],
+    input_variables=["user_prompt", "user_survey_data"],
 )
