@@ -10,7 +10,3 @@ chat_model = ChatOpenAI(
     model="gpt-4o-mini",
     temperature=0,
 )
-
-embedding_model = OpenAIEmbeddings(
-    api_key=openai_api_key, model="text-embedding-3-large"
-)

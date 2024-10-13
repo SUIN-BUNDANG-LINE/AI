@@ -12,8 +12,8 @@ from app.core.prompt.generate.survey_creation_guide_prompt import (
 from app.core.prompt.generate.survey_parsing_prompt import survey_parsing_prompt
 from app.core.prompt.generate.survey_creation_prompt import survey_creation_prompt
 from app.dto.response.survey_generate_response import SurveyGenerateResponse
-from app.error.error_code import ErrorCode
-from app.error.business_exception import business_exception
+from app.core.error.error_code import ErrorCode
+from app.core.error.business_exception import business_exception
 from app.dto.request.survey_generate_with_file_url_request import (
     SurveyGenerateWithFileUrlRequest,
 )

@@ -1,10 +1,9 @@
-from email.policy import HTTP
 import requests
 from http import HTTPStatus
 from langchain.docstore.document import Document
 from langchain_community.document_loaders import PyMuPDFLoader
-from app.error.error_code import ErrorCode
-from app.error.business_exception import business_exception
+from app.core.error.error_code import ErrorCode
+from app.core.error.business_exception import business_exception
 
 
 class DocumentManager:

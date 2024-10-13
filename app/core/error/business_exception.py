@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 
-from app.error.error_code import ErrorCode
+from app.core.error.error_code import ErrorCode
 
 
 def business_exception(error_code: ErrorCode):
