@@ -33,7 +33,7 @@ survey_creation_prompt = PromptTemplate(
     3. Finish Message: Write a completion message based on the reference materials.
     4. Sections: Create sections based on the reference materials that become key themes in structuring the survey questions.
     5. Questions:
-        1) Write questions in as much detail as possible for verifying the information from the document.
+        1) Write questions in as much detail as possible for verifying the information from the document, ensuring that some of these questions utilize brand names and proper nouns that appear within the document.
         2) Make sure the questions are not general but specific to the reference materials.
         
     ### output

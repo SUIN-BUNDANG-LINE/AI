@@ -80,13 +80,11 @@ class SurveyGenerateService:
 
         if job != "":
             user_prompt_with_basic_prompt = (
-                f" {job}을 대상으로 하는 설문조사를 생성해주세요." + user_prompt
+                f" {job}을 대상으로 하는 설문조사를 생성해주세요" + user_prompt
             )
 
         if group != "":
-            user_prompt_with_basic_prompt = (
-                f" 인사말에는 {group} 소속임을 밝히는 말을 포함해주세요." + user_prompt
-            )
+            user_prompt_with_basic_prompt = f" 인사말에는 {group}을 밝혀주세요" + user_prompt
 
         document_summation_task = asyncio.create_task(
             self.__summarize_document(text_document)
