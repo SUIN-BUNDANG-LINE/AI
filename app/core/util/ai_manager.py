@@ -8,6 +8,7 @@ class AIManager:
     def __init__(self, chat_session_id: UUID):
         self._chat_session_id = str(chat_session_id)
 
+    # 동기 방식 채팅
     def chat(self, prompt):
         response = chat_model.invoke(
             [
@@ -37,6 +38,7 @@ class AIManager:
 
         return response.content
 
+    # 비동기 방식 채팅
     async def async_chat(self, prompt):
         response = await chat_model.ainvoke(
             [
