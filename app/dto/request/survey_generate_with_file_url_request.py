@@ -10,7 +10,7 @@ USER_PROMPT_TEXT_LIMIT = 1000
 
 class SurveyGenerateWithFileUrlRequest(BaseModel):
     chat_session_id: UUID
-    job: str
+    target: str
     group_name: str
     file_url: str
     user_prompt: str

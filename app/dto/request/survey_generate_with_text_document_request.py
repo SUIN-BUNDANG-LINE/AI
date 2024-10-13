@@ -9,7 +9,7 @@ USER_PROMPT_TEXT_LIMIT = 1000
 
 class SurveyGenerateWithTextDocumentRequest(BaseModel):
     chat_session_id: UUID
-    job: str
+    target: str
     group_name: str
     text_document: str
     user_prompt: str

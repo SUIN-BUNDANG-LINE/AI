@@ -31,12 +31,12 @@ class SurveyGenerateService:
     class _SurveyGenerateContent:
         def __init__(
             self,
-            job: str,
+            target: str,
             group_name: str,
             text_document: str,
             user_prompt: str,
         ):
-            self.job = job
+            self.target = target
             self.group_name = group_name
             self.text_document = text_document
             self.user_prompt = user_prompt
@@ -48,7 +48,7 @@ class SurveyGenerateService:
         text_document = self.document_manger.text_from_file_url(request.file_url)
 
         self.survey_generate_content = self._SurveyGenerateContent(
-            job=request.job,
+            target=request.target,
             group_name=request.group_name,
             text_document=text_document,
             user_prompt=request.user_prompt,
@@ -62,7 +62,7 @@ class SurveyGenerateService:
         self.ai_manager = AIManager(request.chat_session_id)
 
         self.survey_generate_content = self._SurveyGenerateContent(
-            job=request.job,
+            target=request.target,
             group_name=request.group_name,
             text_document=request.text_document,
             user_prompt=request.user_prompt,
@@ -71,16 +71,16 @@ class SurveyGenerateService:
         return await self.__generate_survey_and_summarize_document()
 
     async def __generate_survey_and_summarize_document(self):
-        job = self.survey_generate_content.job
+        target = self.survey_generate_content.target
         group_name = self.survey_generate_content.group_name
         text_document = self.survey_generate_content.text_document
         user_prompt = self.survey_generate_content.user_prompt
 
         user_prompt_with_basic_prompt = user_prompt
 
-        if job != "":
+        if target != "":
             user_prompt_with_basic_prompt = (
-                f" {job}을 대상으로 하는 설문조사를 생성해주세요" + user_prompt
+                f" {target}을 대상으로 하는 설문조사를 생성해주세요" + user_prompt
             )
 
         if group_name != "":
