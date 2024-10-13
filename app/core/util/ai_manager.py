@@ -57,6 +57,7 @@ class AIManager:
         )
 
         if is_new_chat_save:
+            message_storage.clear()
             message_storage.add_message(response)
 
         return response.content
