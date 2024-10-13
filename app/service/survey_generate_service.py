@@ -32,12 +32,12 @@ class SurveyGenerateService:
         def __init__(
             self,
             job: str,
-            group: str,
+            group_name: str,
             text_document: str,
             user_prompt: str,
         ):
             self.job = job
-            self.group = group
+            self.group_name = group_name
             self.text_document = text_document
             self.user_prompt = user_prompt
 
@@ -49,7 +49,7 @@ class SurveyGenerateService:
 
         self.survey_generate_content = self._SurveyGenerateContent(
             job=request.job,
-            group=request.group_name,
+            group_name=request.group_name,
             text_document=text_document,
             user_prompt=request.user_prompt,
         )
@@ -63,7 +63,7 @@ class SurveyGenerateService:
 
         self.survey_generate_content = self._SurveyGenerateContent(
             job=request.job,
-            group=request.group_name,
+            group_name=request.group_name,
             text_document=request.text_document,
             user_prompt=request.user_prompt,
         )
@@ -72,7 +72,7 @@ class SurveyGenerateService:
 
     async def __generate_survey_and_summarize_document(self):
         job = self.survey_generate_content.job
-        group = self.survey_generate_content.group
+        group_name = self.survey_generate_content.group_name
         text_document = self.survey_generate_content.text_document
         user_prompt = self.survey_generate_content.user_prompt
 
@@ -83,8 +83,10 @@ class SurveyGenerateService:
                 f" {job}을 대상으로 하는 설문조사를 생성해주세요" + user_prompt
             )
 
-        if group != "":
-            user_prompt_with_basic_prompt = f" 인사말에는 {group}을 밝혀주세요" + user_prompt
+        if group_name != "":
+            user_prompt_with_basic_prompt = (
+                f" 인사말에는 {group_name} 팀임을 밝히는 말을 포함해주세요" + user_prompt
+            )
 
         document_summation_task = asyncio.create_task(
             self.__summarize_document(text_document)
