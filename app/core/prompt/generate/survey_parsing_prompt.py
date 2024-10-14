@@ -14,5 +14,5 @@ survey_parsing_prompt = PromptTemplate(
     ### Prototype Survey
     {prototype_survey}
     """,
-    input_variables=["prototype_survey"],
+    input_variables=["prototype_survey_data"],
 )
