@@ -1,12 +1,14 @@
 from langchain.prompts import PromptTemplate
+from app.core.prompt.prompt_injection_block_prompt import prompt_injection_block_prompt
 
 edit_question_prompt = PromptTemplate(
-    template="""
+    template=prompt_injection_block_prompt
+    + """
     You are a survey editor that edit user question, which is part of the section, based on user prompts:{user_prompt}
     Follow the instructions below to edit a question
     
     ### User question
-    {user_question}
+    {user_survey_data}
     
     ### Instructions
     1. Reference the document summation below to edit the question
@@ -31,5 +33,5 @@ edit_question_prompt = PromptTemplate(
     ##### isAllowOtherChoice: True / False
     ##### isRequired: True / False
     """,
-    input_variables=["user_prompt", "user_question"],
+    input_variables=["user_prompt", "user_survey_data"],
 )

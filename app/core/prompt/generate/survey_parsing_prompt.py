@@ -1,7 +1,10 @@
 from langchain.prompts import PromptTemplate
+from app.core.prompt.prompt_injection_block_prompt import prompt_injection_block_prompt
+
 
 survey_parsing_prompt = PromptTemplate(
-    template="""
+    template=prompt_injection_block_prompt
+    + """
     You are a Survey Formater. Please formatting the prototype survey following the instructions below.
     ### Instructions
     1. Do not appear question choice if it is Other choice.
@@ -11,5 +14,5 @@ survey_parsing_prompt = PromptTemplate(
     ### Prototype Survey
     {prototype_survey}
     """,
-    input_variables=["prototype_survey"],
+    input_variables=["prototype_survey_data"],
 )

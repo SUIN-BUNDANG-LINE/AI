@@ -1,12 +1,15 @@
 from langchain.prompts import PromptTemplate
+from app.core.prompt.prompt_injection_block_prompt import prompt_injection_block_prompt
+
 
 edit_section_prompt = PromptTemplate(
-    template="""
+    template=prompt_injection_block_prompt
+    + """
     You are a survey editor that edits the user section, which is part of the survey, based on user prompts: {user_prompt}
     Follow the instructions below to edit a section
 
     ### User Survey
-    {user_section}
+    {user_survey_data}
 
     ### Instructions
     1. Reference the document summation below to edit the section
@@ -36,5 +39,5 @@ edit_section_prompt = PromptTemplate(
     ##### isAllowOtherChoice: True / False
     ##### isRequired: True / False
     """,
-    input_variables=["user_prompt", "user_section"],
+    input_variables=["user_prompt", "user_survey_data"],
 )
