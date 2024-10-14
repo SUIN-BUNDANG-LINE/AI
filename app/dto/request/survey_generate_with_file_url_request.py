@@ -1,6 +1,6 @@
 from uuid import UUID
-from app.error.business_exception import business_exception
-from app.error.error_code import ErrorCode
+from app.core.error.business_exception import business_exception
+from app.core.error.error_code import ErrorCode
 from pydantic import BaseModel, field_validator
 from app.core.util.file_manager import FileManager
 
@@ -10,7 +10,7 @@ USER_PROMPT_TEXT_LIMIT = 1000
 
 class SurveyGenerateWithFileUrlRequest(BaseModel):
     chat_session_id: UUID
-    job: str
+    target: str
     group_name: str
     file_url: str
     user_prompt: str

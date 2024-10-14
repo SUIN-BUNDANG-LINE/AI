@@ -1,8 +1,13 @@
 from langchain.prompts import PromptTemplate
 from app.core.prompt.prompt_injection_block_prompt import prompt_injection_block_prompt
+from app.core.prompt.generate.survey_creation_guide_prompt import (
+    survey_creation_guide_prompt,
+)
+
 
 survey_creation_prompt = PromptTemplate(
-    template="""
+    template=prompt_injection_block_prompt
+    + """
     You are a survey creator that creates surveys based on user prompts:{user_prompt}
     Follow the instructions below to create a survey
     
@@ -19,15 +24,18 @@ survey_creation_prompt = PromptTemplate(
     1. {user_prompt} (e.g., Include questions on a specific topic.)
     2. Suggest choices if the question is multiple choice.
     3. Suggest whether the question is required or not.
-    4. {guide}
+    4. """
+    + survey_creation_guide_prompt
+    + """
     - **Content**
     1. Survey Title: Create a survey title based on the reference materials ended with "~에 대한 조사" (e.g., 설문 제작 및 참여에 대한 경험 조사)
     2. Survey Description: Write a survey description based on the reference materials.
     3. Finish Message: Write a completion message based on the reference materials.
     4. Sections: Create sections based on the reference materials that become key themes in structuring the survey questions.
     5. Questions:
-        1) Write questions in as much detail as possible for verifying the information from the document.
-        2) Make sure the questions are not general but specific to the reference materials.
+        1) Write questions in as much detail as possible for verifying the information from the document
+        2) Ensure that some of these questions utilize brand names and proper nouns that appear within the document.
+        3) Make sure the questions are not general but specific to the reference materials.
         
     ### output
     #### Survey Title
@@ -46,5 +54,5 @@ survey_creation_prompt = PromptTemplate(
     ##### isAllowOtherChoice: True / False
     ##### isRequired: True / False
     """,
-    input_variables=["user_prompt", "document", "guide"],
+    input_variables=["user_prompt", "document"],
 )
