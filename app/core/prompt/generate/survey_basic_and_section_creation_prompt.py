@@ -4,8 +4,7 @@ from app.core.prompt.prompt_injection_block_prompt import prompt_injection_block
 survey_basic_and_section_creation_prompt = PromptTemplate(
     template=prompt_injection_block_prompt
     + """
-    You are a survey creator that creates surveys based on user prompts:{user_prompt}
-    Create Survey based on the reference materials below
+    Create Survey basic info and section based on the reference materials below to use making questions
     
     ### Reference Materials
     {document}

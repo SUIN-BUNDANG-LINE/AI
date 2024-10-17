@@ -31,6 +31,7 @@ survey_question_creation_prompt = PromptTemplate(
         - “Rate the quality of our support.”
     7. if other choice exits, set isAllowOtherChoice to True
     8. if the question is required, set isRequired to True
+    9. Do not create too few questions (fewer than 6).
 
     ### output(Korean)
     #### Questions
