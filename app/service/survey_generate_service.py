@@ -1,12 +1,18 @@
 import asyncio
 from langchain.output_parsers import PydanticOutputParser
+
+from app.core.prompt.generate.survey_question_creation_prompt import (
+    survey_question_creation_prompt,
+)
 from app.core.prompt.summation.document_summation_prompt import (
     document_summation_prompt,
 )
 from app.core.util.ai_manager import AIManager
 from app.core.util.document_manager import DocumentManager
 from app.core.prompt.generate.survey_parsing_prompt import survey_parsing_prompt
-from app.core.prompt.generate.survey_creation_prompt import survey_creation_prompt
+from app.core.prompt.generate.survey_basic_and_section_creation_prompt import (
+    survey_basic_and_section_creation_prompt,
+)
 from app.dto.response.survey_generate_response import SurveyGenerateResponse
 from app.dto.request.survey_generate_with_file_url_request import (
     SurveyGenerateWithFileUrlRequest,
@@ -24,7 +30,10 @@ class SurveyGenerateService:
         self.survey_generate_content = None
         self.document_manger = DocumentManager()
         self.survey_parsing_prompt = survey_parsing_prompt
-        self.survey_creation_prompt = survey_creation_prompt
+        self.survey_basic_and_section_creation_prompt = (
+            survey_basic_and_section_creation_prompt
+        )
+        self.survey_question_creation_prompt = survey_question_creation_prompt
         self.document_summation_prompt = document_summation_prompt
         self.parser_to_survey = PydanticOutputParser(pydantic_object=Survey)
 
@@ -123,14 +132,31 @@ class SurveyGenerateService:
     async def __generate_prototype_survey(
         self, user_prompt_with_basic_prompt, text_document
     ):
-        return await FunctionExecutionTimeMeasurer.run_async_function(
-            "설문 프로토타입 생성 태스크",
+        survey_basic_and_section_content = (
+            await FunctionExecutionTimeMeasurer.run_async_function(
+                "설문 기본 정보와 섹션 프로토타입 생성 태스크",
+                self.ai_manager.async_chat,
+                self.survey_basic_and_section_creation_prompt.format(
+                    user_prompt=user_prompt_with_basic_prompt,
+                    document=text_document,
+                ),
+            )
+        )
+
+        print(survey_basic_and_section_content)
+
+        question_content = await FunctionExecutionTimeMeasurer.run_async_function(
+            "질문 프로토타입 생성 태스크",
             self.ai_manager.async_chat,
-            self.survey_creation_prompt.format(
+            self.survey_question_creation_prompt.format(
                 user_prompt=user_prompt_with_basic_prompt,
-                document=text_document,
+                survey_basic_and_section_content=survey_basic_and_section_content,
             ),
         )
+
+        print(question_content)
+
+        return survey_basic_and_section_content + question_content
 
     async def __parse_survey(self, prototype_survey):
         return await FunctionExecutionTimeMeasurer.run_async_function(
