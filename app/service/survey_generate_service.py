@@ -114,6 +114,8 @@ class SurveyGenerateService:
             user_prompt_with_basic_prompt, text_document
         )
 
+        print(prototype_survey)
+
         generated_survey_has_parsing_format = await self.__parse_survey(
             prototype_survey
         )
