@@ -114,13 +114,7 @@ class SurveyGenerateService:
             user_prompt_with_basic_prompt, text_document
         )
 
-        print(prototype_survey)
-
-        generated_survey_has_parsing_format = await self.__parse_survey(
-            prototype_survey
-        )
-
-        return self.parser_to_survey.parse(generated_survey_has_parsing_format)
+        return self.parser_to_survey.parse(prototype_survey)
 
     async def __generate_prototype_survey(
         self, user_prompt_with_basic_prompt, text_document
@@ -132,14 +126,6 @@ class SurveyGenerateService:
                 user_prompt=user_prompt_with_basic_prompt,
                 document=text_document,
             ),
-        )
-
-    async def __parse_survey(self, prototype_survey):
-        return await FunctionExecutionTimeMeasurer.run_async_function(
-            "설문 파싱 태스크",
-            self.ai_manager.async_chat_with_parser,
-            survey_parsing_prompt.format(prototype_survey=prototype_survey),
-            self.parser_to_survey,
         )
 
     async def __summarize_document(self, text_document):

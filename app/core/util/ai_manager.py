@@ -1,7 +1,11 @@
 from uuid import UUID
+
+from langchain_core.output_parsers import PydanticOutputParser
+
 from app.core.config.ai_model import chat_model
 from langchain.schema import HumanMessage
 from app.core.config.message_storage import get_message_storage
+from app.dto.model.survey import Survey
 
 
 class AIManager:
@@ -19,9 +23,12 @@ class AIManager:
 
     @staticmethod
     async def async_chat(prompt):
+        parser = PydanticOutputParser(pydantic_object=Survey)
+
         response = await chat_model.ainvoke(
             [
                 HumanMessage(content=prompt),
+                HumanMessage(content=parser.get_format_instructions()),
             ]
         )
         return response.content

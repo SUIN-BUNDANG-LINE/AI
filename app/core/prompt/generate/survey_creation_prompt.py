@@ -16,8 +16,7 @@ survey_creation_prompt = PromptTemplate(
     ### Creation Requirements
     - **Rules**
     1. {user_prompt} (e.g., Include questions on a specific topic.)
-    2. Suggest choices if the question is multiple choice.
-    3. Suggest whether the question is required or not.
+    2. Suggest choices if the question is multiple choice while not suggesting other choice(기타) .
    
     - **Content**
     1. Survey Title: Create a survey title based on the reference materials ended with "~에 대한 조사" (e.g., 설문 제작 및 참여에 대한 경험 조사)
@@ -30,7 +29,7 @@ survey_creation_prompt = PromptTemplate(
         - Make sure the questions are not general but specific to the reference materials.
         - Do not create too few questions (fewer than 7)
         - Place Personal Questions at the End
-    Structure the survey like a conversation. Start with simple, general questions and gradually move to more personal or demographic ones to keep respondents engaged.
+        - Structure the survey like a conversation. Start with simple, general questions and gradually move to more personal or demographic ones to keep respondents engaged.
         - Prefer multiple-choice or checkbox questions for easier responses and easier data analysis. Include only 1-2 open-ended questions at the end for additional insights.
         - Avoid Leading Questions
             ex) ask “How helpful were our customer service representatives?” instead of “How helpful were our friendly customer service representatives?”
