@@ -1,11 +1,11 @@
 import asyncio
 from langchain.output_parsers import PydanticOutputParser
-from app.core.prompt.summation.document_summation_prompt import (
+from app.core.prompt.document_summation_prompt import (
     document_summation_prompt,
 )
 from app.core.util.ai_manager import AIManager
 from app.core.util.document_manager import DocumentManager
-from app.core.prompt.generate.survey_creation_prompt import survey_creation_prompt
+from app.core.prompt.survey_creation_prompt import survey_creation_prompt
 from app.dto.response.survey_generate_response import SurveyGenerateResponse
 from app.dto.request.survey_generate_with_file_url_request import (
     SurveyGenerateWithFileUrlRequest,
