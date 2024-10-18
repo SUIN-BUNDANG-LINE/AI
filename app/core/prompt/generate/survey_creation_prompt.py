@@ -46,6 +46,11 @@ survey_creation_prompt = PromptTemplate(
             ex) Instead of “Rate the quality of our products and support,” split into:
             - “Rate the quality of our products.”
             - “Rate the quality of our support.”
+        - Construct multiple-choice question's choice follow this format:
+            - choice1(should not be 기타, other)
+            - choice2(should not be 기타, other)
+            - choice3(should not be 기타, other)
+            - ...(should not be 기타, other)
 
     ### output
     #### Survey Title
