@@ -16,7 +16,7 @@ survey_creation_prompt = PromptTemplate(
     ### Creation Requirements
     - **Rules**
     1. {user_prompt} (e.g., Include questions on a specific topic.)
-    2. Suggest choices if the question is multiple choice while not suggesting other choice(기타) .
+    2. Suggest choices if the question is multiple choice.
    
     - **Content**
     1. Survey Title: Create a survey title based on the reference materials ended with "~에 대한 조사" (e.g., 설문 제작 및 참여에 대한 경험 조사)
