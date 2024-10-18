@@ -17,7 +17,7 @@ survey_creation_prompt = PromptTemplate(
     - **Rules**
     1. {user_prompt} (e.g., Include questions on a specific topic.)
     2. Suggest choices if the question is multiple choice.
-   
+
     - **Content**
     1. Survey Title: Create a survey title based on the reference materials ended with "~에 대한 조사" (e.g., 설문 제작 및 참여에 대한 경험 조사)
     2. Survey Description: Write a survey description based on the reference materials.
@@ -46,11 +46,6 @@ survey_creation_prompt = PromptTemplate(
             ex) Instead of “Rate the quality of our products and support,” split into:
             - “Rate the quality of our products.”
             - “Rate the quality of our support.”
-        - Construct multiple-choice question's choice follow this format:
-            - choice1(should not be 기타, other)
-            - choice2(should not be 기타, other)
-            - choice3(should not be 기타, other)
-            - ...(should not be 기타, other)
 
     ### output
     #### Survey Title

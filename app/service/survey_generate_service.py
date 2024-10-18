@@ -5,7 +5,6 @@ from app.core.prompt.summation.document_summation_prompt import (
 )
 from app.core.util.ai_manager import AIManager
 from app.core.util.document_manager import DocumentManager
-from app.core.prompt.generate.survey_parsing_prompt import survey_parsing_prompt
 from app.core.prompt.generate.survey_creation_prompt import survey_creation_prompt
 from app.dto.response.survey_generate_response import SurveyGenerateResponse
 from app.dto.request.survey_generate_with_file_url_request import (
@@ -23,7 +22,6 @@ class SurveyGenerateService:
         self.ai_manager = None
         self.survey_generate_content = None
         self.document_manger = DocumentManager()
-        self.survey_parsing_prompt = survey_parsing_prompt
         self.survey_creation_prompt = survey_creation_prompt
         self.document_summation_prompt = document_summation_prompt
         self.parser_to_survey = PydanticOutputParser(pydantic_object=Survey)
@@ -120,7 +118,7 @@ class SurveyGenerateService:
         self, user_prompt_with_basic_prompt, text_document
     ):
         return await FunctionExecutionTimeMeasurer.run_async_function(
-            "설문 프로토타입 생성 태스크",
+            "설문 생성 태스크",
             self.ai_manager.async_chat,
             self.survey_creation_prompt.format(
                 user_prompt=user_prompt_with_basic_prompt,
@@ -129,10 +127,9 @@ class SurveyGenerateService:
         )
 
     async def __summarize_document(self, text_document):
-        document_summation = await FunctionExecutionTimeMeasurer.run_async_function(
+        return await FunctionExecutionTimeMeasurer.run_async_function(
             "문서 요약 태스크",
             self.ai_manager.async_chat_with_history,
             document_summation_prompt.format(user_document=text_document),
             is_new_chat_save=True,
         )
-        return document_summation
