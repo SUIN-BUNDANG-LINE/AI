@@ -3,14 +3,17 @@ from langchain.prompts import PromptTemplate
 
 survey_creation_prompt = PromptTemplate(
     template="""
-    You are a survey creation expert {targeting_sentence}. Create a survey based on the reference materials below, adhering to the user prompt: {user_prompt}.
+    You are a survey creation expert. 
+    Create a survey based on the reference materials below.
+    Adhere to the user prompt: {user_prompt}.
+    Create survey targeting {target}.    
     
     ### Reference Materials
     {document}
-    
+        
     ### Creation Rules
     1. Survey Title: Create a survey title based on the reference materials ended with "~에 대한 조사" (e.g., 설문 제작 및 참여에 대한 경험 조사)
-    2. Survey Description: Write a survey description based on the reference materials {indicating_group_sentence}
+    2. Survey Description: Write a survey description based on the reference materials with including a statement indicating that we are the {group_name} team.
     3. Finish Message: Write a completion message based on the reference materials.
     4. Sections: Create sections based on the reference materials that become key themes in structuring the survey questions.
     5. Questions:
@@ -25,10 +28,10 @@ survey_creation_prompt = PromptTemplate(
             ex) ask “How helpful were our customer service representatives?” instead of “How helpful were our friendly customer service representatives?”
         - Provide a symmetrical range of response choices to capture genuine feedback. 
             ex)
-            a. Very helpful  
+            a. Very helpful
             b. Helpful  
-            c. Neutral  
-            d. Unhelpful  
+            c. Neutral
+            d. Unhelpful
             e. Not helpful at all
         - Avoid absolute terms like “always” or “never” that force binary answers. 
             ex) Instead of “Do you always eat breakfast?” consider “How often do you eat breakfast?”
@@ -36,11 +39,10 @@ survey_creation_prompt = PromptTemplate(
             ex) Instead of “Rate the quality of our products and support,” split into:
             - “Rate the quality of our products.”
             - “Rate the quality of our support.”
-    ...
     """,
     input_variables=[
-        "targeting_sentence",
-        "indicating_group_sentence",
+        "target",
+        "group_name",
         "user_prompt",
         "document",
     ],
