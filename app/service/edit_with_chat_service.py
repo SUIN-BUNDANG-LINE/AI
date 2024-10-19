@@ -13,7 +13,6 @@ from langchain.output_parsers import PydanticOutputParser
 from app.core.prompt.edit.edit_survey_prompt import edit_survey_prompt
 from app.core.prompt.edit.edit_section_prompt import edit_section_prompt
 from app.core.prompt.edit.edit_question_prompt import edit_question_prompt
-from app.core.prompt.generate.survey_parsing_prompt import survey_parsing_prompt
 
 
 class EditWithChatService:
@@ -23,7 +22,6 @@ class EditWithChatService:
         self.edit_survey_prompt = edit_survey_prompt
         self.edit_section_prompt = edit_section_prompt
         self.edit_question_prompt = edit_question_prompt
-        self.survey_parsing_prompt = survey_parsing_prompt
         self.parser_to_survey = PydanticOutputParser(
             pydantic_object=EditTotalSurveyWithChatResponse
         )
@@ -93,9 +91,8 @@ class EditWithChatService:
             prompt=formatted_edit_prompt, is_new_chat_save=False
         )
 
-        edited_survey_has_parsing_format = self.ai_manager.chat_with_parser(
-            prompt=self.survey_parsing_prompt.format(prototype_survey=edited_survey),
-            parser=parser,
-        )
+        # edited_survey_has_parsing_format = self.ai_manager.chat_with_parser(
+        #     parser=parser,
+        # )
 
-        return parser.parse(edited_survey_has_parsing_format)
+        return parser.parse(edited_survey)

@@ -34,6 +34,15 @@ class AIManager:
         return response.content
 
     @staticmethod
+    async def async_chat_normal(prompt):
+        response = await chat_model.ainvoke(
+            [
+                HumanMessage(content=prompt),
+            ]
+        )
+        return response.content
+
+    @staticmethod
     def chat_with_parser(prompt, parser):
         response = chat_model.invoke(
             [

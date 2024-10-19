@@ -74,17 +74,14 @@ class SurveyGenerateService:
         text_document = self.survey_generate_content.text_document
         user_prompt = self.survey_generate_content.user_prompt
 
-        user_prompt_with_basic_prompt = user_prompt
+        targeting_sentence = ""
+        indicating_group_sentence = ""
 
         if target != "":
-            user_prompt_with_basic_prompt = (
-                f" {target}을 대상으로 하는 설문조사를 생성해주세요" + user_prompt
-            )
+            targeting_sentence = f"targeting {target}"
 
         if group_name != "":
-            user_prompt_with_basic_prompt = (
-                f" 인사말에는 {group_name} 팀임을 밝히는 말을 포함해주세요" + user_prompt
-            )
+            indicating_group_sentence = f"with including a statement indicating that you are part of the {group_name} team."
 
         document_summation_task = asyncio.create_task(
             self.__summarize_document(text_document)
@@ -92,7 +89,9 @@ class SurveyGenerateService:
 
         survey_generation_task = asyncio.create_task(
             self.__generate_survey(
-                user_prompt_with_basic_prompt,
+                user_prompt,
+                targeting_sentence,
+                indicating_group_sentence,
                 text_document,
             )
         )
@@ -106,25 +105,40 @@ class SurveyGenerateService:
     async def __generate_survey(
         self,
         user_prompt_with_basic_prompt,
+        targeting_sentence,
+        indicating_group_sentence,
         text_document,
     ):
-        prototype_survey = await self.__generate_prototype_survey(
-            user_prompt_with_basic_prompt, text_document
+        user_prompt = await FunctionExecutionTimeMeasurer.run_async_function(
+            "사용자 프롬프트 생성 태스크",
+            self.ai_manager.async_chat_normal,
+            f"""
+            너는 의도가 모호한 사용자 요청을 해석해서 명확한 요청으로 변형시키는 요청 변환 전문가다.
+            사용자가 대충 쓴 요청을 정확히 수행하기 위해서, 제공된 요청을 이해하고 복수의 단순한 요청으로 변환해야한다.
+            요청이 여러 의도를 담는 복합 요청일 경우, 그 각각의 의도를 담는 단순한 요청으로 변환한다.
+            이렇게 하나의 요청은 여러 요청으로 만들어진다.
+            생성된 여러 요청은 다시 모델에게 전달하여 요청을 수행하게한다.
+            
+            요청 : {user_prompt_with_basic_prompt}
+            
+            하위 요청:
+            """,
         )
 
-        return self.parser_to_survey.parse(prototype_survey)
+        print(user_prompt)
 
-    async def __generate_prototype_survey(
-        self, user_prompt_with_basic_prompt, text_document
-    ):
-        return await FunctionExecutionTimeMeasurer.run_async_function(
+        prototype_survey = await FunctionExecutionTimeMeasurer.run_async_function(
             "설문 생성 태스크",
             self.ai_manager.async_chat,
             self.survey_creation_prompt.format(
-                user_prompt=user_prompt_with_basic_prompt,
+                user_prompt=user_prompt,
+                targeting_sentence=targeting_sentence,
+                indicating_group_sentence=indicating_group_sentence,
                 document=text_document,
             ),
         )
+
+        return self.parser_to_survey.parse(prototype_survey)
 
     async def __summarize_document(self, text_document):
         return await FunctionExecutionTimeMeasurer.run_async_function(
