@@ -21,6 +21,15 @@ survey_creation_prompt = PromptTemplate(
             - SINGLE_CHOICE: Create questions that ask for a single answer choice.
             - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.
             - TEXT_RESPONSE: Create questions that ask for a text response.
+        - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.
+            ex) 
+            "choices": [
+                "choice1",
+                "choice2",
+                ...,
+                "기타"
+            ],
+            "is_allow_other": true
         - Ensure that some of these questions utilize brand names and proper nouns that appear within the document.
         - Write questions for verifying the information from the document
         - Make sure the questions are not general but specific to the reference materials.

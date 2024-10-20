@@ -1,3 +1,5 @@
+from click import prompt
+
 from app.dto.request.edit_survey_with_chat_request import EditSurveyWithChatRequest
 from app.dto.request.edit_section_with_chat_request import EditSectionWithChatRequest
 from app.dto.request.edit_question_with_chat_request import EditQuestionWithChatRequest
@@ -91,8 +93,9 @@ class EditWithChatService:
             prompt=formatted_edit_prompt, is_new_chat_save=False
         )
 
-        # edited_survey_has_parsing_format = self.ai_manager.chat_with_parser(
-        #     parser=parser,
-        # )
+        edited_survey_has_parsing_format = self.ai_manager.chat_with_parser(
+            prompt=edited_survey,
+            parser=parser,
+        )
 
-        return parser.parse(edited_survey)
+        return parser.parse(edited_survey_has_parsing_format)

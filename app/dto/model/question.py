@@ -20,5 +20,5 @@ class Question(BaseModel):
         description="Options for choice question",
     )
     is_allow_other: bool = Field(
-        description="Indicates whether allow users to provide an alternative response if their preferred option is not available among the choices or not"
+        description="Indicates whether allow users to input their own answers directly, even for questions where they select from given options or not"
     )
