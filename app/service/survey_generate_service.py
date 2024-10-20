@@ -110,7 +110,7 @@ class SurveyGenerateService:
             프롬프트가 여러 의도를 담는 복합 프롬프트일 경우, 그 각각의 의도를 담는 단순한 프롬프트로 변환한다.
             단, and 조건일 경우 그 의미를 유지하세요
                 ex)
-                사용자 프롬프트 : 다중 선택 질문이고 기타응답을 허용하는 질문을 만드세요
+                사용자 프롬프트 : 다중 선택 질문이고 기타 응답을 허용하는 질문을 만드세요
                 잘못된 변형:
                     1. 다중 선택 질문을 만들어 주세요.
                     2. 기타 응답을 허용하는 질문을 만들어 주세요.
@@ -126,8 +126,6 @@ class SurveyGenerateService:
             하위 프롬프트:
             """,
         )
-
-        print(user_prompt)
 
         prototype_survey = await FunctionExecutionTimeMeasurer.run_async_function(
             "설문 생성 태스크",

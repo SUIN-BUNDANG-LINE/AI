@@ -13,12 +13,12 @@ class Question(BaseModel):
     )
     title: str = Field(description="Title of the question")
     is_required: bool = Field(
-        description="Indicates whether answering the question is mandatory"
+        description="Indicates whether answering the question is mandatory or not"
     )
     choices: Optional[List[str]] = Field(
         default=None,
         description="Options for choice question",
     )
     is_allow_other: bool = Field(
-        description="Indicates whether to allow an other response or not"
+        description="Indicates whether allow users to provide an alternative response if their preferred option is not available among the choices or not"
     )
