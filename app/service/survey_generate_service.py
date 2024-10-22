@@ -44,12 +44,12 @@ class SurveyGenerateService:
             target: str,
             group_name: str,
             text_document: str,
-            user_basic_prompt: str,
+            user_prompt: str,
         ):
             self.target = target
             self.group_name = group_name
             self.text_document = text_document
-            self.user_basic_prompt = user_basic_prompt
+            self.user_prompt = user_prompt
 
     async def generate_survey_with_file_url(
         self, request: SurveyGenerateWithFileUrlRequest
@@ -61,7 +61,7 @@ class SurveyGenerateService:
             target=request.target,
             group_name=request.group_name,
             text_document=text_document,
-            user_basic_prompt=request.user_prompt,
+            user_prompt=request.user_prompt,
         )
 
         return await self.__generate_survey_with_saving_summarized_document()
@@ -75,7 +75,7 @@ class SurveyGenerateService:
             target=request.target,
             group_name=request.group_name,
             text_document=request.text_document,
-            user_basic_prompt=request.user_prompt,
+            user_prompt=request.user_prompt,
         )
 
         return await self.__generate_survey_with_saving_summarized_document()
@@ -84,7 +84,7 @@ class SurveyGenerateService:
         target = self.survey_generate_content.target
         group_name = self.survey_generate_content.group_name
         text_document = self.survey_generate_content.text_document
-        user_basic_prompt = self.survey_generate_content.user_basic_prompt
+        user_basic_prompt = self.survey_generate_content.user_prompt
 
         document_summation_task = asyncio.create_task(
             self.__summarize_document(text_document)
@@ -107,17 +107,11 @@ class SurveyGenerateService:
 
     async def __generate_survey(
         self,
-        user_basic_prompt,
+        user_prompt,
         target,
         group_name,
         text_document,
     ):
-        user_prompt = await FunctionExecutionTimeMeasurer.run_async_function(
-            "사용자 프롬프트 명확화 태스크",
-            self.ai_manager.async_chat,
-            prompt_resolve_prompt.format(user_prompt=user_basic_prompt),
-        )
-
         generated_survey = await FunctionExecutionTimeMeasurer.run_async_function(
             "설문 생성 태스크",
             self.ai_manager.async_chat,

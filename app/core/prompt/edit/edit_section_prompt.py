@@ -21,13 +21,15 @@ edit_section_prompt = PromptTemplate(
           ...
     
     ### Creation Rules
-    1. Questions:
+    1. Section title
+    2. Section description
+    3. Questions:
         - If you need to delete question set it null.
         - Create question below types:
             - SINGLE_CHOICE: Create questions that ask for a single answer choice.
             - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.
             - TEXT_RESPONSE: Create questions that ask for a text response.
-        - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.
+        - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options. if "기타" is not exits, add it.
             ex) 
             "choices": [
                 "choice1",

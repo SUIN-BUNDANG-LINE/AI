@@ -6,6 +6,7 @@ survey_creation_prompt = PromptTemplate(
     You are a survey creation expert. 
     Create a survey based on the reference materials below.
     Adhere to the user prompt: {user_prompt}.
+    If there are no specific requests for the number of questions in the user prompt, Do not create too few questions (6 or fewer).
     Create survey targeting {target}.    
     
     ### Reference Materials
@@ -21,7 +22,7 @@ survey_creation_prompt = PromptTemplate(
             - SINGLE_CHOICE: Create questions that ask for a single answer choice.
             - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.
             - TEXT_RESPONSE: Create questions that ask for a text response.
-        - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.
+        - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options. 
             ex) 
             "choices": [
                 "choice1",

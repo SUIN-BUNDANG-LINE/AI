@@ -14,6 +14,12 @@ edit_survey_prompt = PromptTemplate(
     
     ### ID Rules
     - You should not edit the ids.
+        ex) if you edit section
+          "id": provided_id,
+          "title": "edited title",
+          "description": "edited description",
+          ...
+    
     - You should not make your own instead making ids, just set them null if it is not provided.
         ex) if you create section
           "id": null,
@@ -31,13 +37,15 @@ edit_survey_prompt = PromptTemplate(
     3. Finish Message: Write a completion message based on the reference materials.
     4. Sections: Create sections based on the reference materials that become key themes in structuring the survey questions.
         - If you need to delete section set it empty list. Keep others intact.
+        - Section title
+        - Section description
     5. Questions:
-        - If you need to delete question set it null. Keep others intact.
+        - If you need to delete question set it empty list. Keep others intact.
         - Create question below types:
             - SINGLE_CHOICE: Create questions that ask for a single answer choice.
             - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.
             - TEXT_RESPONSE: Create questions that ask for a text response.
-        - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.
+        - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options. if "기타" is not exits, add it.
             ex) 
             "choices": [
                 "choice1",

@@ -17,7 +17,6 @@ from langchain.output_parsers import PydanticOutputParser
 from app.core.prompt.edit.edit_survey_prompt import edit_survey_prompt
 from app.core.prompt.edit.edit_section_prompt import edit_section_prompt
 from app.core.prompt.edit.edit_question_prompt import edit_question_prompt
-from app.core.prompt.prompt_resolve_prompt import prompt_resolve_prompt
 from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
 
 
@@ -54,21 +53,13 @@ class EditWithChatService:
     def edit_total_survey(self, request: EditSurveyWithChatRequest):
         ai_manager = AIManager(request.chat_session_id)
 
-        print(request.user_prompt)
-
-        user_prompt = FunctionExecutionTimeMeasurer.run_function(
-            "사용자 프롬프트 명확화 태스크",
-            ai_manager.chat,
-            prompt_resolve_prompt.format(user_prompt=request.user_prompt),
-        )
-
         parser = PydanticOutputParser(pydantic_object=EditTotalSurveyWithChatResponse)
         edited_total_survey_has_parsing_format = (
             FunctionExecutionTimeMeasurer.run_function(
                 "설문 수정 태스크",
                 ai_manager.chat_with_history,
                 self.edit_survey_prompt.format(
-                    user_prompt=user_prompt,
+                    user_prompt=request.user_prompt,
                     user_survey_data=request.survey.model_dump_json(),
                 ),
                 False,
@@ -83,18 +74,12 @@ class EditWithChatService:
     def edit_section(self, request: EditSectionWithChatRequest):
         ai_manager = AIManager(request.chat_session_id)
 
-        user_prompt = FunctionExecutionTimeMeasurer.run_function(
-            "사용자 프롬프트 명확화 태스크",
-            ai_manager.chat,
-            prompt_resolve_prompt.format(user_prompt=request.user_prompt),
-        )
-
         parser = PydanticOutputParser(pydantic_object=EditSectionWithChatResponse)
         edited_section_has_parsing_format = FunctionExecutionTimeMeasurer.run_function(
             "섹션 수정 태스크",
             ai_manager.chat_with_history,
             self.edit_survey_prompt.format(
-                user_prompt=user_prompt,
+                user_prompt=request.user_prompt,
                 user_survey_data=request.section.model_dump_json(),
             ),
             False,
@@ -108,18 +93,12 @@ class EditWithChatService:
     def edit_question(self, request: EditQuestionWithChatRequest):
         ai_manager = AIManager(request.chat_session_id)
 
-        user_prompt = FunctionExecutionTimeMeasurer.run_function(
-            "사용자 프롬프트 명확화 태스크",
-            ai_manager.chat,
-            prompt_resolve_prompt.format(user_prompt=request.user_prompt),
-        )
-
         parser = PydanticOutputParser(pydantic_object=EditQuestionWithChatResponse)
         edited_question_has_parsing_format = FunctionExecutionTimeMeasurer.run_function(
             "질문 수정 태스크",
             ai_manager.chat_with_history,
             self.edit_survey_prompt.format(
-                user_prompt=user_prompt,
+                user_prompt=request.user_prompt,
                 user_survey_data=request.question.model_dump_json(),
             ),
             False,
