@@ -6,6 +6,8 @@ survey_creation_prompt = PromptTemplate(
     You are a survey creation expert. 
     Create a survey based on the reference materials below.
     Adhere to the user prompt: {user_prompt}.
+    Do not perform any additional actions outside of the user prompt.
+
     If there are no specific requests for the number of questions in the user prompt, Do not create too few questions (6 or fewer).
     Create survey targeting {target}.    
     
