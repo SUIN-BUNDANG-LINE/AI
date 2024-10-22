@@ -7,7 +7,6 @@ edit_section_prompt = PromptTemplate(
     You are a survey editor.
     Edit the user section, which is part of the survey.
     Adhere to the user prompt: {user_prompt}.
-    Do not perform any additional actions outside of the user prompt.
 
     ### User Section
     {user_survey_data}
