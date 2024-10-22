@@ -20,9 +20,10 @@ from app.dto.model.survey import Survey
 
 def remove_last_choice_if_allowed_other(survey):
     for section in survey.sections:
-        for question in section.questions:
-            if question.is_allow_other and question.choices:
-                question.choices.pop()
+        if section.questions:
+            for question in section.questions:
+                if question.is_allow_other and question.choices:
+                    question.choices.pop()
 
     return survey
 

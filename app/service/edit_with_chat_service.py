@@ -23,25 +23,25 @@ from app.core.util.function_execution_time_measurer import FunctionExecutionTime
 
 def remove_last_choice_if_allowed_other_in_survey(survey: Survey):
     for section in survey.sections:
-        for question in section.questions:
-            if question.is_allow_other and question.choices:
-                question.choices.pop()
-
+        if section.questions:
+            for question in section.questions:
+                if question.is_allow_other and question.choices:
+                    question.choices.pop()
     return survey
 
 
 def remove_last_choice_if_allowed_other_in_section(section: Section):
-    for question in section.questions:
-        if question.is_allow_other and question.choices:
-            question.choices.pop()
-
+    if section.questions:
+        for question in section.questions:
+            if question.is_allow_other and question.choices:
+                question.choices.pop()
     return section
 
 
 def remove_last_choice_if_allowed_other_in_question(question: Question):
-    if question.is_allow_other and question.choices:
-        question.choices.pop()
-
+    if question.choices:
+        if question.is_allow_other and question.choices:
+            question.choices.pop()
     return question
 
 
