@@ -13,6 +13,9 @@ edit_question_prompt = PromptTemplate(
 
     ### User Question
     {user_survey_data}
+    
+    ### ID Rules when keep
+    Just keep the provided content.
 
     ### ID Rules when edit
     You should not edit the ids.
@@ -25,9 +28,8 @@ edit_question_prompt = PromptTemplate(
         - SINGLE_CHOICE: Create questions that ask for a single answer choice.
         - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.
         - TEXT_RESPONSE: Create questions that ask for a text response.
-    - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.
+    - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.  if "기타" is not exits in choices, add it
         ex) 
-        if "기타" is not exits, add it.
         "choices": [
             "choice1",
             "choice2",

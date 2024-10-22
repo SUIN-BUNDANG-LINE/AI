@@ -22,9 +22,8 @@ survey_creation_prompt = PromptTemplate(
             - SINGLE_CHOICE: Create questions that ask for a single answer choice.
             - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.
             - TEXT_RESPONSE: Create questions that ask for a text response.
-        - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options. 
+        - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options. Must include "기타" in choices.
             ex) 
-            if "기타" is not exits, add it.
             "choices": [
                 "choice1",
                 "choice2",
