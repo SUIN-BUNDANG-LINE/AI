@@ -1,28 +1,14 @@
 from langchain.prompts import PromptTemplate
-from app.core.prompt.prompt_injection_block_prompt import prompt_injection_block_prompt
 
 prompt_resolve_prompt = PromptTemplate(
     template="""
-    너는 의도가 모호한 사용자 프롬프트를 해석해서 명확한 프롬프트로 변형시키는 프롬프트 변환 전문가다.
-    프롬프트는 설문조사 제작에 사용된다.
-    사용자가 대충 쓴 프롬프트를 정확히 수행하기 위해서, 제공된 프롬프트를 이해하고 복수의 단순한 프롬프트로 변환해야한다.
-    프롬프트가 여러 의도를 담는 복합 프롬프트일 경우, 그 각각의 의도를 담는 단순한 프롬프트로 변환한다.
-    단, and 조건일 경우 그 의미를 유지하세요
-        ex)
-        사용자 프롬프트 : A하고 B해주세요
-        잘못된 변형:
-            1. A 해주세요
-            2. B 해주세요
-            3. ...
-        옳은 변형:
-            1. A 해주세요
-            2. 동시에 B 해주세요
-            3. ...
+    너는 의도가 모호한 사용자 프롬프트를 해석해서 프롬프트로 변형시키는 프롬프트 변환 전문가다.
+    AI가 사용자 프롬프트를 무시하지 않게 명확한 프롬프트로 바꾸세요.
+    다른 추가요구사항을 만들지 말고 사용자 프롬프트를 해석해서 프롬프트로 변형시키세요.
 
     사용자 프롬프트 : {user_prompt}
 
     ### Output
-    하위 프롬프트:
     """,
     input_variables=["user_prompt"],
 )

@@ -1,5 +1,4 @@
 from langchain.prompts import PromptTemplate
-from app.core.prompt.prompt_injection_block_prompt import prompt_injection_block_prompt
 
 
 edit_section_prompt = PromptTemplate(
@@ -7,7 +6,11 @@ edit_section_prompt = PromptTemplate(
     You are a survey editor.
     Edit the user section, which is part of the survey.
     Adhere to the user prompt: {user_prompt}.
-
+    Do not perform unintended actions and only carry out the user prompt.
+        unintended performance example)
+        user prompt: Delete some content.
+        your action : Delete and create new content
+    
     ### User Section
     {user_survey_data}
 

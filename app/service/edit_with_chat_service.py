@@ -18,6 +18,7 @@ from app.core.prompt.edit.edit_survey_prompt import edit_survey_prompt
 from app.core.prompt.edit.edit_section_prompt import edit_section_prompt
 from app.core.prompt.edit.edit_question_prompt import edit_question_prompt
 from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
+from app.core.util.user_prompt_resolve_chat import chat_resolve_user_prompt
 
 
 def remove_last_choice_if_allowed_other_in_survey(survey: Survey):
@@ -54,12 +55,15 @@ class EditWithChatService:
         ai_manager = AIManager(request.chat_session_id)
 
         parser = PydanticOutputParser(pydantic_object=EditTotalSurveyWithChatResponse)
+
         edited_total_survey_has_parsing_format = (
             FunctionExecutionTimeMeasurer.run_function(
                 "설문 수정 태스크",
                 ai_manager.chat_with_history,
                 self.edit_survey_prompt.format(
-                    user_prompt=request.user_prompt,
+                    user_prompt=chat_resolve_user_prompt(
+                        ai_manager=ai_manager, user_prompt=request.user_prompt
+                    ),
                     user_survey_data=request.survey.model_dump_json(),
                 ),
                 False,
@@ -79,7 +83,9 @@ class EditWithChatService:
             "섹션 수정 태스크",
             ai_manager.chat_with_history,
             self.edit_survey_prompt.format(
-                user_prompt=request.user_prompt,
+                user_prompt=chat_resolve_user_prompt(
+                    ai_manager=ai_manager, user_prompt=request.user_prompt
+                ),
                 user_survey_data=request.section.model_dump_json(),
             ),
             False,
@@ -98,7 +104,9 @@ class EditWithChatService:
             "질문 수정 태스크",
             ai_manager.chat_with_history,
             self.edit_survey_prompt.format(
-                user_prompt=request.user_prompt,
+                user_prompt=chat_resolve_user_prompt(
+                    ai_manager=ai_manager, user_prompt=request.user_prompt
+                ),
                 user_survey_data=request.question.model_dump_json(),
             ),
             False,

@@ -1,9 +1,7 @@
 from langchain.prompts import PromptTemplate
-from app.core.prompt.prompt_injection_block_prompt import prompt_injection_block_prompt
 
 document_summation_prompt = PromptTemplate(
-    template=prompt_injection_block_prompt
-    + """
+    template="""
     Process the document to make it useful for the AI to generate surveys.
     Include proper nouns such as brand names and personal names
 

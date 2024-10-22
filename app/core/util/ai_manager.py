@@ -5,7 +5,6 @@ from langchain_core.output_parsers import PydanticOutputParser
 from app.core.config.ai_model import chat_model
 from langchain.schema import HumanMessage
 from app.core.config.message_storage import get_message_storage
-from app.dto.model.survey import Survey
 
 
 class AIManager:

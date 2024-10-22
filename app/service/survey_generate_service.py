@@ -16,6 +16,7 @@ from app.dto.request.survey_generate_with_text_document_request import (
 )
 from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
 from app.dto.model.survey import Survey
+from app.core.util.user_prompt_resolve_chat import chat_resolve_user_prompt
 
 
 def remove_last_choice_if_allowed_other(survey):
@@ -116,7 +117,9 @@ class SurveyGenerateService:
             "설문 생성 태스크",
             self.ai_manager.async_chat,
             self.survey_creation_prompt.format(
-                user_prompt=user_prompt,
+                user_prompt=chat_resolve_user_prompt(
+                    ai_manager=self.ai_manager, user_prompt=user_prompt
+                ),
                 target=target,
                 group_name=group_name,
                 document=text_document,
