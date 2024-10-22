@@ -23,18 +23,6 @@ class AIManager:
 
     @staticmethod
     async def async_chat(prompt):
-        parser = PydanticOutputParser(pydantic_object=Survey)
-
-        response = await chat_model.ainvoke(
-            [
-                HumanMessage(content=prompt),
-                HumanMessage(content=parser.get_format_instructions()),
-            ]
-        )
-        return response.content
-
-    @staticmethod
-    async def async_chat_normal(prompt):
         response = await chat_model.ainvoke(
             [
                 HumanMessage(content=prompt),
