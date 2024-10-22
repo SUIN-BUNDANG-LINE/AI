@@ -7,7 +7,9 @@ from app.dto.model.question_type import QuestionType
 
 
 class Question(BaseModel):
-    id: Optional[UUID] = Field(default=None, description="Unique identifier or null")
+    id: Optional[UUID] = Field(
+        default=None, description="""Unique identifier or null(not "null")"""
+    )
     question_type: QuestionType = Field(
         description="Type of the question: SINGLE_CHOICE, MULTIPLE_CHOICE, TEXT_RESPONSE"
     )

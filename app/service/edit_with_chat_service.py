@@ -71,6 +71,8 @@ class EditWithChatService:
             )
         )
 
+        print(edited_total_survey_has_parsing_format)
+
         return remove_last_choice_if_allowed_other_in_survey(
             parser.parse(edited_total_survey_has_parsing_format)
         )

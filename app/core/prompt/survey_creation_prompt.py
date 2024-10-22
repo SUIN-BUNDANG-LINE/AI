@@ -24,6 +24,7 @@ survey_creation_prompt = PromptTemplate(
             - TEXT_RESPONSE: Create questions that ask for a text response.
         - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options. 
             ex) 
+            if "기타" is not exits, add it.
             "choices": [
                 "choice1",
                 "choice2",
