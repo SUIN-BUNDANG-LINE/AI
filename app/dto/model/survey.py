@@ -12,4 +12,6 @@ class Survey(BaseModel):
     finish_message: str = Field(
         description="Message displayed upon completion of the survey"
     )
-    sections: list[Section] = Field(description="Sections of the survey")
+    sections: Optional[list[Section]] = Field(
+        default_factory=list, description="Sections of the survey"
+    )

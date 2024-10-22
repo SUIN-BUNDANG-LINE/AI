@@ -102,7 +102,7 @@ class SurveyGenerateService:
             document_summation_task, survey_generation_task
         )
 
-        return parsed_generated_survey
+        return SurveyGenerateResponse(survey=parsed_generated_survey)
 
     async def __generate_survey(
         self,
@@ -112,14 +112,14 @@ class SurveyGenerateService:
         text_document,
     ):
         user_prompt = await FunctionExecutionTimeMeasurer.run_async_function(
-            "사용자 프롬프트 생성 태스크",
+            "사용자 프롬프트 명확화 태스크",
             self.ai_manager.async_chat,
             prompt_resolve_prompt.format(user_prompt=user_basic_prompt),
         )
 
         generated_survey = await FunctionExecutionTimeMeasurer.run_async_function(
             "설문 생성 태스크",
-            self.ai_manager.async_chat_with_parser,
+            self.ai_manager.async_chat,
             self.survey_creation_prompt.format(
                 user_prompt=user_prompt,
                 target=target,
