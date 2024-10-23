@@ -1,3 +1,7 @@
+from app.core.util.allowed_other_manager import AllowedOtherManager
+from app.dto.model.question import Question
+from app.dto.model.section import Section
+from app.dto.model.survey import Survey
 from app.dto.request.edit_survey_with_chat_request import EditSurveyWithChatRequest
 from app.dto.request.edit_section_with_chat_request import EditSectionWithChatRequest
 from app.dto.request.edit_question_with_chat_request import EditQuestionWithChatRequest
@@ -10,92 +14,90 @@ from app.dto.response.edit_question_with_chat_response import (
     EditQuestionWithChatResponse,
 )
 from langchain.output_parsers import PydanticOutputParser
+
 from app.core.prompt.edit.edit_survey_prompt import edit_survey_prompt
 from app.core.prompt.edit.edit_section_prompt import edit_section_prompt
 from app.core.prompt.edit.edit_question_prompt import edit_question_prompt
-from app.core.prompt.generate.survey_parsing_prompt import survey_parsing_prompt
+from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
+from app.core.util.user_prompt_resolve_chat import chat_resolve_user_prompt
 
 
 class EditWithChatService:
     def __init__(self):
-        self.ai_manager = None
-        self.survey_data_edit_content = None
         self.edit_survey_prompt = edit_survey_prompt
         self.edit_section_prompt = edit_section_prompt
         self.edit_question_prompt = edit_question_prompt
-        self.survey_parsing_prompt = survey_parsing_prompt
-        self.parser_to_survey = PydanticOutputParser(
-            pydantic_object=EditTotalSurveyWithChatResponse
-        )
-        self.parser_to_section = PydanticOutputParser(
-            pydantic_object=EditSectionWithChatResponse
-        )
-        self.parser_to_question = PydanticOutputParser(
-            pydantic_object=EditQuestionWithChatResponse
-        )
-
-    class _SurveyDataEditContent:
-        def __init__(
-            self,
-            formatted_edit_prompt: str,
-            parser: PydanticOutputParser,
-        ):
-            self.formatted_edit_prompt = formatted_edit_prompt
-            self.parser = parser
 
     def edit_total_survey(self, request: EditSurveyWithChatRequest):
-        self.ai_manager = AIManager(request.chat_session_id)
+        ai_manager = AIManager(request.chat_session_id)
 
-        formatted_edit_prompt = self.edit_survey_prompt.format(
-            user_prompt=request.user_prompt,
-            user_survey_data=request.survey.model_dump_json(),
+        parser = PydanticOutputParser(pydantic_object=EditTotalSurveyWithChatResponse)
+
+        edited_total_survey_has_parsing_format = (
+            FunctionExecutionTimeMeasurer.run_function(
+                "설문 수정 태스크",
+                ai_manager.chat_with_history,
+                self.edit_survey_prompt.format(
+                    user_prompt=chat_resolve_user_prompt(
+                        ai_manager=ai_manager, user_prompt=request.user_prompt
+                    ),
+                    user_survey_data=AllowedOtherManager.add_last_choice_in_survey(
+                        request.survey
+                    ).model_dump_json(),
+                ),
+                False,
+                parser,
+            )
         )
 
-        self.survey_data_edit_content = self._SurveyDataEditContent(
-            formatted_edit_prompt, self.parser_to_survey
-        )
+        print(edited_total_survey_has_parsing_format)
 
-        return self.__edit_survey_data()
+        return AllowedOtherManager.remove_last_choice_in_survey(
+            parser.parse(edited_total_survey_has_parsing_format)
+        )
 
     def edit_section(self, request: EditSectionWithChatRequest):
-        self.ai_manager = AIManager(request.chat_session_id)
+        ai_manager = AIManager(request.chat_session_id)
 
-        formatted_edit_prompt = self.edit_survey_prompt.format(
-            user_prompt=request.user_prompt,
-            user_survey_data=request.section.model_dump_json(),
+        parser = PydanticOutputParser(pydantic_object=EditSectionWithChatResponse)
+        edited_section_has_parsing_format = FunctionExecutionTimeMeasurer.run_function(
+            "섹션 수정 태스크",
+            ai_manager.chat_with_history,
+            self.edit_survey_prompt.format(
+                user_prompt=chat_resolve_user_prompt(
+                    ai_manager=ai_manager, user_prompt=request.user_prompt
+                ),
+                user_survey_data=AllowedOtherManager.add_last_choice_in_section(
+                    request.section
+                ).model_dump_json(),
+            ),
+            False,
+            parser,
         )
 
-        self.survey_data_edit_content = self._SurveyDataEditContent(
-            formatted_edit_prompt, self.parser_to_section
+        return AllowedOtherManager.remove_last_choice_in_section(
+            parser.parse(edited_section_has_parsing_format)
         )
-
-        return self.__edit_survey_data()
 
     def edit_question(self, request: EditQuestionWithChatRequest):
-        self.ai_manager = AIManager(request.chat_session_id)
+        ai_manager = AIManager(request.chat_session_id)
 
-        formatted_edit_prompt = self.edit_survey_prompt.format(
-            user_prompt=request.user_prompt,
-            user_survey_data=request.question.model_dump_json(),
+        parser = PydanticOutputParser(pydantic_object=EditQuestionWithChatResponse)
+        edited_question_has_parsing_format = FunctionExecutionTimeMeasurer.run_function(
+            "질문 수정 태스크",
+            ai_manager.chat_with_history,
+            self.edit_survey_prompt.format(
+                user_prompt=chat_resolve_user_prompt(
+                    ai_manager=ai_manager, user_prompt=request.user_prompt
+                ),
+                user_survey_data=AllowedOtherManager.add_last_choice_in_question(
+                    request.question
+                ).model_dump_json(),
+            ),
+            False,
+            parser,
         )
 
-        self.survey_data_edit_content = self._SurveyDataEditContent(
-            formatted_edit_prompt, self.parser_to_question
+        return AllowedOtherManager.remove_last_choice_in_question(
+            parser.parse(edited_question_has_parsing_format)
         )
-
-        return self.__edit_survey_data()
-
-    def __edit_survey_data(self):
-        formatted_edit_prompt = self.survey_data_edit_content.formatted_edit_prompt
-        parser = self.survey_data_edit_content.parser
-
-        edited_survey = self.ai_manager.chat_with_history(
-            prompt=formatted_edit_prompt, is_new_chat_save=False
-        )
-
-        edited_survey_has_parsing_format = self.ai_manager.chat_with_parser(
-            prompt=self.survey_parsing_prompt.format(prototype_survey=edited_survey),
-            parser=parser,
-        )
-
-        return parser.parse(edited_survey_has_parsing_format)
