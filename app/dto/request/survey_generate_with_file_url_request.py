@@ -4,7 +4,7 @@ from app.core.error.error_code import ErrorCode
 from pydantic import BaseModel, field_validator
 from app.core.util.file_manager import FileManager
 
-supported_extensions = [".pdf", ".txt"]
+supported_extensions = [".pdf", ".txt", ".docx", ".pptx"]
 USER_PROMPT_TEXT_LIMIT = 1000
 
 
