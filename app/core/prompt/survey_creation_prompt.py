@@ -5,13 +5,14 @@ survey_creation_prompt = PromptTemplate(
     template="""
     You are a survey creation expert. 
     Create a survey based on the reference materials below.
-    Adhere to the user prompt: {user_prompt}.
-    - If there are no specific requests for the number of questions in the user prompt, Do not create too few questions (6 or fewer).
     Create survey targeting {target}.    
+    Adhere to the user prompt: {user_prompt}.
+    Prioritize the user prompt over the rules below.
+    - If there are no specific requests for the number of questions in the user prompt, Do not create too few questions (6 or fewer).
     
     ### Reference Materials
     {document}
-
+        
     ### Creation Rules
     1. Survey Title: Create a survey title based on the reference materials ended with "~에 대한 조사" (e.g., 설문 제작 및 참여에 대한 경험 조사)
     2. Survey Description: Write a survey description based on the reference materials with including a statement indicating that we are the {group_name} team.
@@ -22,15 +23,16 @@ survey_creation_prompt = PromptTemplate(
             - SINGLE_CHOICE: Create questions that ask for a single answer choice.
             - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.
             - TEXT_RESPONSE: Create questions that ask for a text response.
-        - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options. Must include "기타" in choices.
-            ex) 
-            "choices": [
+        - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.
+            - format
+            choices: [
                 "choice1",
                 "choice2",
+                "choice3",
                 ...,
                 "기타"
             ],
-            "is_allow_other": true
+            is_allow_other: true
         - Ensure that some of these questions utilize brand names and proper nouns that appear within the document.
         - Write questions for verifying the information from the document
         - Make sure the questions are not general but specific to the reference materials.

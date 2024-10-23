@@ -13,7 +13,7 @@ class Question(BaseModel):
     question_type: QuestionType = Field(
         description="Type of the question: SINGLE_CHOICE, MULTIPLE_CHOICE, TEXT_RESPONSE"
     )
-    title: str = Field(description="Title of the question")
+    title: str = Field(default="", description="Title of the question")
     is_required: bool = Field(
         description="Indicates whether answering the question is mandatory or not"
     )

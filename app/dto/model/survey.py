@@ -9,10 +9,12 @@ class Survey(BaseModel):
     id: Optional[UUID] = Field(
         default=None, description="""Unique identifier or null(not "null")"""
     )
-    title: str = Field(description="Title of the survey")
-    description: str = Field(description="Greeting message at the start of the survey")
+    title: str = Field(default="", description="Title of the survey")
+    description: str = Field(
+        default="", description="Greeting message at the start of the survey"
+    )
     finish_message: str = Field(
-        description="Message displayed upon completion of the survey"
+        default="", description="Message displayed upon completion of the survey"
     )
     sections: Optional[list[Section]] = Field(
         default_factory=list, description="Sections of the survey"

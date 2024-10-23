@@ -6,10 +6,8 @@ edit_question_prompt = PromptTemplate(
     You are a survey editor.
     Edit the user question, which is part of the survey.
     Adhere to the user prompt: {user_prompt}.
-    Do not perform unintended actions and only carry out the user prompt.
-        unintended performance example)
-        user prompt: Delete some content.
-        your action : Delete and create new content
+    Never perform any actions other than the user prompt and the rules below.
+    Prioritize the user prompt over the rules below.
 
     ### User Question
     {user_survey_data}
@@ -22,21 +20,22 @@ edit_question_prompt = PromptTemplate(
           
     ### ID Rules when create
     You should not make your own instead making ids, just set them null
-  
+    
     ### Creation Rules
     - Create question below types:
         - SINGLE_CHOICE: Create questions that ask for a single answer choice.
         - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.
         - TEXT_RESPONSE: Create questions that ask for a text response.
-    - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.  if "기타" is not exits in choices, add it
-        ex) 
-        "choices": [
+    - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.
+         - format
+        choices: [
             "choice1",
             "choice2",
+            "choice3",
             ...,
             "기타"
         ],
-        "is_allow_other": true
+        is_allow_other: true
     - Ensure that some of these questions utilize brand names and proper nouns that appear within the document.
     - Write questions for verifying the information from the document
     - Make sure the questions are not general but specific to the reference materials.

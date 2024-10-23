@@ -1,3 +1,4 @@
+from app.core.util.allowed_other_manager import AllowedOtherManager
 from app.dto.model.question import Question
 from app.dto.model.section import Section
 from app.dto.model.survey import Survey
@@ -21,30 +22,6 @@ from app.core.util.function_execution_time_measurer import FunctionExecutionTime
 from app.core.util.user_prompt_resolve_chat import chat_resolve_user_prompt
 
 
-def remove_last_choice_if_allowed_other_in_survey(survey: Survey):
-    for section in survey.sections:
-        if section.questions:
-            for question in section.questions:
-                if question.is_allow_other and question.choices:
-                    question.choices.pop()
-    return survey
-
-
-def remove_last_choice_if_allowed_other_in_section(section: Section):
-    if section.questions:
-        for question in section.questions:
-            if question.is_allow_other and question.choices:
-                question.choices.pop()
-    return section
-
-
-def remove_last_choice_if_allowed_other_in_question(question: Question):
-    if question.choices:
-        if question.is_allow_other and question.choices:
-            question.choices.pop()
-    return question
-
-
 class EditWithChatService:
     def __init__(self):
         self.edit_survey_prompt = edit_survey_prompt
@@ -64,14 +41,16 @@ class EditWithChatService:
                     user_prompt=chat_resolve_user_prompt(
                         ai_manager=ai_manager, user_prompt=request.user_prompt
                     ),
-                    user_survey_data=request.survey.model_dump_json(),
+                    user_survey_data=AllowedOtherManager.add_last_choice_in_survey(
+                        request.survey
+                    ).model_dump_json(),
                 ),
                 False,
                 parser,
             )
         )
 
-        return remove_last_choice_if_allowed_other_in_survey(
+        return AllowedOtherManager.remove_last_choice_in_survey(
             parser.parse(edited_total_survey_has_parsing_format)
         )
 
@@ -86,13 +65,15 @@ class EditWithChatService:
                 user_prompt=chat_resolve_user_prompt(
                     ai_manager=ai_manager, user_prompt=request.user_prompt
                 ),
-                user_survey_data=request.section.model_dump_json(),
+                user_survey_data=AllowedOtherManager.add_last_choice_in_section(
+                    request.section
+                ).model_dump_json(),
             ),
             False,
             parser,
         )
 
-        return remove_last_choice_if_allowed_other_in_section(
+        return AllowedOtherManager.remove_last_choice_in_section(
             parser.parse(edited_section_has_parsing_format)
         )
 
@@ -107,12 +88,14 @@ class EditWithChatService:
                 user_prompt=chat_resolve_user_prompt(
                     ai_manager=ai_manager, user_prompt=request.user_prompt
                 ),
-                user_survey_data=request.question.model_dump_json(),
+                user_survey_data=AllowedOtherManager.add_last_choice_in_question(
+                    request.question
+                ).model_dump_json(),
             ),
             False,
             parser,
         )
 
-        return remove_last_choice_if_allowed_other_in_question(
+        return AllowedOtherManager.remove_last_choice_in_question(
             parser.parse(edited_question_has_parsing_format)
         )

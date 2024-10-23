@@ -6,32 +6,33 @@ edit_survey_prompt = PromptTemplate(
     You are a survey editor.
     Edit user survey.
     Adhere to the user prompt: {user_prompt}.
-    Do not perform unintended actions and only carry out the user prompt.
-        unintended performance example)
-        user prompt: Delete some content.
-        your action : Delete and create new content
+    Never perform any actions other than the user prompt and the rules below.
+    Prioritize the user prompt over the rules below.
 
     ### User Survey
     {user_survey_data}
     
     ### ID Rules when keep
-    Just keep the provided content.
+    You should not edit the ids.
+    #### section format
+    - "id": User Survey's UUID,
+    - "title": "edited title",
+    - "description": "edited description",
     
     ### ID Rules when edit
     You should not edit the ids.
     #### section format
-    "id": User Survey's UUID,
-    "title": "edited title",
-    "description": "edited description",
-    ...
+    - "id": User Survey's UUID,
+    - "title": "edited title",
+    - "description": "edited description",
           
     ### ID Rules when create
     You should not make your own instead making ids, just set them null
     #### section format
-    "id": null,
-    "title": "some title",
-    "description": "some description",
-    "questions": [
+    - "id": null,
+    - "title": "some title",
+    - "description": "some description",
+    - "questions": [
       "id": null
       ...
     ...,
@@ -39,27 +40,26 @@ edit_survey_prompt = PromptTemplate(
     
     ### Creation Rules
     1. Survey Title: Create a survey title based on the reference materials ended with "~에 대한 조사" (e.g., 설문 제작 및 참여에 대한 경험 조사)
-    2. Survey Description
-    3. Finish Message: Write a completion message based on the reference materials.
-    4. Sections: Create sections based on the reference materials that become key themes in structuring the survey questions.
+    2. Sections: Create sections based on the reference materials that become key themes in structuring the survey questions.
         - If you need to delete section set it empty list. Keep others intact.
         - Section title
         - Section description
-    5. Questions:
+    3. Questions:
         - If you need to delete question set it empty list. Keep others intact.
         - Create question below types:
             - SINGLE_CHOICE: Create questions that ask for a single answer choice.
             - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.
             - TEXT_RESPONSE: Create questions that ask for a text response.
-        - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.  if "기타" is not exits in choices, add it.
-            ex) 
-            "choices": [
+        - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.
+             - format
+            choices: [
                 "choice1",
                 "choice2",
+                "choice3",
                 ...,
                 "기타"
             ],
-            "is_allow_other": true
+            is_allow_other: true
         - Ensure that some of these questions utilize brand names and proper nouns that appear within the document.
         - Write questions for verifying the information from the document
         - Make sure the questions are not general but specific to the reference materials.

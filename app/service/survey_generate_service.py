@@ -17,16 +17,7 @@ from app.dto.request.survey_generate_with_text_document_request import (
 from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
 from app.dto.model.survey import Survey
 from app.core.util.user_prompt_resolve_chat import chat_resolve_user_prompt
-
-
-def remove_last_choice_if_allowed_other(survey):
-    for section in survey.sections:
-        if section.questions:
-            for question in section.questions:
-                if question.is_allow_other and question.choices:
-                    question.choices.pop()
-
-    return survey
+from app.core.util.allowed_other_manager import AllowedOtherManager
 
 
 class SurveyGenerateService:
@@ -129,7 +120,7 @@ class SurveyGenerateService:
 
         parsed_survey = self.parser_to_survey.parse(generated_survey)
 
-        return remove_last_choice_if_allowed_other(parsed_survey)
+        return AllowedOtherManager.remove_last_choice_in_survey(parsed_survey)
 
     async def __summarize_document(self, text_document):
         return await FunctionExecutionTimeMeasurer.run_async_function(
