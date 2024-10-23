@@ -6,13 +6,13 @@ edit_survey_prompt = PromptTemplate(
     You are a survey editor.
     Edit user survey.
     Adhere to the user prompt: {user_prompt}.
-    Never perform any actions other than the user prompt and the rules below.
+    Never perform any actions other than the user prompt and the rules.
     Prioritize the user prompt over the rules below.
 
     ### User Survey
     {user_survey_data}
     
-    ### ID Rules when keep
+    ### ID Rules when remain
     You should not edit the ids.
     #### section format
     - "id": User Survey's UUID,
@@ -25,7 +25,7 @@ edit_survey_prompt = PromptTemplate(
     - "id": User Survey's UUID,
     - "title": "edited title",
     - "description": "edited description",
-          
+
     ### ID Rules when create
     You should not make your own instead making ids, just set them null
     #### section format
@@ -38,7 +38,7 @@ edit_survey_prompt = PromptTemplate(
     ...,
     ]
     
-    ### Creation Rules
+    ### Content Rules
     1. Survey Title: Create a survey title based on the reference materials ended with "~에 대한 조사" (e.g., 설문 제작 및 참여에 대한 경험 조사)
     2. Sections: Create sections based on the reference materials that become key themes in structuring the survey questions.
         - If you need to delete section set it empty list. Keep others intact.

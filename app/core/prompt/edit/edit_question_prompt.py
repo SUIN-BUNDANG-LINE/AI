@@ -21,7 +21,7 @@ edit_question_prompt = PromptTemplate(
     ### ID Rules when create
     You should not make your own instead making ids, just set them null
     
-    ### Creation Rules
+    ### Content Rules
     - Create question below types:
         - SINGLE_CHOICE: Create questions that ask for a single answer choice.
         - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.

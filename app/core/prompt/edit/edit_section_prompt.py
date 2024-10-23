@@ -35,7 +35,7 @@ edit_section_prompt = PromptTemplate(
     ...,
     ]
     
-    ### Creation Rules
+    ### Content Rules
     - If you need to delete question set it null.
     - Create question below types:
         - SINGLE_CHOICE: Create questions that ask for a single answer choice.
