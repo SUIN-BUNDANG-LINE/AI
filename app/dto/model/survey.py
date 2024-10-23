@@ -6,10 +6,16 @@ from uuid import UUID
 
 
 class Survey(BaseModel):
-    id: Optional[UUID] = Field(default=None, description="Unique identifier or null")
-    title: str = Field(description="Title of the survey")
-    description: str = Field(description="Greeting message at the start of the survey")
-    finish_message: str = Field(
-        description="Message displayed upon completion of the survey"
+    id: Optional[UUID] = Field(
+        default=None, description="""Unique identifier or null(not "null")"""
     )
-    sections: list[Section] = Field(description="Sections of the survey")
+    title: str = Field(default="", description="Title of the survey")
+    description: str = Field(
+        default="", description="Greeting message at the start of the survey"
+    )
+    finish_message: str = Field(
+        default="", description="Message displayed upon completion of the survey"
+    )
+    sections: Optional[list[Section]] = Field(
+        default_factory=list, description="Sections of the survey"
+    )

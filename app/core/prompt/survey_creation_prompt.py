@@ -1,57 +1,30 @@
 from langchain.prompts import PromptTemplate
 
 
-edit_survey_prompt = PromptTemplate(
+survey_creation_prompt = PromptTemplate(
     template="""
-    You are a survey editor.
-    Edit user survey.
+    You are a survey creation expert. 
+    Create a survey based on the reference materials below.
+    Create survey targeting {target}.    
     Adhere to the user prompt: {user_prompt}.
-    Never perform any actions other than the user prompt and the rules.
     Prioritize the user prompt over the rules below.
-
-    ### User Survey
-    {user_survey_data}
+    - If there are no specific requests for the number of questions in the user prompt, Do not create too few questions (6 or fewer).
     
-    ### ID Rules when remain
-    You should not edit the ids.
-    #### section format
-    - "id": User Survey's UUID,
-    - "title": "edited title",
-    - "description": "edited description",
-    
-    ### ID Rules when edit
-    You should not edit the ids.
-    #### section format
-    - "id": User Survey's UUID,
-    - "title": "edited title",
-    - "description": "edited description",
-
-    ### ID Rules when create
-    You should not make your own instead making ids, just set them null
-    #### section format
-    - "id": null,
-    - "title": "some title",
-    - "description": "some description",
-    - "questions": [
-      "id": null
-      ...
-    ...,
-    ]
-    
-    ### Content Rules
+    ### Reference Materials
+    {document}
+        
+    ### Creation Rules
     1. Survey Title: Create a survey title based on the reference materials ended with "~에 대한 조사" (e.g., 설문 제작 및 참여에 대한 경험 조사)
-    2. Sections: Create sections based on the reference materials that become key themes in structuring the survey questions.
-        - If you need to delete section set it empty list. Keep others intact.
-        - Section title
-        - Section description
-    3. Questions:
-        - If you need to delete question set it empty list. Keep others intact.
+    2. Survey Description: Write a survey description based on the reference materials with including a statement indicating that we are the {group_name} team.
+    3. Finish Message: Write a completion message based on the reference materials.
+    4. Sections: Create sections based on the reference materials that become key themes in structuring the survey questions.
+    5. Questions:
         - Create question below types:
             - SINGLE_CHOICE: Create questions that ask for a single answer choice.
             - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.
             - TEXT_RESPONSE: Create questions that ask for a text response.
         - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.
-             - format
+            - format
             choices: [
                 "choice1",
                 "choice2",
@@ -82,5 +55,10 @@ edit_survey_prompt = PromptTemplate(
             - “Rate the quality of our products.”
             - “Rate the quality of our support.”
     """,
-    input_variables=["user_prompt", "user_survey_data"],
+    input_variables=[
+        "target",
+        "group_name",
+        "user_prompt",
+        "document",
+    ],
 )

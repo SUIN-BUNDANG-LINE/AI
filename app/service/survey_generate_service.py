@@ -1,12 +1,12 @@
 import asyncio
 from langchain.output_parsers import PydanticOutputParser
-from app.core.prompt.summation.document_summation_prompt import (
+from app.core.prompt.document_summation_prompt import (
     document_summation_prompt,
 )
 from app.core.util.ai_manager import AIManager
 from app.core.util.document_manager import DocumentManager
-from app.core.prompt.generate.survey_parsing_prompt import survey_parsing_prompt
-from app.core.prompt.generate.survey_creation_prompt import survey_creation_prompt
+from app.core.prompt.prompt_resolve_prompt import prompt_resolve_prompt
+from app.core.prompt.survey_creation_prompt import survey_creation_prompt
 from app.dto.response.survey_generate_response import SurveyGenerateResponse
 from app.dto.request.survey_generate_with_file_url_request import (
     SurveyGenerateWithFileUrlRequest,
@@ -16,6 +16,8 @@ from app.dto.request.survey_generate_with_text_document_request import (
 )
 from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
 from app.dto.model.survey import Survey
+from app.core.util.user_prompt_resolve_chat import chat_resolve_user_prompt
+from app.core.util.allowed_other_manager import AllowedOtherManager
 
 
 class SurveyGenerateService:
@@ -23,7 +25,7 @@ class SurveyGenerateService:
         self.ai_manager = None
         self.survey_generate_content = None
         self.document_manger = DocumentManager()
-        self.survey_parsing_prompt = survey_parsing_prompt
+        self.prompt_resolver_prompt = prompt_resolve_prompt
         self.survey_creation_prompt = survey_creation_prompt
         self.document_summation_prompt = document_summation_prompt
         self.parser_to_survey = PydanticOutputParser(pydantic_object=Survey)
@@ -54,7 +56,7 @@ class SurveyGenerateService:
             user_prompt=request.user_prompt,
         )
 
-        return await self.__generate_survey_and_summarize_document()
+        return await self.__generate_survey_with_saving_summarized_document()
 
     async def generate_survey_with_text_document(
         self, request: SurveyGenerateWithTextDocumentRequest
@@ -68,25 +70,13 @@ class SurveyGenerateService:
             user_prompt=request.user_prompt,
         )
 
-        return await self.__generate_survey_and_summarize_document()
+        return await self.__generate_survey_with_saving_summarized_document()
 
-    async def __generate_survey_and_summarize_document(self):
+    async def __generate_survey_with_saving_summarized_document(self):
         target = self.survey_generate_content.target
         group_name = self.survey_generate_content.group_name
         text_document = self.survey_generate_content.text_document
-        user_prompt = self.survey_generate_content.user_prompt
-
-        user_prompt_with_basic_prompt = user_prompt
-
-        if target != "":
-            user_prompt_with_basic_prompt = (
-                f" {target}을 대상으로 하는 설문조사를 생성해주세요" + user_prompt
-            )
-
-        if group_name != "":
-            user_prompt_with_basic_prompt = (
-                f" 인사말에는 {group_name} 팀임을 밝히는 말을 포함해주세요" + user_prompt
-            )
+        user_basic_prompt = self.survey_generate_content.user_prompt
 
         document_summation_task = asyncio.create_task(
             self.__summarize_document(text_document)
@@ -94,7 +84,9 @@ class SurveyGenerateService:
 
         survey_generation_task = asyncio.create_task(
             self.__generate_survey(
-                user_prompt_with_basic_prompt,
+                user_basic_prompt,
+                target,
+                group_name,
                 text_document,
             )
         )
@@ -107,44 +99,33 @@ class SurveyGenerateService:
 
     async def __generate_survey(
         self,
-        user_prompt_with_basic_prompt,
+        user_prompt,
+        target,
+        group_name,
         text_document,
     ):
-        prototype_survey = await self.__generate_prototype_survey(
-            user_prompt_with_basic_prompt, text_document
-        )
-
-        generated_survey_has_parsing_format = await self.__parse_survey(
-            prototype_survey
-        )
-
-        return self.parser_to_survey.parse(generated_survey_has_parsing_format)
-
-    async def __generate_prototype_survey(
-        self, user_prompt_with_basic_prompt, text_document
-    ):
-        return await FunctionExecutionTimeMeasurer.run_async_function(
-            "설문 프로토타입 생성 태스크",
+        generated_survey = await FunctionExecutionTimeMeasurer.run_async_function(
+            "설문 생성 태스크",
             self.ai_manager.async_chat,
             self.survey_creation_prompt.format(
-                user_prompt=user_prompt_with_basic_prompt,
+                user_prompt=chat_resolve_user_prompt(
+                    ai_manager=self.ai_manager, user_prompt=user_prompt
+                ),
+                target=target,
+                group_name=group_name,
                 document=text_document,
             ),
-        )
-
-    async def __parse_survey(self, prototype_survey):
-        return await FunctionExecutionTimeMeasurer.run_async_function(
-            "설문 파싱 태스크",
-            self.ai_manager.async_chat_with_parser,
-            survey_parsing_prompt.format(prototype_survey=prototype_survey),
             self.parser_to_survey,
         )
 
+        parsed_survey = self.parser_to_survey.parse(generated_survey)
+
+        return AllowedOtherManager.remove_last_choice_in_survey(parsed_survey)
+
     async def __summarize_document(self, text_document):
-        document_summation = await FunctionExecutionTimeMeasurer.run_async_function(
+        return await FunctionExecutionTimeMeasurer.run_async_function(
             "문서 요약 태스크",
             self.ai_manager.async_chat_with_history,
             document_summation_prompt.format(user_document=text_document),
             is_new_chat_save=True,
         )
-        return document_summation
