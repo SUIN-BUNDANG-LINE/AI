@@ -50,8 +50,6 @@ class EditWithChatService:
             )
         )
 
-        print(edited_total_survey_has_parsing_format)
-
         return AllowedOtherManager.remove_last_choice_in_survey(
             parser.parse(edited_total_survey_has_parsing_format)
         )
