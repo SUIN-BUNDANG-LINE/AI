@@ -5,7 +5,7 @@ from pydantic import BaseModel, field_validator
 from app.core.util.file_manager import FileManager
 
 supported_extensions = [".pdf", ".txt", ".docx", ".pptx"]
-USER_PROMPT_TEXT_LIMIT = 1000
+USER_PROMPT_TEXT_LIMIT = 20000
 
 
 class SurveyGenerateWithFileUrlRequest(BaseModel):

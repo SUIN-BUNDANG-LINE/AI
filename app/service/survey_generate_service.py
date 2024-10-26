@@ -11,12 +11,8 @@ from app.dto.response.survey_generate_response import SurveyGenerateResponse
 from app.dto.request.survey_generate_with_file_url_request import (
     SurveyGenerateWithFileUrlRequest,
 )
-from app.dto.request.survey_generate_with_text_document_request import (
-    SurveyGenerateWithTextDocumentRequest,
-)
 from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
 from app.dto.model.survey import Survey
-from app.core.util.user_prompt_resolve_chat import chat_resolve_user_prompt
 from app.core.util.allowed_other_manager import AllowedOtherManager
 
 
@@ -43,11 +39,11 @@ class SurveyGenerateService:
             self.text_document = text_document
             self.user_prompt = user_prompt
 
-    async def generate_survey_with_file_url(
-        self, request: SurveyGenerateWithFileUrlRequest
-    ):
+    async def generate_survey(self, request: SurveyGenerateWithFileUrlRequest):
         self.ai_manager = AIManager(request.chat_session_id)
-        text_document = self.document_manger.text_from_file_url(request.file_url)
+        text_document = ""
+        if request.file_url is not None:
+            text_document = self.document_manger.text_from_file_url(request.file_url)
 
         self.survey_generate_content = self._SurveyGenerateContent(
             target=request.target,
@@ -56,44 +52,32 @@ class SurveyGenerateService:
             user_prompt=request.user_prompt,
         )
 
-        return await self.__generate_survey_with_saving_summarized_document()
-
-    async def generate_survey_with_text_document(
-        self, request: SurveyGenerateWithTextDocumentRequest
-    ):
-        self.ai_manager = AIManager(request.chat_session_id)
-
-        self.survey_generate_content = self._SurveyGenerateContent(
-            target=request.target,
-            group_name=request.group_name,
-            text_document=request.text_document,
-            user_prompt=request.user_prompt,
-        )
-
-        return await self.__generate_survey_with_saving_summarized_document()
-
-    async def __generate_survey_with_saving_summarized_document(self):
         target = self.survey_generate_content.target
         group_name = self.survey_generate_content.group_name
         text_document = self.survey_generate_content.text_document
-        user_basic_prompt = self.survey_generate_content.user_prompt
+        user_prompt = self.survey_generate_content.user_prompt
 
-        document_summation_task = asyncio.create_task(
-            self.__summarize_document(text_document)
+        document_summation_task = (
+            asyncio.create_task(self.__summarize_document(text_document + user_prompt))
+            if request.chat_session_id is not None
+            else None
         )
 
         survey_generation_task = asyncio.create_task(
             self.__generate_survey(
-                user_basic_prompt,
+                user_prompt,
                 target,
                 group_name,
                 text_document,
             )
         )
 
-        (document_summation, parsed_generated_survey) = await asyncio.gather(
-            document_summation_task, survey_generation_task
-        )
+        if document_summation_task:
+            parsed_generated_survey, document_summation = await asyncio.gather(
+                survey_generation_task, document_summation_task
+            )
+        else:
+            parsed_generated_survey = await survey_generation_task
 
         return SurveyGenerateResponse(survey=parsed_generated_survey)
 
@@ -108,9 +92,7 @@ class SurveyGenerateService:
             "설문 생성 태스크",
             self.ai_manager.async_chat,
             self.survey_creation_prompt.format(
-                user_prompt=chat_resolve_user_prompt(
-                    ai_manager=self.ai_manager, user_prompt=user_prompt
-                ),
+                user_prompt=user_prompt,
                 target=target,
                 group_name=group_name,
                 document=text_document,
@@ -122,10 +104,12 @@ class SurveyGenerateService:
 
         return AllowedOtherManager.remove_last_choice_in_survey(parsed_survey)
 
-    async def __summarize_document(self, text_document):
+    async def __summarize_document(self, text_document_and_user_prompt):
         return await FunctionExecutionTimeMeasurer.run_async_function(
             "문서 요약 태스크",
             self.ai_manager.async_chat_with_history,
-            document_summation_prompt.format(user_document=text_document),
+            document_summation_prompt.format(
+                user_document=text_document_and_user_prompt
+            ),
             is_new_chat_save=True,
         )

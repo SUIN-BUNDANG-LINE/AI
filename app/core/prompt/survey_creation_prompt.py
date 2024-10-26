@@ -4,11 +4,14 @@ from langchain.prompts import PromptTemplate
 survey_creation_prompt = PromptTemplate(
     template="""
     You are a survey creation expert. 
-    Create a survey based on the reference materials below.
-    Create survey targeting {target}.    
-    Adhere to the user prompt: {user_prompt}.
+    Create survey targeting {target}.
+    Create a survey based on the reference materials and user prompt.
+    Adhere to the user prompt
     Prioritize the user prompt over the rules below.
     - If there are no specific requests for the number of questions in the user prompt, Do not create too few questions (6 or fewer).
+    
+    ### User Prompt
+    {user_prompt}
     
     ### Reference Materials
     {document}
@@ -23,7 +26,7 @@ survey_creation_prompt = PromptTemplate(
             - SINGLE_CHOICE: Create questions that ask for a single answer choice.
             - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.
             - TEXT_RESPONSE: Create questions that ask for a text response.
-        - description: description of the question
+        - Description: description of the question
         - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.
             - format
             choices: [
