@@ -12,6 +12,4 @@ def chat_resolve_user_prompt(ai_manager, user_prompt):
         "사용자 프롬프트 명확화 태스크", ai_manager.chat, prompt
     )
 
-    print(new_user_prompt)
-
     return new_user_prompt
