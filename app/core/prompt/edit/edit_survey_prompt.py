@@ -82,6 +82,12 @@ edit_survey_prompt = PromptTemplate(
             ex) Instead of “Rate the quality of our products and support,” split into:
             - “Rate the quality of our products.”
             - “Rate the quality of our support.”
+            
+    ### Reason Field
+    - Explain the reason for your edit.
+    - If an action was taken that wasn’t specified in the user prompt, explain the reason for it.
+    - Explain the user request as you understand it.
+    - Respond same as user prompt language.
     """,
     input_variables=["user_prompt", "user_survey_data"],
 )
