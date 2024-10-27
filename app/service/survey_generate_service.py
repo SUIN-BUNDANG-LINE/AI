@@ -26,40 +26,22 @@ class SurveyGenerateService:
         self.document_summation_prompt = document_summation_prompt
         self.parser_to_survey = PydanticOutputParser(pydantic_object=Survey)
 
-    class _SurveyGenerateContent:
-        def __init__(
-            self,
-            target: str,
-            group_name: str,
-            text_document: str,
-            user_prompt: str,
-        ):
-            self.target = target
-            self.group_name = group_name
-            self.text_document = text_document
-            self.user_prompt = user_prompt
-
     async def generate_survey(self, request: SurveyGenerateRequest):
-        self.ai_manager = AIManager(request.chat_session_id)
+        chat_session_id = request.chat_session_id
+
+        print("chat_session_id", chat_session_id)
+        self.ai_manager = AIManager(chat_session_id)
         text_document = ""
         if request.file_url is not None:
             text_document = self.document_manger.text_from_file_url(request.file_url)
 
-        self.survey_generate_content = self._SurveyGenerateContent(
-            target=request.target,
-            group_name=request.group_name,
-            text_document=text_document,
-            user_prompt=request.user_prompt,
-        )
-
-        target = self.survey_generate_content.target
-        group_name = self.survey_generate_content.group_name
-        text_document = self.survey_generate_content.text_document
-        user_prompt = self.survey_generate_content.user_prompt
+        target = request.target
+        group_name = request.group_name
+        user_prompt = request.user_prompt
 
         document_summation_task = (
             asyncio.create_task(self.__summarize_document(text_document + user_prompt))
-            if request.chat_session_id is not None
+            if chat_session_id is not None
             else None
         )
 
