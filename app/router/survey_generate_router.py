@@ -1,5 +1,5 @@
-from app.dto.request.survey_generate_with_file_url_request import (
-    SurveyGenerateWithFileUrlRequest,
+from app.dto.request.survey_generate_request import (
+    SurveyGenerateRequest,
 )
 from fastapi import APIRouter, Depends
 from app.service.survey_generate_service import SurveyGenerateService
@@ -13,7 +13,7 @@ def get_survey_generate_service():
 
 @router.post("/generate/survey")
 async def generate_survey(
-    request: SurveyGenerateWithFileUrlRequest,
+    request: SurveyGenerateRequest,
     generate_service=Depends(get_survey_generate_service),
 ):
     return await generate_service.generate_survey(request)

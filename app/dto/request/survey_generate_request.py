@@ -1,3 +1,4 @@
+from typing import Optional
 from uuid import UUID
 from app.core.error.business_exception import business_exception
 from app.core.error.error_code import ErrorCode
@@ -8,15 +9,17 @@ supported_extensions = [".pdf", ".txt", ".docx", ".pptx"]
 USER_PROMPT_TEXT_LIMIT = 20000
 
 
-class SurveyGenerateWithFileUrlRequest(BaseModel):
-    chat_session_id: UUID
+class SurveyGenerateRequest(BaseModel):
+    chat_session_id: Optional[UUID]
     target: str
     group_name: str
-    file_url: str
+    file_url: Optional[str]
     user_prompt: str
 
     @field_validator("file_url")
     def validate_file_url(cls, value):
+        if value is None:
+            return value
         extension = FileManager.get_file_extension_from_url(value)
         if extension not in supported_extensions:
             raise business_exception(ErrorCode.FILE_EXTENSION_NOT_SUPPORTED)

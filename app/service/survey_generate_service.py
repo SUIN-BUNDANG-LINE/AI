@@ -8,8 +8,8 @@ from app.core.util.document_manager import DocumentManager
 from app.core.prompt.prompt_resolve_prompt import prompt_resolve_prompt
 from app.core.prompt.survey_creation_prompt import survey_creation_prompt
 from app.dto.response.survey_generate_response import SurveyGenerateResponse
-from app.dto.request.survey_generate_with_file_url_request import (
-    SurveyGenerateWithFileUrlRequest,
+from app.dto.request.survey_generate_request import (
+    SurveyGenerateRequest,
 )
 from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
 from app.dto.model.survey import Survey
@@ -39,7 +39,7 @@ class SurveyGenerateService:
             self.text_document = text_document
             self.user_prompt = user_prompt
 
-    async def generate_survey(self, request: SurveyGenerateWithFileUrlRequest):
+    async def generate_survey(self, request: SurveyGenerateRequest):
         self.ai_manager = AIManager(request.chat_session_id)
         text_document = ""
         if request.file_url is not None:
