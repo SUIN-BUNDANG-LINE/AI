@@ -84,8 +84,7 @@ edit_survey_prompt = PromptTemplate(
             - “Rate the quality of our support.”
             
     ### Reason Field
-    - Explain the reason for your edit as detail as possible.
-    - Explain why you changed survey title, section title, question, etc.
+    - Explain in detail how the user prompt was implemented.
     - Respond same as user prompt language.
     """,
     input_variables=["user_prompt", "user_survey_data"],
