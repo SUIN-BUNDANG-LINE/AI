@@ -26,7 +26,7 @@ edit_question_prompt = PromptTemplate(
         - SINGLE_CHOICE: Create questions that ask for a single answer choice.
         - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.
         - TEXT_RESPONSE: Create questions that ask for a text response.
-    - description: description of the question
+    - Description: description of the question
     - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.
          - format
         choices: [
@@ -59,6 +59,9 @@ edit_question_prompt = PromptTemplate(
         - “Rate the quality of our products.”
         - “Rate the quality of our support.”
         
+    ### Reason Field
+    - Explain in detail how the user prompt was implemented.
+    - Respond same as user prompt language.
     """,
     input_variables=["user_prompt", "user_survey_data"],
 )

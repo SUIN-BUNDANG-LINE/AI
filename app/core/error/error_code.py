@@ -26,3 +26,7 @@ class ErrorCode(Enum):
         HTTPStatus.BAD_REQUEST,
         {"code": "PY0005", "message": "유효하지 않은 설문 데이터 타입입니다"},
     )
+    CHAT_SESSION_ID_NOT_EXIST = (
+        HTTPStatus.BAD_REQUEST,
+        {"code": "PY0006", "message": "챗 세션 ID가 존재하지 않습니다"},
+    )

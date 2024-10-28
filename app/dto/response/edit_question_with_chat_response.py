@@ -1,5 +1,7 @@
+from pydantic import Field
+
 from app.dto.model.question import Question
 
 
 class EditQuestionWithChatResponse(Question):
-    pass
+    reason: str = Field(description="Explanation for your edit")

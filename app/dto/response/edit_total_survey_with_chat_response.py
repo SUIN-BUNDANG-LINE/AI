@@ -1,5 +1,7 @@
+from pydantic import Field
+
 from app.dto.model.survey import Survey
 
 
 class EditTotalSurveyWithChatResponse(Survey):
-    pass
+    reason: str = Field(description="Explanation for your edit")

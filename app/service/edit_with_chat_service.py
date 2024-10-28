@@ -1,7 +1,4 @@
 from app.core.util.allowed_other_manager import AllowedOtherManager
-from app.dto.model.question import Question
-from app.dto.model.section import Section
-from app.dto.model.survey import Survey
 from app.dto.request.edit_survey_with_chat_request import EditSurveyWithChatRequest
 from app.dto.request.edit_section_with_chat_request import EditSectionWithChatRequest
 from app.dto.request.edit_question_with_chat_request import EditQuestionWithChatRequest
@@ -50,9 +47,11 @@ class EditWithChatService:
             )
         )
 
-        return AllowedOtherManager.remove_last_choice_in_survey(
-            parser.parse(edited_total_survey_has_parsing_format)
-        )
+        result = parser.parse(edited_total_survey_has_parsing_format)
+
+        print(result.reason)
+
+        return AllowedOtherManager.remove_last_choice_in_survey(result)
 
     def edit_section(self, request: EditSectionWithChatRequest):
         ai_manager = AIManager(request.chat_session_id)
@@ -73,9 +72,11 @@ class EditWithChatService:
             parser,
         )
 
-        return AllowedOtherManager.remove_last_choice_in_section(
-            parser.parse(edited_section_has_parsing_format)
-        )
+        result = parser.parse(edited_section_has_parsing_format)
+
+        print(result.reason)
+
+        return AllowedOtherManager.remove_last_choice_in_section(result)
 
     def edit_question(self, request: EditQuestionWithChatRequest):
         ai_manager = AIManager(request.chat_session_id)
@@ -96,6 +97,8 @@ class EditWithChatService:
             parser,
         )
 
-        return AllowedOtherManager.remove_last_choice_in_question(
-            parser.parse(edited_question_has_parsing_format)
-        )
+        result = parser.parse(edited_question_has_parsing_format)
+
+        print(result.reason)
+
+        return AllowedOtherManager.remove_last_choice_in_question(result)
