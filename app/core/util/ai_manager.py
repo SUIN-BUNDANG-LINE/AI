@@ -31,8 +31,7 @@ class AIManager:
         return response.content
 
     def chat_with_history(self, prompt, is_new_chat_save, parser=None):
-        if self._chat_session_id is None:
-            raise business_exception(ErrorCode.CHAT_SESSION_ID_NOT_EXIST)
+        self.__check_chat_session_id_exist()
         message_storage = get_message_storage(self._chat_session_id)
         message_history = message_storage.messages
 
@@ -49,8 +48,7 @@ class AIManager:
         return response.content
 
     async def async_chat_with_history(self, prompt, is_new_chat_save, parser=None):
-        if self._chat_session_id is None:
-            raise business_exception(ErrorCode.CHAT_SESSION_ID_NOT_EXIST)
+        self.__check_chat_session_id_exist()
         message_storage = get_message_storage(self._chat_session_id)
         message_history = message_storage.messages
 
@@ -66,3 +64,7 @@ class AIManager:
             message_storage.add_message(response)
 
         return response.content
+
+    def __check_chat_session_id_exist(self):
+        if self._chat_session_id is None:
+            raise business_exception(ErrorCode.CHAT_SESSION_ID_NOT_EXIST)
