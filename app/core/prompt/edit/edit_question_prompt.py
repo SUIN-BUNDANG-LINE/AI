@@ -59,6 +59,9 @@ edit_question_prompt = PromptTemplate(
         - “Rate the quality of our products.”
         - “Rate the quality of our support.”
         
+    ### Reason Field
+    - Explain in detail how the user prompt was implemented.
+    - Respond same as user prompt language.
     """,
     input_variables=["user_prompt", "user_survey_data"],
 )
