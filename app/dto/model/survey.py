@@ -1,5 +1,4 @@
 from typing import Optional
-
 from app.dto.model.section import Section
 from pydantic import BaseModel, Field
 from uuid import UUID

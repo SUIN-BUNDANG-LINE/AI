@@ -1,7 +1,4 @@
 from app.core.util.allowed_other_manager import AllowedOtherManager
-from app.dto.model.question import Question
-from app.dto.model.section import Section
-from app.dto.model.survey import Survey
 from app.dto.request.edit_survey_with_chat_request import EditSurveyWithChatRequest
 from app.dto.request.edit_section_with_chat_request import EditSectionWithChatRequest
 from app.dto.request.edit_question_with_chat_request import EditQuestionWithChatRequest
