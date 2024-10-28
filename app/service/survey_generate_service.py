@@ -26,16 +26,16 @@ class SurveyGenerateService:
         self.document_summation_prompt = document_summation_prompt
         self.parser_to_survey = PydanticOutputParser(pydantic_object=Survey)
 
-    async def generate_survey(self, request: SurveyGenerateRequest):
+    async def generate_survey_with_document_summation(
+        self, request: SurveyGenerateRequest
+    ):
         chat_session_id = request.chat_session_id
-
         self.ai_manager = AIManager(chat_session_id)
+
         text_document = ""
         if request.file_url is not None:
             text_document = self.document_manger.text_from_file_url(request.file_url)
 
-        target = request.target
-        group_name = request.group_name
         user_prompt = request.user_prompt
 
         document_summation_task = (
@@ -47,8 +47,8 @@ class SurveyGenerateService:
         survey_generation_task = asyncio.create_task(
             self.__generate_survey(
                 user_prompt,
-                target,
-                group_name,
+                request.target,
+                request.group_name,
                 text_document,
             )
         )

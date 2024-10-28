@@ -16,4 +16,4 @@ async def generate_survey(
     request: SurveyGenerateRequest,
     generate_service=Depends(get_survey_generate_service),
 ):
-    return await generate_service.generate_survey(request)
+    return await generate_service.generate_survey_with_document_summation(request)
