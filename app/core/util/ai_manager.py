@@ -50,7 +50,6 @@ class AIManager:
         return response.content
 
     async def async_chat_with_history(self, prompt, is_new_chat_save, parser=None):
-        print(self._chat_session_id is None)
         if self._chat_session_id is None:
             raise business_exception(ErrorCode.CHAT_SESSION_ID_NOT_EXIST)
         message_storage = get_message_storage(self._chat_session_id)

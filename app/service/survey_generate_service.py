@@ -29,7 +29,6 @@ class SurveyGenerateService:
     async def generate_survey(self, request: SurveyGenerateRequest):
         chat_session_id = request.chat_session_id
 
-        print("chat_session_id", chat_session_id)
         self.ai_manager = AIManager(chat_session_id)
         text_document = ""
         if request.file_url is not None:
