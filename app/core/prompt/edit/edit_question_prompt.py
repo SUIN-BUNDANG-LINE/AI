@@ -26,7 +26,7 @@ edit_question_prompt = PromptTemplate(
         - SINGLE_CHOICE: Create questions that ask for a single answer choice.
         - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.
         - TEXT_RESPONSE: Create questions that ask for a text response.
-    - description: description of the question
+    - Description: description of the question
     - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.
          - format
         choices: [
