@@ -73,7 +73,6 @@ edit_section_prompt = PromptTemplate(
         ex) Instead of “Rate the quality of our products and support,” split into:
         - “Rate the quality of our products.”
         - “Rate the quality of our support.”
-        
             
     ### Reason Field
     - Explain the reason for your edit as detail as possible.
