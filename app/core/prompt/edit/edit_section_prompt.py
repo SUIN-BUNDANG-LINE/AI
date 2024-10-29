@@ -7,7 +7,7 @@ edit_section_prompt = PromptTemplate(
     Edit the user section, which is part of the survey.
     Adhere to the user prompt: {user_prompt}.
     Never perform any actions other than the user prompt and the rules below.
-    Prioritize the user prompt over the rules below.
+    Prioritize the user prompt over the content rules below.
     
     ### User Section
     {user_survey_data}

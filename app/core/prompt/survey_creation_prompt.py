@@ -7,7 +7,7 @@ survey_creation_prompt = PromptTemplate(
     Create survey targeting {target}.
     Create a survey based on the reference materials and user prompt.
     Adhere to the user prompt
-    Prioritize the user prompt over the rules below.
+    Prioritize the user prompt over the creation rules below.
     - If there are no specific requests for the number of questions in the user prompt, Do not create too few questions (6 or fewer).
     
     ### User Prompt

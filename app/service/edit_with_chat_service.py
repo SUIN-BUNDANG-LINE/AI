@@ -49,8 +49,6 @@ class EditWithChatService:
 
         result = parser.parse(edited_total_survey_has_parsing_format)
 
-        print(result.reason)
-
         return AllowedOtherManager.remove_last_choice_in_survey(result)
 
     def edit_section(self, request: EditSectionWithChatRequest):
@@ -60,7 +58,7 @@ class EditWithChatService:
         edited_section_has_parsing_format = FunctionExecutionTimeMeasurer.run_function(
             "섹션 수정 태스크",
             ai_manager.chat_with_history,
-            self.edit_survey_prompt.format(
+            self.edit_section_prompt.format(
                 user_prompt=chat_resolve_user_prompt(
                     ai_manager=ai_manager, user_prompt=request.user_prompt
                 ),
@@ -74,8 +72,6 @@ class EditWithChatService:
 
         result = parser.parse(edited_section_has_parsing_format)
 
-        print(result.reason)
-
         return AllowedOtherManager.remove_last_choice_in_section(result)
 
     def edit_question(self, request: EditQuestionWithChatRequest):
@@ -85,7 +81,7 @@ class EditWithChatService:
         edited_question_has_parsing_format = FunctionExecutionTimeMeasurer.run_function(
             "질문 수정 태스크",
             ai_manager.chat_with_history,
-            self.edit_survey_prompt.format(
+            self.edit_question_prompt.format(
                 user_prompt=chat_resolve_user_prompt(
                     ai_manager=ai_manager, user_prompt=request.user_prompt
                 ),

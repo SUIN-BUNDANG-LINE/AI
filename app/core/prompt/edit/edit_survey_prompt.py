@@ -7,7 +7,7 @@ edit_survey_prompt = PromptTemplate(
     Edit user survey.
     Adhere to the user prompt: {user_prompt}.
     Never perform any actions other than the user prompt and the rules.
-    Prioritize the user prompt over the rules below.
+    Prioritize the user prompt over the content rules below.
 
     ### User Survey
     {user_survey_data}
