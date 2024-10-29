@@ -47,7 +47,9 @@ class EditWithChatService:
             )
         )
 
+        print(edited_total_survey_has_parsing_format)
         result = parser.parse(edited_total_survey_has_parsing_format)
+        print(result.reason)
 
         return AllowedOtherManager.remove_last_choice_in_survey(result)
 
@@ -70,7 +72,10 @@ class EditWithChatService:
             parser,
         )
 
+        print(parser.get_format_instructions())
+        print(edited_section_has_parsing_format)
         result = parser.parse(edited_section_has_parsing_format)
+        print(result.reason)
 
         return AllowedOtherManager.remove_last_choice_in_section(result)
 
@@ -93,8 +98,8 @@ class EditWithChatService:
             parser,
         )
 
+        print(edited_question_has_parsing_format)
         result = parser.parse(edited_question_has_parsing_format)
-
         print(result.reason)
 
         return AllowedOtherManager.remove_last_choice_in_question(result)

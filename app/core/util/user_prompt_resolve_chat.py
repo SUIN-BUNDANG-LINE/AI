@@ -15,21 +15,25 @@ def chat_resolve_user_prompt(ai_manager: AIManager, user_prompt):
 
     searched_result = search.invoke(keyword)
 
-    example = ai_manager.chat(
-        f"""당신은 검색 결과를 활용하여 user prompt에 정보를 더해주는 전문가이다
-        ai에게 정보를 전달하는 것이 목적이므로 그 역할에만 집중하세요
-            ex) foo 정보로 설문조사를 만들어줘 : 직접 설문조사 예시를 만들지 말고 단순히 foo 정보를 나열하세요
-        
-        ### 검색 결과
-        {searched_result}
-        
-        ### user prompt
-        {user_prompt}
-        
-        ### Output
-        -
-        """
+    example = FunctionExecutionTimeMeasurer.run_function(
+        "사용자 프롬프트 명확화 태스크",
+        ai_manager.chat,
+        f"""당신은 검색 결과를 활용하여 user prompt에 예시를 더해주는 전문가이다
+            ai에게 정보를 전달하는 것이 목적이므로 그 역할에만 집중하세요
+                ex) foo 정보로 설문조사를 만들어줘 : 직접 설문조사 예시를 만들지 말고 단순히 foo 정보를 나열하세요
+
+           ### 검색 결과
+           {searched_result}
+
+           ### user prompt
+           {user_prompt}
+
+           ### Output
+           -
+           """,
     )
 
     result = user_prompt + " ex) " + example
+
+    print(result)
     return result

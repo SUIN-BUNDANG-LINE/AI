@@ -5,13 +5,14 @@ edit_question_prompt = PromptTemplate(
     template="""
     You are a survey editor.
     Edit the user question, which is part of the survey.
-    Adhere to the user prompt: {user_prompt}.
+    Adhere to the user prompt: {user_prompt} when you edit content.
     Never perform any actions other than the user prompt and the rules below.
     Prioritize the user prompt over the rules below.
 
     ### User Question
     {user_survey_data}
     
+    ## Rules
     ### ID Rules when keep
     Just keep the provided content.
 
@@ -45,7 +46,8 @@ edit_question_prompt = PromptTemplate(
         - Respond same as user prompt language.
     
     ### Content Rules
-    - First, determine the QUESTION TYPE. Create question below types:
+    - Adhere to the user prompt.
+    - Determine the QUESTION TYPE. Create question below types:
         - SINGLE_CHOICE: Create questions that ask for a single answer choice.
         - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.
         - TEXT_RESPONSE: Create questions that ask for a text response.
