@@ -21,6 +21,7 @@ cymem==2.0.8
 dataclasses-json==0.6.7
 distro==1.9.0
 docx2txt==0.8
+duckduckgo_search==6.3.2
 emoji==2.14.0
 eval_type_backport==0.2.0
 fastapi==0.114.2
@@ -68,6 +69,7 @@ orjson==3.10.7
 packaging==24.1
 pillow==11.0.0
 preshed==3.0.9
+primp==0.6.4
 psutil==6.1.0
 pycparser==2.22
 pydantic==2.9.1
@@ -114,6 +116,7 @@ typing-inspect==0.9.0
 typing_extensions==4.12.2
 unstructured==0.16.0
 unstructured-client==0.26.1
+upstash-redis==1.2.0
 urllib3==2.2.3
 uvicorn==0.23.2
 wasabi==1.1.3
