@@ -53,17 +53,10 @@ class SurveyGenerateService:
         target = self.survey_generate_content.target
         group_name = self.survey_generate_content.group_name
         text_document = self.survey_generate_content.text_document
-        user_basic_prompt = self.survey_generate_content.user_prompt
+        user_prompt = self.survey_generate_content.user_prompt
 
         document_summation_task = asyncio.create_task(
             self.__summarize_document(text_document)
-        )
-
-        user_prompt = FunctionExecutionTimeMeasurer.run_function(
-            "사용자 프롬프트 보정 태스크",
-            chat_resolve_user_prompt,
-            self.ai_manager,
-            user_basic_prompt,
         )
 
         survey_generation_task = asyncio.create_task(
@@ -102,8 +95,6 @@ class SurveyGenerateService:
             ),
             self.parser_to_survey,
         )
-
-        print(generated_survey)
 
         parsed_survey = self.parser_to_survey.parse(generated_survey)
 

@@ -11,6 +11,11 @@ def chat_resolve_user_prompt(ai_manager: AIManager, user_prompt):
 
     keyword = ai_manager.chat(prompt_resolve_prompt.format(user_prompt=user_prompt))
 
+    if keyword == '""':
+        return user_prompt
+
+    print(f"keyword: {keyword}")
+
     search = DuckDuckGoSearchRun()
 
     searched_result = search.invoke(keyword)

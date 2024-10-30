@@ -4,13 +4,9 @@ from langchain.prompts import PromptTemplate
 edit_section_prompt = PromptTemplate(
     template="""
     You are a survey editor.
-    Edit the user section, which is part of the survey.
-    Adhere to the user prompt: {user_prompt} when you edit content.
+    Edit the user section: {user_survey_data} according the user prompt: {user_prompt}
     Never perform any actions other than the user prompt and the rules below.
     Prioritize the user prompt over the rules below.
-    
-    ### User Section
-    {user_survey_data}
     
     ## Rules
     ### ID Rules when keep
@@ -51,7 +47,6 @@ edit_section_prompt = PromptTemplate(
 
     ### Content Rules of questions
     - Adhere to the user prompt.
-    - If you need to delete question set it null.
     - Determine the QUESTION TYPE. Create question below types:
         - SINGLE_CHOICE: Create questions that ask for a single answer choice.
         - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.

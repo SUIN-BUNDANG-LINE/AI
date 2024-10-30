@@ -72,7 +72,6 @@ class EditWithChatService:
             parser,
         )
 
-        print(parser.get_format_instructions())
         print(edited_section_has_parsing_format)
         result = parser.parse(edited_section_has_parsing_format)
         print(result.reason)
