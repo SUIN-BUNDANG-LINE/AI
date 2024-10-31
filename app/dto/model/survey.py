@@ -10,3 +10,4 @@ class Survey(BaseModel):
     description: str = Field(default="")
     finish_message: str = Field(default="")
     sections: Optional[list[Section]] = Field(default_factory=list)
+    reason: str = Field(default="")

@@ -5,13 +5,12 @@ survey_creation_prompt = PromptTemplate(
     template="""
     You are a survey creation expert. 
     Create survey targeting {target}.
-    Create a survey based on the reference materials and user prompt.
-    Adhere to the user prompt: {user_prompt}
-    Prioritize the user prompt over the creation rules below.
-    If there are no specific requests for the number of questions in the user prompt, Do not create too few questions (6 or fewer).
-    
+    Create a survey based on the reference materials
     ### Reference Materials
-    {document}
+    {reference_materials}
+    Adhere to the user instruction
+    ### User Instruction
+    {user_instruction}
         
     ### Format Rules
     - id: null(not "null")
@@ -43,6 +42,9 @@ survey_creation_prompt = PromptTemplate(
                     ],
                     is_allow_other: true
                 - Else, Set is_allow_other to false 
+    - reason
+        - Explain in detail how the user instruction was implemented.
+        - Respond same as user prompt language.
         
     ### Content Rules of sections
     - Adhere to the user prompt.
@@ -79,7 +81,7 @@ survey_creation_prompt = PromptTemplate(
     input_variables=[
         "target",
         "group_name",
-        "user_prompt",
-        "document",
+        "user_instruction",
+        "reference_materials",
     ],
 )
