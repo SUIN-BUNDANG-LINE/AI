@@ -5,7 +5,6 @@ edit_survey_prompt = PromptTemplate(
     template="""
     You are a survey editor.    
     Edit the user survey: {user_survey_data} according the user prompt: {user_prompt}
-    Never perform any actions other than the user prompt and the rules.
     Prioritize the user prompt over the content rules below.
     
     ## Rules

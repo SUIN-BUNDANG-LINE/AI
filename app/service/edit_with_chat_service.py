@@ -11,7 +11,6 @@ from app.dto.response.edit_question_with_chat_response import (
     EditQuestionWithChatResponse,
 )
 from langchain.output_parsers import PydanticOutputParser
-
 from app.core.prompt.edit.edit_survey_prompt import edit_survey_prompt
 from app.core.prompt.edit.edit_section_prompt import edit_section_prompt
 from app.core.prompt.edit.edit_question_prompt import edit_question_prompt
@@ -47,7 +46,6 @@ class EditWithChatService:
             )
         )
 
-        print(edited_total_survey_has_parsing_format)
         result = parser.parse(edited_total_survey_has_parsing_format)
         print(result.reason)
 
@@ -72,7 +70,6 @@ class EditWithChatService:
             parser,
         )
 
-        print(edited_section_has_parsing_format)
         result = parser.parse(edited_section_has_parsing_format)
         print(result.reason)
 
@@ -97,7 +94,6 @@ class EditWithChatService:
             parser,
         )
 
-        print(edited_question_has_parsing_format)
         result = parser.parse(edited_question_has_parsing_format)
         print(result.reason)
 

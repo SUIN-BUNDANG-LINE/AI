@@ -5,15 +5,11 @@ edit_question_prompt = PromptTemplate(
     template="""
     You are a survey editor.
     Edit the user question: {user_survey_data} according the user prompt: {user_prompt}
-    Never perform any actions other than the user prompt and the rules below.
     Prioritize the user prompt over the rules below.
-
-    ### User Question
-    {user_survey_data}
     
     ## Rules
     ### ID Rules when keep
-    Just keep the provided content.
+    You should not edit the ids.
 
     ### ID Rules when edit
     You should not edit the ids.
