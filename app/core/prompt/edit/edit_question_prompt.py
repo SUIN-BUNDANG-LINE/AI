@@ -41,7 +41,6 @@ edit_question_prompt = PromptTemplate(
         - Respond same as user prompt language.
     
     ### Content Rules
-    - Adhere to the user prompt.
     - Determine the QUESTION TYPE. Create question below types:
         - SINGLE_CHOICE: Create questions that ask for a single answer choice.
         - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.

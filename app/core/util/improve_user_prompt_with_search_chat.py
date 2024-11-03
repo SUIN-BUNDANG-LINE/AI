@@ -1,5 +1,4 @@
 from langchain_community.tools import DuckDuckGoSearchRun
-
 from app.core.util.ai_manager import AIManager
 from app.core.prompt.divide_reference_and_instruction_prompt import (
     divide_reference_and_instruction_prompt,
@@ -24,10 +23,10 @@ def chat_improve_user_prompt_with_search(ai_manager: AIManager, user_prompt):
         find_keyword_prompt.format(user_instruction=user_instruction)
     )
 
+    print(f"keyword: {keyword}")
+
     if keyword == NOT_TO_NEED_SEARCH_STRING:
         return user_prompt
-
-    print(f"keyword: {keyword}")
 
     search = DuckDuckGoSearchRun()
 
@@ -35,7 +34,7 @@ def chat_improve_user_prompt_with_search(ai_manager: AIManager, user_prompt):
 
     print(f"searched_result: {searched_result}")
 
-    result = user_instruction + " reference) " + searched_result
+    result = user_prompt + " " + user_instruction + "\nreference)\n" + searched_result
     print(f"result: {result}")
     return result
 
@@ -67,6 +66,6 @@ async def async_chat_improve_user_prompt_with_search(
 
     print(f"searched_result: {searched_result}")
 
-    result = user_instruction + " ####reference\n " + searched_result
+    result = user_prompt + user_instruction + "\nreference)\n" + searched_result
     print(f"result: {result}")
     return result

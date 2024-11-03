@@ -52,12 +52,10 @@ edit_survey_prompt = PromptTemplate(
         - Respond same as user prompt language.
         
     ### Content Rules of sections
-    - Adhere to the user prompt.
     - Create sections based on the reference materials that become key themes in structuring the survey questions.
     - If you need to delete section set it empty list. Keep others intact.
 
     ### Content Rules of questions
-    - Adhere to the user prompt.
     - Determine the QUESTION TYPE. Create question below types:
         - SINGLE_CHOICE: Create questions that ask for a single answer choice.
         - MULTIPLE_CHOICE: Create questions that ask for multiple answer choices.

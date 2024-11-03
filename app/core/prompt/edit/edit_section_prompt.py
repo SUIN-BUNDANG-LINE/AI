@@ -4,7 +4,7 @@ from langchain.prompts import PromptTemplate
 edit_section_prompt = PromptTemplate(
     template="""
     You are a survey editor.
-    Edit the user section: {user_survey_data} according the user prompt: {user_prompt}
+    Edit the user section: {user_survey_data} according the user prompt below.
     Prioritize the user prompt over the rules below.
     
     ## Rules
@@ -71,6 +71,9 @@ edit_section_prompt = PromptTemplate(
         ex) Instead of “Rate the quality of our products and support,” split into:
         - “Rate the quality of our products.”
         - “Rate the quality of our support.”
+        
+    ### User Prompt
+    {user_prompt}
     """,
     input_variables=["user_prompt", "user_survey_data"],
 )
