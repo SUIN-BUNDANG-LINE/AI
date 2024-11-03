@@ -15,7 +15,8 @@ edit_survey_prompt = PromptTemplate(
     You should not edit the ids.
 
     ### ID Rules when create
-    You should not make your own instead making ids, just set them null
+    - You should not make your own.
+    - Instead making ids, just set them null
     
      ### Format Rules
     - id: Unique identifier or null(not "null")
@@ -35,18 +36,20 @@ edit_survey_prompt = PromptTemplate(
             - description: Description of the question
             - is_required: Indicates whether answering the question is mandatory or not
             - choices: Options for choice question
-            - is_allow_other: Indicates whether allow users to input their own answers directly, even for questions where they select from given options or not
-                - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.
-                     - format
-                    choices: [
-                        "choice1",
-                        "choice2",
-                        "choice3",
-                        ...,
-                        "기타"
-                    ],
-                    is_allow_other: true
-                - Else, Set is_allow_other to false 
+            - is_allow_other: 
+            - Indicates whether allow users to input their own answers directly, even for questions where they select from given options or not
+            - Set is_allow_other to false when QUESTION_TYPE is TEXT_RESPONSE
+            - Set is_allow_other to true if you want to allow users to input their own answers directly, even for questions where they select from given options.
+                 - format
+                choices: [
+                    "choice1",
+                    "choice2",
+                    "choice3",
+                    ...,
+                    "기타"
+                ],
+                is_allow_other: true
+            - Else, Set is_allow_other to false
     - reason
         - Explain in detail how the user prompt was implemented.
         - Respond same as user prompt language.
