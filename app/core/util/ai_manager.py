@@ -76,12 +76,11 @@ class AIManager:
     def chat_with_similarity_search(self, prompt, parser=None):
         self.__check_chat_session_id_exist()
         documents = vector_storage.similarity_search(
-            query=prompt, filter={"id": self._chat_session_id}
+            query=prompt, filter={"id": self._chat_session_id}, k=3
         )
+        documents_string = " ".join([doc.page_content for doc in documents])
 
-        print(documents)
-
-        human_messages = documents + [HumanMessage(content=prompt)]
+        human_messages = [documents_string] + [HumanMessage(content=prompt)]
 
         if parser:
             human_messages += [HumanMessage(content=parser.get_format_instructions())]
@@ -93,12 +92,11 @@ class AIManager:
     async def async_chat_with_similarity_search(self, prompt, parser=None):
         self.__check_chat_session_id_exist()
         documents = await vector_storage.asimilarity_search(
-            query=prompt, filter={"id": self._chat_session_id}
+            query=prompt, filter={"id": self._chat_session_id}, k=3
         )
+        documents_string = " ".join([doc.page_content for doc in documents])
 
-        print(documents)
-
-        human_messages = documents + [HumanMessage(content=prompt)]
+        human_messages = [documents_string] + [HumanMessage(content=prompt)]
 
         if parser:
             human_messages += [HumanMessage(content=parser.get_format_instructions())]
