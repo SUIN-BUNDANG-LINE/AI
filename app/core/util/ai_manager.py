@@ -79,6 +79,7 @@ class AIManager:
             query=prompt, filter={"id": self._chat_session_id}, k=3
         )
         documents_string = " ".join([doc.page_content for doc in documents])
+        print(documents_string)
 
         human_messages = [documents_string] + [HumanMessage(content=prompt)]
 
@@ -95,6 +96,7 @@ class AIManager:
             query=prompt, filter={"id": self._chat_session_id}, k=3
         )
         documents_string = " ".join([doc.page_content for doc in documents])
+        print(documents_string)
 
         human_messages = [documents_string] + [HumanMessage(content=prompt)]
 
