@@ -14,9 +14,11 @@ class AIManager:
             str(chat_session_id) if chat_session_id is not None else None
         )
 
-    def embed_document(document):
+    def embed_document(self, document):
+        self.__check_chat_session_id_exist()
         splitted_documents = text_splitter.split(document)
-        vector_storage.add_documents(splitted_documents)
+        metadatas = [{"id": self._chat_session_id} for _ in splitted_documents]
+        vector_storage.add_documents(splitted_documents, metadatas=metadatas)
 
     @staticmethod
     def chat(prompt, parser=None):
@@ -71,20 +73,33 @@ class AIManager:
 
         return response.content
 
-    def chat_with_similarity_search(self, prompt, is_new_chat_save, parser=None):
+    def chat_with_similarity_search(self, prompt, parser=None):
         self.__check_chat_session_id_exist()
-        message_storage = get_message_storage(self._chat_session_id)
-        message_history = message_storage.messages
+        documents = vector_storage.similarity_search(
+            query=prompt, filter={"id": self._chat_session_id}
+        )
 
-        human_messages = message_history + [HumanMessage(content=prompt)]
+        human_messages = documents + [HumanMessage(content=prompt)]
 
         if parser:
             human_messages += [HumanMessage(content=parser.get_format_instructions())]
 
         response = chat_model.invoke(human_messages)
 
-        if is_new_chat_save:
-            message_storage.add_message(response)
+        return response.content
+
+    async def async_chat_with_similarity_search(self, prompt, parser=None):
+        self.__check_chat_session_id_exist()
+        documents = await vector_storage.asimilarity_search(
+            query=prompt, filter={"id": self._chat_session_id}
+        )
+
+        human_messages = documents + [HumanMessage(content=prompt)]
+
+        if parser:
+            human_messages += [HumanMessage(content=parser.get_format_instructions())]
+
+        response = await chat_model.ainvoke(human_messages)
 
         return response.content
 
