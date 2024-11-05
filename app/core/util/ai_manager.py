@@ -14,11 +14,11 @@ class AIManager:
             str(chat_session_id) if chat_session_id is not None else None
         )
 
-    def embed_document(self, document):
+    async def async_embed_document(self, document):
         self.__check_chat_session_id_exist()
-        splitted_documents = text_splitter.split(document)
-        metadatas = [{"id": self._chat_session_id} for _ in splitted_documents]
-        vector_storage.add_documents(splitted_documents, metadatas=metadatas)
+        metadatas = {"id": self._chat_session_id}
+        splitted_documents = text_splitter.create_documents([document], [metadatas])
+        await vector_storage.aadd_documents(splitted_documents)
 
     @staticmethod
     def chat(prompt, parser=None):
@@ -79,6 +79,8 @@ class AIManager:
             query=prompt, filter={"id": self._chat_session_id}
         )
 
+        print(documents)
+
         human_messages = documents + [HumanMessage(content=prompt)]
 
         if parser:
@@ -93,6 +95,8 @@ class AIManager:
         documents = await vector_storage.asimilarity_search(
             query=prompt, filter={"id": self._chat_session_id}
         )
+
+        print(documents)
 
         human_messages = documents + [HumanMessage(content=prompt)]
 

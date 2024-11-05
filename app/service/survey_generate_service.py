@@ -38,8 +38,8 @@ class SurveyGenerateService:
 
         user_prompt = request.user_prompt
 
-        document_summation_task = (
-            asyncio.create_task(self.__summarize_document(text_document + user_prompt))
+        document_embed_task = (
+            asyncio.create_task(self.__embed_document(text_document + user_prompt))
             if chat_session_id is not None
             else None
         )
@@ -53,9 +53,9 @@ class SurveyGenerateService:
             )
         )
 
-        if document_summation_task:
+        if document_embed_task:
             parsed_generated_survey, document_summation = await asyncio.gather(
-                survey_generation_task, document_summation_task
+                survey_generation_task, document_embed_task
             )
         else:
             parsed_generated_survey = await survey_generation_task
@@ -84,6 +84,13 @@ class SurveyGenerateService:
         parsed_survey = self.parser_to_survey.parse(generated_survey)
 
         return AllowedOtherManager.remove_last_choice_in_survey(parsed_survey)
+
+    async def __embed_document(self, text_document_and_user_prompt):
+        return await FunctionExecutionTimeMeasurer.run_async_function(
+            "문서 임베딩 태스크",
+            self.ai_manager.async_embed_document,
+            text_document_and_user_prompt,
+        )
 
     async def __summarize_document(self, text_document_and_user_prompt):
         return await FunctionExecutionTimeMeasurer.run_async_function(

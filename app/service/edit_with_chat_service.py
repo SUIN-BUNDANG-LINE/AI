@@ -33,7 +33,7 @@ class EditWithChatService:
         edited_total_survey_has_parsing_format = (
             FunctionExecutionTimeMeasurer.run_function(
                 "설문 수정 태스크",
-                ai_manager.chat_with_history,
+                ai_manager.chat_with_similarity_search,
                 self.edit_survey_prompt.format(
                     user_prompt=chat_resolve_user_prompt(
                         ai_manager=ai_manager, user_prompt=request.user_prompt
@@ -42,7 +42,6 @@ class EditWithChatService:
                         request.survey
                     ).model_dump_json(),
                 ),
-                False,
                 parser,
             )
         )
@@ -59,7 +58,7 @@ class EditWithChatService:
         parser = PydanticOutputParser(pydantic_object=EditSectionWithChatResponse)
         edited_section_has_parsing_format = FunctionExecutionTimeMeasurer.run_function(
             "섹션 수정 태스크",
-            ai_manager.chat_with_history,
+            ai_manager.chat_with_similarity_search,
             self.edit_survey_prompt.format(
                 user_prompt=chat_resolve_user_prompt(
                     ai_manager=ai_manager, user_prompt=request.user_prompt
@@ -68,7 +67,6 @@ class EditWithChatService:
                     request.section
                 ).model_dump_json(),
             ),
-            False,
             parser,
         )
 
@@ -84,7 +82,7 @@ class EditWithChatService:
         parser = PydanticOutputParser(pydantic_object=EditQuestionWithChatResponse)
         edited_question_has_parsing_format = FunctionExecutionTimeMeasurer.run_function(
             "질문 수정 태스크",
-            ai_manager.chat_with_history,
+            ai_manager.chat_with_similarity_search,
             self.edit_survey_prompt.format(
                 user_prompt=chat_resolve_user_prompt(
                     ai_manager=ai_manager, user_prompt=request.user_prompt
@@ -93,7 +91,6 @@ class EditWithChatService:
                     request.question
                 ).model_dump_json(),
             ),
-            False,
             parser,
         )
 
