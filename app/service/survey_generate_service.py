@@ -14,7 +14,7 @@ from app.core.util.function_execution_time_measurer import FunctionExecutionTime
 from app.dto.model.survey import Survey
 from app.core.util.allowed_other_manager import AllowedOtherManager
 from app.core.util.improve_user_prompt_with_search_chat import (
-    async_chat_improve_user_prompt_with_search,
+    chat_improve_user_prompt_with_search,
 )
 
 
@@ -32,15 +32,23 @@ class SurveyGenerateService:
         chat_session_id = survey_generate_request.chat_session_id
         self.ai_manager = AIManager(chat_session_id)
 
-        user_prompt = survey_generate_request.user_prompt
+        user_prompt = FunctionExecutionTimeMeasurer.run_function(
+            "사용자 명령 추출과 개선 태스크",
+            chat_improve_user_prompt_with_search,
+            self.ai_manager,
+            survey_generate_request.user_prompt,
+        )
+
         text_document = (
             self.document_manager.text_from_file_url(survey_generate_request.file_url)
             if survey_generate_request.file_url is not None
             else ""
         )
 
-        document_summation_task = asyncio.create_task(
-            self.__summarize_document(text_document + user_prompt)
+        document_summation_task = (
+            asyncio.create_task(self.__summarize_document(text_document + user_prompt))
+            if chat_session_id is not None
+            else None
         )
 
         survey_generation_task = asyncio.create_task(
@@ -52,9 +60,12 @@ class SurveyGenerateService:
             )
         )
 
-        parsed_generated_survey, document_summation = await asyncio.gather(
-            survey_generation_task, document_summation_task
-        )
+        if document_summation_task:
+            parsed_generated_survey, document_summation = await asyncio.gather(
+                survey_generation_task, document_summation_task
+            )
+        else:
+            parsed_generated_survey = await survey_generation_task
 
         return SurveyGenerateResponse(survey=parsed_generated_survey)
 
@@ -65,19 +76,12 @@ class SurveyGenerateService:
         text_document,
         user_prompt,
     ):
-        user_instruction = await FunctionExecutionTimeMeasurer.run_async_function(
-            "사용자 명령 추출과 개선 태스크",
-            async_chat_improve_user_prompt_with_search,
-            self.ai_manager,
-            user_prompt,
-        )
-
         generated_survey = await FunctionExecutionTimeMeasurer.run_async_function(
             "설문 생성 태스크",
             self.ai_manager.async_chat,
             self.survey_creation_prompt.format(
                 reference_materials=text_document + user_prompt,
-                user_instruction=user_instruction,
+                user_prompt=user_prompt,
                 target=target,
                 group_name=group_name,
             ),
