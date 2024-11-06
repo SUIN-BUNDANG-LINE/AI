@@ -76,7 +76,7 @@ class AIManager:
     def chat_with_similarity_search(self, prompt, parser=None):
         self.__check_chat_session_id_exist()
         documents = vector_storage.similarity_search(
-            query=prompt, filter={"id": self._chat_session_id}, k=3
+            query=prompt, filter={"id": self._chat_session_id}, k=2
         )
         documents_string = " ".join([doc.page_content for doc in documents])
         print(documents_string)
