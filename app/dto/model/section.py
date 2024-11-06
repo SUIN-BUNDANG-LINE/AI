@@ -1,4 +1,7 @@
 from typing import Optional
+
+from pydantic.v1 import root_validator
+
 from app.dto.model.question import Question
 from pydantic import BaseModel, Field
 from uuid import UUID

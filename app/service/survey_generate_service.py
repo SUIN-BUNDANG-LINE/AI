@@ -49,7 +49,6 @@ class SurveyGenerateService:
                 survey_generate_request.group_name,
                 text_document,
                 user_prompt,
-                survey_generate_request.keyword,
             )
         )
 
@@ -65,14 +64,12 @@ class SurveyGenerateService:
         group_name,
         text_document,
         user_prompt,
-        keyword,
     ):
         user_instruction = await FunctionExecutionTimeMeasurer.run_async_function(
             "사용자 명령 추출과 개선 태스크",
             async_chat_improve_user_prompt_with_search,
             self.ai_manager,
             user_prompt,
-            keyword,
         )
 
         generated_survey = await FunctionExecutionTimeMeasurer.run_async_function(

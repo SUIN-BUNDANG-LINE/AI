@@ -13,7 +13,6 @@ class SurveyGenerateRequest(BaseModel):
     chat_session_id: Optional[UUID]
     target: str
     group_name: str
-    keyword: str
     file_url: Optional[str]
     user_prompt: str
 

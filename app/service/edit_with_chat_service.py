@@ -1,3 +1,4 @@
+import json
 from app.core.util.allowed_other_manager import AllowedOtherManager
 from app.dto.request.edit_survey_with_chat_request import EditSurveyWithChatRequest
 from app.dto.request.edit_section_with_chat_request import EditSectionWithChatRequest
@@ -48,7 +49,9 @@ class EditWithChatService:
             )
         )
 
-        result = parser.parse(edited_total_survey_has_parsing_format)
+        result = parser.parse(
+            edited_total_survey_has_parsing_format.replace('"null"', "null")
+        )
         print(result.reason)
 
         return AllowedOtherManager.remove_last_choice_in_survey(result)
@@ -72,7 +75,9 @@ class EditWithChatService:
             parser,
         )
 
-        result = parser.parse(edited_section_has_parsing_format)
+        result = parser.parse(
+            edited_section_has_parsing_format.replace('"null"', "null")
+        )
         print(result.reason)
 
         return AllowedOtherManager.remove_last_choice_in_section(result)
@@ -96,7 +101,9 @@ class EditWithChatService:
             parser,
         )
 
-        result = parser.parse(edited_question_has_parsing_format)
+        result = parser.parse(
+            edited_question_has_parsing_format.replace('"null"', "null")
+        )
         print(result.reason)
 
         return AllowedOtherManager.remove_last_choice_in_question(result)
