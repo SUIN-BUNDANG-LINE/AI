@@ -5,7 +5,6 @@ from app.core.prompt.document_summation_prompt import (
 )
 from app.core.util.ai_manager import AIManager
 from app.core.util.document_manager import DocumentManager
-from app.core.prompt.prompt_resolve_prompt import prompt_resolve_prompt
 from app.core.prompt.survey_creation_prompt import survey_creation_prompt
 from app.dto.response.survey_generate_response import SurveyGenerateResponse
 from app.dto.request.survey_generate_request import (
@@ -14,74 +13,79 @@ from app.dto.request.survey_generate_request import (
 from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
 from app.dto.model.survey import Survey
 from app.core.util.allowed_other_manager import AllowedOtherManager
+from app.core.util.improve_user_prompt_with_search_chat import (
+    async_chat_improve_user_prompt_with_search,
+)
 
 
 class SurveyGenerateService:
     def __init__(self):
         self.ai_manager = None
-        self.survey_generate_content = None
-        self.document_manger = DocumentManager()
-        self.prompt_resolver_prompt = prompt_resolve_prompt
+        self.document_manager = DocumentManager()
         self.survey_creation_prompt = survey_creation_prompt
         self.document_summation_prompt = document_summation_prompt
         self.parser_to_survey = PydanticOutputParser(pydantic_object=Survey)
 
     async def generate_survey_with_document_summation(
-        self, request: SurveyGenerateRequest
+        self, survey_generate_request: SurveyGenerateRequest
     ):
-        chat_session_id = request.chat_session_id
+        chat_session_id = survey_generate_request.chat_session_id
         self.ai_manager = AIManager(chat_session_id)
 
-        text_document = ""
-        if request.file_url is not None:
-            text_document = self.document_manger.text_from_file_url(request.file_url)
+        user_prompt = survey_generate_request.user_prompt
+        text_document = (
+            self.document_manager.text_from_file_url(survey_generate_request.file_url)
+            if survey_generate_request.file_url is not None
+            else ""
+        )
 
-        user_prompt = request.user_prompt
-
-        document_summation_task = (
-            asyncio.create_task(self.__summarize_document(text_document + user_prompt))
-            if chat_session_id is not None
-            else None
+        document_summation_task = asyncio.create_task(
+            self.__summarize_document(text_document + user_prompt)
         )
 
         survey_generation_task = asyncio.create_task(
             self.__generate_survey(
-                user_prompt,
-                request.target,
-                request.group_name,
+                survey_generate_request.target,
+                survey_generate_request.group_name,
                 text_document,
+                user_prompt,
             )
         )
 
-        if document_summation_task:
-            parsed_generated_survey, document_summation = await asyncio.gather(
-                survey_generation_task, document_summation_task
-            )
-        else:
-            parsed_generated_survey = await survey_generation_task
+        parsed_generated_survey, document_summation = await asyncio.gather(
+            survey_generation_task, document_summation_task
+        )
 
         return SurveyGenerateResponse(survey=parsed_generated_survey)
 
     async def __generate_survey(
         self,
-        user_prompt,
         target,
         group_name,
         text_document,
+        user_prompt,
     ):
+        user_instruction = await FunctionExecutionTimeMeasurer.run_async_function(
+            "사용자 명령 추출과 개선 태스크",
+            async_chat_improve_user_prompt_with_search,
+            self.ai_manager,
+            user_prompt,
+        )
+
         generated_survey = await FunctionExecutionTimeMeasurer.run_async_function(
             "설문 생성 태스크",
             self.ai_manager.async_chat,
             self.survey_creation_prompt.format(
-                user_prompt=user_prompt,
+                reference_materials=text_document + user_prompt,
+                user_instruction=user_instruction,
                 target=target,
                 group_name=group_name,
-                document=text_document,
             ),
             self.parser_to_survey,
         )
 
         parsed_survey = self.parser_to_survey.parse(generated_survey)
+        print(parsed_survey.reason)
 
         return AllowedOtherManager.remove_last_choice_in_survey(parsed_survey)
 

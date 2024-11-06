@@ -1,20 +1,16 @@
 from typing import Optional
+
+from pydantic.v1 import root_validator
+
 from app.dto.model.section import Section
 from pydantic import BaseModel, Field
 from uuid import UUID
 
 
 class Survey(BaseModel):
-    id: Optional[UUID] = Field(
-        default=None, description="""Unique identifier or null(not "null")"""
-    )
-    title: str = Field(default="", description="Title of the survey")
-    description: str = Field(
-        default="", description="Greeting message at the start of the survey"
-    )
-    finish_message: str = Field(
-        default="", description="Message displayed upon completion of the survey"
-    )
-    sections: Optional[list[Section]] = Field(
-        default_factory=list, description="Sections of the survey"
-    )
+    id: Optional[UUID] = Field(default=None)
+    title: str = Field(default="")
+    description: str = Field(default="")
+    finish_message: str = Field(default="")
+    sections: Optional[list[Section]] = Field(default_factory=list)
+    reason: str = Field(default="")
