@@ -27,12 +27,14 @@ class AIManager:
     @staticmethod
     async def async_chat(prompt, parser=None):
         human_messages = [HumanMessage(content=prompt)]
+
         if parser:
             human_messages = [
                 HumanMessage(content=parser.get_format_instructions())
             ] + human_messages
 
         response = await chat_model.ainvoke(human_messages)
+
         return response.content
 
     def chat_with_history(self, prompt, is_new_chat_save, parser=None):

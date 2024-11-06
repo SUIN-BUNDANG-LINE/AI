@@ -8,9 +8,9 @@ survey_creation_prompt = PromptTemplate(
     Create a survey based on the reference materials
     ### Reference Materials
     {reference_materials}
-    Adhere to the user instruction
-    ### User Instruction
-    {user_instruction}
+    Adhere to the user prompt
+    ### User Prompt
+    {user_prompt}
         
     ### Format Rules
     - id: null(not "null")
@@ -81,7 +81,7 @@ survey_creation_prompt = PromptTemplate(
     input_variables=[
         "target",
         "group_name",
-        "user_instruction",
+        "user_prompt",
         "reference_materials",
     ],
 )
