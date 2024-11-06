@@ -16,7 +16,10 @@ class AIManager:
     def chat(prompt, parser=None):
         human_messages = [HumanMessage(content=prompt)]
         if parser:
-            human_messages += [HumanMessage(content=parser.get_format_instructions())]
+            if parser:
+                human_messages = [
+                    HumanMessage(content=parser.get_format_instructions())
+                ] + human_messages
 
         response = chat_model.invoke(human_messages)
         return response.content
@@ -25,7 +28,9 @@ class AIManager:
     async def async_chat(prompt, parser=None):
         human_messages = [HumanMessage(content=prompt)]
         if parser:
-            human_messages += [HumanMessage(content=parser.get_format_instructions())]
+            human_messages = [
+                HumanMessage(content=parser.get_format_instructions())
+            ] + human_messages
 
         response = await chat_model.ainvoke(human_messages)
         return response.content
@@ -38,7 +43,9 @@ class AIManager:
         human_messages = message_history + [HumanMessage(content=prompt)]
 
         if parser:
-            human_messages += [HumanMessage(content=parser.get_format_instructions())]
+            human_messages = [
+                HumanMessage(content=parser.get_format_instructions())
+            ] + human_messages
 
         response = chat_model.invoke(human_messages)
 
@@ -55,7 +62,9 @@ class AIManager:
         human_messages = message_history + [HumanMessage(content=prompt)]
 
         if parser:
-            human_messages += [HumanMessage(content=parser.get_format_instructions())]
+            human_messages = [
+                HumanMessage(content=parser.get_format_instructions())
+            ] + human_messages
 
         response = await chat_model.ainvoke(human_messages)
 

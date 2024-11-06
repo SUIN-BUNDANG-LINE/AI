@@ -5,7 +5,7 @@ from app.core.error.error_code import ErrorCode
 from pydantic import BaseModel, field_validator
 from app.core.util.file_manager import FileManager
 
-supported_extensions = [".pdf", ".txt", ".docx", ".pptx"]
+SUPPORTED_EXTENSIONS = [".pdf", ".txt", ".docx", ".pptx"]
 USER_PROMPT_TEXT_LIMIT = 20000
 
 
@@ -21,7 +21,7 @@ class SurveyGenerateRequest(BaseModel):
         if value is None:
             return value
         extension = FileManager.get_file_extension_from_url(value)
-        if extension not in supported_extensions:
+        if extension not in SUPPORTED_EXTENSIONS:
             raise business_exception(ErrorCode.FILE_EXTENSION_NOT_SUPPORTED)
         return value
 
