@@ -3,6 +3,7 @@ from app.dto.request.survey_generate_request import (
 )
 from fastapi import APIRouter, Depends
 from app.service.survey_generate_service import SurveyGenerateService
+from app.service.survey_test_generate_service import SurveyTestGenerateService
 
 router = APIRouter()
 
@@ -11,7 +12,19 @@ def get_survey_generate_service():
     return SurveyGenerateService()
 
 
+def get_survey_test_generate_service():
+    return SurveyTestGenerateService()
+
+
 @router.post("/generate/survey")
+async def generate_survey(
+    request: SurveyGenerateRequest,
+    generate_service=Depends(get_survey_generate_service),
+):
+    return await generate_service.generate_survey_with_document_summation(request)
+
+
+@router.post("/generate/test/survey")
 async def generate_survey(
     request: SurveyGenerateRequest,
     generate_service=Depends(get_survey_generate_service),

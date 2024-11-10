@@ -1,0 +1,84 @@
+import asyncio
+from langchain.output_parsers import PydanticOutputParser
+from app.core.prompt.document_summation_prompt import (
+    document_summation_prompt,
+)
+from app.core.util.ai_manager import AIManager
+from app.core.util.document_manager import DocumentManager
+from app.core.prompt.survey_creation_prompt import survey_creation_prompt
+from app.dto.response.survey_generate_response import SurveyGenerateResponse
+from app.dto.request.survey_generate_request import (
+    SurveyGenerateRequest,
+)
+from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
+from app.dto.model.survey import Survey
+from app.core.util.allowed_other_manager import AllowedOtherManager
+from app.core.util.improve_user_prompt_with_search_chat import (
+    chat_improve_user_prompt_with_search,
+)
+from app.core.util.parallel_requestor import parallel_requestor
+
+
+class SurveyTestGenerateService:
+    def __init__(self):
+        self.ai_manager = None
+        self.document_manager = DocumentManager()
+        self.survey_creation_prompt = survey_creation_prompt
+        self.document_summation_prompt = document_summation_prompt
+        self.parser_to_survey = PydanticOutputParser(pydantic_object=Survey)
+
+    async def generate_test_survey(
+        self, survey_generate_request: SurveyGenerateRequest
+    ):
+        chat_session_id = survey_generate_request.chat_session_id
+        self.ai_manager = AIManager(chat_session_id)
+
+        user_prompt = FunctionExecutionTimeMeasurer.run_function(
+            "설문 비동기로 여러개 생성하는 태스크",
+            chat_improve_user_prompt_with_search,
+            self.ai_manager,
+            survey_generate_request.user_prompt,
+        )
+
+        text_document = (
+            self.document_manager.text_from_file_url(survey_generate_request.file_url)
+            if survey_generate_request.file_url is not None
+            else ""
+        )
+
+        survey_generation_task = asyncio.create_task(
+            self.__generate_survey(
+                survey_generate_request.target,
+                survey_generate_request.group_name,
+                text_document,
+                user_prompt,
+            )
+        )
+
+        parsed_generated_survey = await survey_generation_task
+
+        return SurveyGenerateResponse(survey=parsed_generated_survey)
+
+    async def __generate_survey(
+        self,
+        target,
+        group_name,
+        text_document,
+        user_prompt,
+    ):
+        generated_survey = await FunctionExecutionTimeMeasurer.run_async_function(
+            "설문 생성 태스크",
+            self.ai_manager.async_chat,
+            self.survey_creation_prompt.format(
+                reference_materials=text_document + user_prompt,
+                user_prompt=user_prompt,
+                target=target,
+                group_name=group_name,
+            ),
+            self.parser_to_survey,
+        )
+
+        parsed_survey = self.parser_to_survey.parse(generated_survey)
+        print(parsed_survey.reason)
+
+        return AllowedOtherManager.remove_last_choice_in_survey(parsed_survey)
