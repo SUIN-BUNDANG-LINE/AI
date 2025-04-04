@@ -1,23 +1,23 @@
-import requests
 import tempfile
 from http import HTTPStatus
+
+import requests
 from langchain.docstore.document import Document
 from langchain_community.document_loaders import (
     PyMuPDFLoader,
     Docx2txtLoader,
-    UnstructuredPowerPointLoader,
 )
-from app.core.error.error_code import ErrorCode
-from app.core.error.business_exception import business_exception
-from app.core.util.file_manager import FileManager
 from pptx import Presentation
+
+from app.core.error.business_exception import business_exception
+from app.core.error.error_code import ErrorCode
+from app.core.util.file_manager import FileManager
 
 
 class DocumentManager:
     def __init__(self):
         self.pdf_loader = PyMuPDFLoader
         self.docx_loader = Docx2txtLoader
-        self.pptx_loader = UnstructuredPowerPointLoader
 
     def text_from_file_url(self, file_url: str):
         extension = FileManager.get_file_extension_from_url(file_url)
