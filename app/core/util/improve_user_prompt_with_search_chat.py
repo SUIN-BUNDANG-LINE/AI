@@ -28,8 +28,10 @@ def get_searched_result(keyword):
     }
 
     searched_link = ""
-    response = requests.request("POST", "https://google.serper.dev/search", headers=headers, data=payload)
-    for (i, result) in enumerate(response.json()["organic"]):
+    response = requests.request(
+        "POST", "https://google.serper.dev/search", headers=headers, data=payload
+    )
+    for i, result in enumerate(response.json()["organic"]):
         link = result["link"]
         if link.startswith("https://www.youtube.com/"):
             continue
