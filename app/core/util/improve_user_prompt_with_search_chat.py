@@ -20,18 +20,26 @@ def remove_html(sentence):
     return sentence
 
 
-def search(keyword):
-    url = "https://google.serper.dev/search"
-
+def get_searched_result(keyword):
     payload = json.dumps({"q": keyword, "gl": "kr", "hl": "ko"})
     headers = {
         "X-API-KEY": serperAPIKey,
         "Content-Type": "application/json",
     }
 
-    response = requests.request("POST", url, headers=headers, data=payload)
-    url = response.json()["organic"][0]["link"]
-    response = requests.get(url)
+    searched_link = ""
+    response = requests.request("POST", "https://google.serper.dev/search", headers=headers, data=payload)
+    for (i, result) in enumerate(response.json()["organic"]):
+        link = result["link"]
+        if link.startswith("https://www.youtube.com/"):
+            continue
+        else:
+            searched_link = link
+            break
+    if searched_link == "":
+        return ""
+
+    response = requests.get(searched_link)
     if response.status_code == 200:
         html = response.text
         return remove_html(html)
@@ -46,6 +54,6 @@ def chat_improve_user_prompt_with_search(ai_manager: AIManager, user_prompt):
     keyword = ai_manager.chat(find_keyword_prompt.format(user_prompt=user_prompt))
 
     print(f"keyword: {keyword}")
-    searched_result = search(keyword)
+    searched_result = get_searched_result(keyword)
     print(f"searched_result: {searched_result}")
     return user_prompt + "\nreference)\n" + searched_result

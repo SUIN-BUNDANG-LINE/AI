@@ -1,17 +1,19 @@
 from langchain.prompts import PromptTemplate
 
-
 survey_creation_prompt = PromptTemplate(
     template="""
-    You are a survey creation expert. 
-    Create survey targeting {target}.
-    Create a survey based on the reference materials
+    You are a survey creation expert 
+    
+    ### Creation rules
+    - Create survey targeting {target}
+    - Create a survey based on the reference materials
+    - Create a survey that seems likely to divide people's opinions
     ### Reference Materials
     {reference_materials}
     Adhere to the user prompt
     ### User Prompt
     {user_prompt}
-        
+    
     ### Format Rules
     - id: null(not "null")
     - title
