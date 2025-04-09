@@ -39,7 +39,9 @@ def get_searched_url(keyword):
     }
 
     searched_link = ""
-    response = requests.request("POST", "https://google.serper.dev/search", headers=headers, data=payload)
+    response = requests.request(
+        "POST", "https://google.serper.dev/search", headers=headers, data=payload
+    )
 
     if response.status_code != 200:
         return ""
@@ -59,15 +61,12 @@ def get_searched_url(keyword):
 
 
 def get_searched_result(searched_url):
-    payload = json.dumps({
-        "url": searched_url
-    })
-    headers = {
-        'X-API-KEY': serperAPIKey,
-        'Content-Type': 'application/json'
-    }
+    payload = json.dumps({"url": searched_url})
+    headers = {"X-API-KEY": serperAPIKey, "Content-Type": "application/json"}
 
-    response = requests.request("POST", "https://scrape.serper.dev", headers=headers, data=payload)
+    response = requests.request(
+        "POST", "https://scrape.serper.dev", headers=headers, data=payload
+    )
 
     if response.status_code != 200:
         return ""
@@ -83,23 +82,22 @@ def get_searched_result(searched_url):
 
 
 def get_user_prompt_with_searched_result(ai_manager, user_prompt):
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    payload = json.dumps({
-        "name": "오영제",
-        "ec2": "elastic compute cloud",
-        "s3": "simple storage service"
-    })
-    response = requests.request("POST", "https://de5b2r3ib2ucliw6bj2t3yjmcm0gshhg.lambda-url.us-east-1.on.aws",
-                                headers=headers,
-                                data=payload)
+    headers = {"Content-Type": "application/json"}
+    payload = json.dumps(
+        {"name": "오영제", "ec2": "elastic compute cloud", "s3": "simple storage service"}
+    )
+    response = requests.request(
+        "POST",
+        "https://de5b2r3ib2ucliw6bj2t3yjmcm0gshhg.lambda-url.us-east-1.on.aws",
+        headers=headers,
+        data=payload,
+    )
     print(response.text)
 
     searched_result = FunctionExecutionTimeMeasurer.run_function(
         "유저 프롬프트 키워드 추출/검색/개선 태스크",
         get_searched_result_by,
-        ai_manager.chat(find_keyword_prompt.format(user_prompt=user_prompt))
+        ai_manager.chat(find_keyword_prompt.format(user_prompt=user_prompt)),
     )
     if searched_result == "":
         return user_prompt
