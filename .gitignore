@@ -33,3 +33,6 @@ archive.zip
 output*.txt
 *.zip
 python
+result
+.aws-sam
+samconfig.toml

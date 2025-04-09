@@ -1,26 +1,37 @@
 import json
 import os
-import re
 
 import requests
 from dotenv import load_dotenv
 
 from app.core.prompt.find_keyword_prompt import find_keyword_prompt
-from app.core.util.ai_manager import AIManager
+from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
 
 load_dotenv()
-
 serperAPIKey = os.getenv("SERPER_API_KEY")
 
 
-def remove_html(sentence):
-    sentence = re.sub(r"<script>.*?</script>", "", sentence, flags=re.DOTALL)
-    sentence = re.sub("(<([^>]+)>)", "", sentence)
-    sentence = re.sub("&nbsp;", "", sentence)
-    return sentence
+def get_searched_result_by(keyword):
+    if keyword is None:
+        return ""
+    if keyword == "":
+        return ""
+
+    searched_url = get_searched_url(keyword)
+    print(f"searched_url: {searched_url}")
+    if searched_url == "":
+        return ""
+
+    searched_result = get_searched_result(searched_url)
+    print(f"searched_result: {searched_result}")
+    if len(searched_result) < 100:
+        searched_result += get_searched_result(searched_url)
+        print(f"searched_result: {searched_result}")
+
+    return searched_result
 
 
-def get_searched_result(keyword):
+def get_searched_url(keyword):
     payload = json.dumps({"q": keyword, "gl": "kr", "hl": "ko"})
     headers = {
         "X-API-KEY": serperAPIKey,
@@ -28,9 +39,8 @@ def get_searched_result(keyword):
     }
 
     searched_link = ""
-    response = requests.request(
-        "POST", "https://google.serper.dev/search", headers=headers, data=payload
-    )
+    response = requests.request("POST", "https://google.serper.dev/search", headers=headers, data=payload)
+
     for i, result in enumerate(response.json()["organic"]):
         link = result["link"]
         if link.startswith("https://www.youtube.com/"):
@@ -38,24 +48,32 @@ def get_searched_result(keyword):
         else:
             searched_link = link
             break
+
     if searched_link == "":
         return ""
 
-    response = requests.get(searched_link)
-    if response.status_code == 200:
-        html = response.text
-        return remove_html(html)
-    else:
-        return ""
+    return searched_link
 
 
-def chat_improve_user_prompt_with_search(ai_manager: AIManager, user_prompt):
-    if user_prompt == "":
-        return
+def get_searched_result(searched_url):
+    payload = json.dumps({
+        "url": searched_url
+    })
+    headers = {
+        'X-API-KEY': serperAPIKey,
+        'Content-Type': 'application/json'
+    }
 
-    keyword = ai_manager.chat(find_keyword_prompt.format(user_prompt=user_prompt))
+    response = requests.request("POST", "https://scrape.serper.dev", headers=headers, data=payload)
+    return response.json()["text"]
 
-    print(f"keyword: {keyword}")
-    searched_result = get_searched_result(keyword)
-    print(f"searched_result: {searched_result}")
-    return user_prompt + "\nreference)\n" + searched_result
+
+def get_user_prompt_with_searched_result(ai_manager, user_prompt):
+    searched_result = FunctionExecutionTimeMeasurer.run_function(
+        "유저 프롬프트 키워드 추출/검색/개선 태스크",
+        get_searched_result_by,
+        ai_manager.chat(find_keyword_prompt.format(user_prompt=user_prompt))
+    )
+    if searched_result == "":
+        return user_prompt
+    return user_prompt + "reference) " + searched_result

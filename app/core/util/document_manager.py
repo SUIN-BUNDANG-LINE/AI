@@ -42,7 +42,7 @@ class DocumentManager:
         return DocumentManager.__documents_to_text(documents)
 
     @staticmethod
-    def text_from_pptx_file_url(self, file_url: str):
+    def text_from_pptx_file_url(file_url: str):
         response = requests.get(file_url)
         response.raise_for_status()
 

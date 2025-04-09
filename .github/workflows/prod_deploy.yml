@@ -1,0 +1,36 @@
+name: sulmoon2yong-ai lambda 배포
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: 배포 작업
+    runs-on: ubuntu-latest
+
+    env:
+      # AWS 관련
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ap-northeast-2
+      # LangChain 관련
+      ENV_CONTENT: ${{ secrets.ENV_CONTENT }}
+
+    steps:
+      - name: AWS 로그인
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: SSM으로 EC2에 배포
+        run: |
+          aws --no-cli-pager  ssm send-command \
+          --document-name "AWS-RunShellScript" \
+          --targets "Key=instanceIds, Values=${{ env.EC2_INSTANCE_ID}}" \
+          --parameters '{"workingDirectory": ["/home/ubuntu/AI"],
+          "commands" : ["ENV_CONTENT='${{ env.ENV_CONTENT }}' bash ./.github/workflows/prod_deploy.sh"]}'
