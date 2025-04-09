@@ -16,8 +16,17 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ap-northeast-2
       ENV_CONTENT: ${{ secrets.ENV_CONTENT }}
+      SAM_CONFIG: ${{ secrets.SAM_CONFIG }}
 
     steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: .env & samconfig.toml 파일 생성
+        run: |
+          echo '${{ env.ENV_CONTENT }}' >> .env
+          echo '${{ env.SAM_CONFIG }}' >> samconfig.toml
+
       - name: AWS 로그인
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -28,4 +37,4 @@ jobs:
       - name: sam으로 빌드 후 배포
         run: |
           sam build
-          sam deploy --guided
+          sam deploy --no-confirm-changeset
