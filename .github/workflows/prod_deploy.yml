@@ -3,7 +3,7 @@ name: sulmoon2yong-ai lambda 배포
 on:
   push:
     branches:
-      - SBL-233-lambda-migration
+      - main
   workflow_dispatch:
 
 jobs:
