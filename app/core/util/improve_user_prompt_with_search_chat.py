@@ -1,59 +1,104 @@
-from langchain_community.tools import DuckDuckGoSearchRun
+import json
+import os
 
+import requests
+from dotenv import load_dotenv
 
-from app.core.util.ai_manager import AIManager
-from app.core.prompt.improve_user_prompt_with_searched_result_prompt import (
-    improve_user_prompt_with_searched_result_prompt,
-)
 from app.core.prompt.find_keyword_prompt import find_keyword_prompt
+from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
+
+load_dotenv()
+serperAPIKey = os.getenv("SERPER_API_KEY")
 
 
-NOT_TO_NEED_SEARCH_STRING = "NOT_TO_NEED_SEARCH"
+def get_searched_result_by(keyword):
+    if keyword is None:
+        return ""
+    if keyword == "":
+        return ""
 
+    searched_url = get_searched_url(keyword)
+    print(f"searched_url: {searched_url}")
+    if searched_url == "":
+        return ""
 
-def chat_improve_user_prompt_with_search(ai_manager: AIManager, user_prompt):
-    if user_prompt == "":
-        return
-
-    keyword = ai_manager.chat(find_keyword_prompt.format(user_prompt=user_prompt))
-
-    print(f"keyword: {keyword}")
-
-    if keyword == NOT_TO_NEED_SEARCH_STRING:
-        return user_prompt
-
-    search = DuckDuckGoSearchRun()
-
-    searched_result = search.invoke(keyword)
-
+    searched_result = get_searched_result(searched_url)
     print(f"searched_result: {searched_result}")
+    if len(searched_result) < 100:
+        searched_result += get_searched_result(searched_url)
+        print(f"searched_result: {searched_result}")
 
-    result = user_prompt + "\nreference)\n" + searched_result
-    print(f"result: {result}")
-    return result
+    return searched_result
 
 
-async def async_chat_improve_user_prompt_with_search(
-    ai_manager: AIManager, user_prompt
-):
-    if user_prompt == "":
-        return
+def get_searched_url(keyword):
+    payload = json.dumps({"q": keyword, "gl": "kr", "hl": "ko"})
+    headers = {
+        "X-API-KEY": serperAPIKey,
+        "Content-Type": "application/json",
+    }
 
-    keyword = await ai_manager.async_chat(
-        find_keyword_prompt.format(user_prompt=user_prompt)
+    searched_link = ""
+    response = requests.request(
+        "POST", "https://google.serper.dev/search", headers=headers, data=payload
     )
 
-    print(f"keyword: {keyword}")
+    if response.status_code != 200:
+        return ""
 
-    if keyword == NOT_TO_NEED_SEARCH_STRING:
+    for i, result in enumerate(response.json()["organic"]):
+        link = result["link"]
+        if link.startswith("https://www.youtube.com/"):
+            continue
+        else:
+            searched_link = link
+            break
+
+    if searched_link == "":
+        return ""
+
+    return searched_link
+
+
+def get_searched_result(searched_url):
+    payload = json.dumps({"url": searched_url})
+    headers = {"X-API-KEY": serperAPIKey, "Content-Type": "application/json"}
+
+    response = requests.request(
+        "POST", "https://scrape.serper.dev", headers=headers, data=payload
+    )
+
+    if response.status_code != 200:
+        return ""
+
+    searched_result = ""
+    try:
+        response_json = response.json()
+        searched_result = response_json["text"]
+    except:
+        pass
+
+    return searched_result
+
+
+def get_user_prompt_with_searched_result(ai_manager, user_prompt):
+    headers = {"Content-Type": "application/json"}
+    payload = json.dumps(
+        {"name": "오영제", "ec2": "elastic compute cloud", "s3": "simple storage service"}
+    )
+    response = requests.request(
+        "POST",
+        "https://de5b2r3ib2ucliw6bj2t3yjmcm0gshhg.lambda-url.us-east-1.on.aws",
+        headers=headers,
+        data=payload,
+    )
+    print(response.text)
+
+    searched_result = FunctionExecutionTimeMeasurer.run_function(
+        "유저 프롬프트 키워드 추출/검색/개선 태스크",
+        get_searched_result_by,
+        ai_manager.chat(find_keyword_prompt.format(user_prompt=user_prompt)),
+    )
+    if searched_result == "":
         return user_prompt
-
-    search = DuckDuckGoSearchRun()
-
-    searched_result = await search.ainvoke(keyword)
-
-    print(f"searched_result: {searched_result}")
-
-    result = user_prompt + "\nreference)\n" + searched_result
-    print(f"result: {result}")
-    return result
+    return user_prompt + "reference) " + searched_result

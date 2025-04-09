@@ -29,4 +29,10 @@ archive.zip
 # macOS
 .DS_Store
 
+
 output*.txt
+*.zip
+python
+result
+.aws-sam
+samconfig.toml

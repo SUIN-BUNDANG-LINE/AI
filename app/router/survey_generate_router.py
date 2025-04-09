@@ -1,7 +1,8 @@
+from fastapi import APIRouter, Depends
+
 from app.dto.request.survey_generate_request import (
     SurveyGenerateRequest,
 )
-from fastapi import APIRouter, Depends
 from app.service.survey_generate_service import SurveyGenerateService
 
 router = APIRouter()

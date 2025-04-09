@@ -1,21 +1,23 @@
 import asyncio
+
 from langchain.output_parsers import PydanticOutputParser
+
 from app.core.prompt.document_summation_prompt import (
     document_summation_prompt,
 )
-from app.core.util.ai_manager import AIManager
-from app.core.util.document_manager import DocumentManager
 from app.core.prompt.survey_creation_prompt import survey_creation_prompt
-from app.dto.response.survey_generate_response import SurveyGenerateResponse
+from app.core.util.ai_manager import AIManager
+from app.core.util.allowed_other_manager import AllowedOtherManager
+from app.core.util.document_manager import DocumentManager
+from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
+from app.core.util.improve_user_prompt_with_search_chat import (
+    get_user_prompt_with_searched_result,
+)
+from app.dto.model.survey import Survey
 from app.dto.request.survey_generate_request import (
     SurveyGenerateRequest,
 )
-from app.core.util.function_execution_time_measurer import FunctionExecutionTimeMeasurer
-from app.dto.model.survey import Survey
-from app.core.util.allowed_other_manager import AllowedOtherManager
-from app.core.util.improve_user_prompt_with_search_chat import (
-    chat_improve_user_prompt_with_search,
-)
+from app.dto.response.survey_generate_response import SurveyGenerateResponse
 
 
 class SurveyGenerateService:
@@ -32,11 +34,8 @@ class SurveyGenerateService:
         chat_session_id = survey_generate_request.chat_session_id
         self.ai_manager = AIManager(chat_session_id)
 
-        user_prompt = FunctionExecutionTimeMeasurer.run_function(
-            "사용자 명령 추출과 개선 태스크",
-            chat_improve_user_prompt_with_search,
-            self.ai_manager,
-            survey_generate_request.user_prompt,
+        user_prompt = get_user_prompt_with_searched_result(
+            ai_manager=self.ai_manager, user_prompt=survey_generate_request.user_prompt
         )
 
         text_document = (
