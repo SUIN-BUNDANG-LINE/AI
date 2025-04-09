@@ -41,6 +41,9 @@ def get_searched_url(keyword):
     searched_link = ""
     response = requests.request("POST", "https://google.serper.dev/search", headers=headers, data=payload)
 
+    if response.status_code != 200:
+        return ""
+
     for i, result in enumerate(response.json()["organic"]):
         link = result["link"]
         if link.startswith("https://www.youtube.com/"):
@@ -65,7 +68,18 @@ def get_searched_result(searched_url):
     }
 
     response = requests.request("POST", "https://scrape.serper.dev", headers=headers, data=payload)
-    return response.json()["text"]
+
+    if response.status_code != 200:
+        return ""
+
+    searched_result = ""
+    try:
+        response_json = response.json()
+        searched_result = response_json["text"]
+    except:
+        pass
+
+    return searched_result
 
 
 def get_user_prompt_with_searched_result(ai_manager, user_prompt):
