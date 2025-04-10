@@ -29,7 +29,7 @@ class EditWithChatService:
         self.edit_question_prompt = edit_question_prompt
 
     def edit_total_survey(self, request: EditSurveyWithChatRequest):
-        ai_manager = AIManager(request.chat_session_id)
+        self.ai_manager = AIManager(request.chat_session_id)
 
         user_prompt = get_user_prompt_with_searched_result(
             ai_manager=self.ai_manager, user_prompt=request.user_prompt
@@ -40,7 +40,7 @@ class EditWithChatService:
         edited_total_survey_has_parsing_format = (
             FunctionExecutionTimeMeasurer.run_function(
                 "설문 수정 태스크",
-                ai_manager.chat_with_history,
+                self.ai_manager.chat_with_history,
                 self.edit_survey_prompt.format(
                     user_prompt=user_prompt,
                     user_survey_data=AllowedOtherManager.add_last_choice_in_survey(
@@ -60,7 +60,7 @@ class EditWithChatService:
         return AllowedOtherManager.remove_last_choice_in_survey(result)
 
     def edit_section(self, request: EditSectionWithChatRequest):
-        ai_manager = AIManager(request.chat_session_id)
+        self.ai_manager = AIManager(request.chat_session_id)
 
         user_prompt = get_user_prompt_with_searched_result(
             ai_manager=self.ai_manager, user_prompt=request.user_prompt
@@ -69,7 +69,7 @@ class EditWithChatService:
         parser = PydanticOutputParser(pydantic_object=EditSectionWithChatResponse)
         edited_section_has_parsing_format = FunctionExecutionTimeMeasurer.run_function(
             "섹션 수정 태스크",
-            ai_manager.chat_with_history,
+            self.ai_manager.chat_with_history,
             self.edit_section_prompt.format(
                 user_prompt=user_prompt,
                 user_survey_data=AllowedOtherManager.add_last_choice_in_section(
@@ -88,14 +88,14 @@ class EditWithChatService:
         return AllowedOtherManager.remove_last_choice_in_section(result)
 
     def edit_question(self, request: EditQuestionWithChatRequest):
-        ai_manager = AIManager(request.chat_session_id)
+        self.ai_manager = AIManager(request.chat_session_id)
         user_prompt = get_user_prompt_with_searched_result(
             ai_manager=self.ai_manager, user_prompt=request.user_prompt
         )
         parser = PydanticOutputParser(pydantic_object=EditQuestionWithChatResponse)
         edited_question_has_parsing_format = FunctionExecutionTimeMeasurer.run_function(
             "질문 수정 태스크",
-            ai_manager.chat_with_history,
+            self.ai_manager.chat_with_history,
             self.edit_question_prompt.format(
                 user_prompt=user_prompt,
                 user_survey_data=AllowedOtherManager.add_last_choice_in_question(
